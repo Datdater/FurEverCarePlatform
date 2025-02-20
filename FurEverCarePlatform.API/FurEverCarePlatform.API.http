@@ -1,0 +1,6 @@
+@FurEverCarePlatform.API_HostAddress = http://localhost:5225
+
+GET {{FurEverCarePlatform.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

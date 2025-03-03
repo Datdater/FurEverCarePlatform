@@ -4,10 +4,11 @@ namespace FurEverCarePlatform.Domain.Entities;
 
 public class Promotion : BaseEntity
 {
-	[StringLength(255)]
-	public required string Name { get; set; }
-
-	public required Guid StoreId { get; set; }
+	[Required]
+	[MaxLength(255)]
+	public string Name { get; set; }
+	[Required]
+	public Guid StoreId { get; set; }
 
 	[Column(TypeName = "money")]
 	public decimal MinPrice { get; set; }
@@ -17,7 +18,8 @@ public class Promotion : BaseEntity
 
 	public float DiscountPercentage { get; set; }
 
-	public required DateTime StartDate { get; set; }
+	[Required]
+	public DateTime StartDate { get; set; }
 
 	public DateTime? EndDate { get; set; }
 

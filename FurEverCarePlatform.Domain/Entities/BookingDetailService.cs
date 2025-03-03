@@ -8,6 +8,5 @@ public class BookingDetailService : BaseEntity
     //navigation
     public virtual BookingDetail BookingDetail { get; set; }
     public virtual PetServiceDetail PetServiceDetail { get; set; }
-
     public virtual ICollection<ServiceTracking> ServiceTrackings { get; set; }
 }

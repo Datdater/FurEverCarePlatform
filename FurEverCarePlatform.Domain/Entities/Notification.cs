@@ -2,9 +2,9 @@
 
 public class Notification : BaseEntity
 {
-    public required Guid UserId { get; set; };
+    public required Guid UserId { get; set; }
     public string Content { get; set; }
-    public bool IsRead { get; set; };
+    public bool IsRead { get; set; }
     public string ReturnUrl { get; set; }
     public Guid? FromUserId { get; set; }
 

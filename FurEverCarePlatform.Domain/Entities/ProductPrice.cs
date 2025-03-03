@@ -5,10 +5,12 @@ namespace FurEverCarePlatform.Domain.Entities;
 public class ProductPrice : BaseEntity
 {
 	public Guid ProductTypeDetails1 { get; set; } 
-	public Guid? ProductTypeDetails2 { get; set; } 
+	public Guid? ProductTypeDetails2 { get; set; }
+	[Required]
 	[Column(TypeName = "money")]
-	public required decimal Price { get; set; } 
-	public required int Inventory { get; set; } 
+	public decimal Price { get; set; }
+	[Required]
+	public int Inventory { get; set; } 
 
 	//navigation
 	[ForeignKey("ProductTypeDetails1")]

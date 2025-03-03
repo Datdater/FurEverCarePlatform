@@ -9,5 +9,7 @@ public class Feedback : BaseEntity
     public required Guid UserId { get; set; }
 
     //Navigation
-    public AppUser AppUser { get; set; }
+    public virtual AppUser AppUser { get; set; }
+    public virtual Booking Booking { get; set; }
+    public virtual OrderDetail OrderDetail { get; set; }
 }

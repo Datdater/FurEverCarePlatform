@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FurEverCarePlatform.Application\FurEverCarePlatform.Application.csproj" />
+    <ProjectReference Include="..\FurEverCarePlatform.Persistence\FurEverCarePlatform.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

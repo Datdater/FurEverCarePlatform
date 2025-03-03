@@ -10,7 +10,8 @@ public class Report : BaseEntity
     [Required]
     [MaxLength(255)]
     public string Content { get; set; }
-    public string? Attachment { get; set; }
+	[MaxLength(2048)]
+	public string? Attachment { get; set; }
     public bool Status { get; set; }
 
     [Required]

@@ -12,5 +12,8 @@ public class OrderDetail : BaseEntity
 
 	public virtual Order Order { get; set; }
 
+	public Guid? FeedbackId { get; set; }
+
+	public virtual Feedback Feedback { get; set; }
 
 }

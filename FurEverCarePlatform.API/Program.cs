@@ -1,4 +1,9 @@
 
+using FurEverCarePlatform.Domain.Entities;
+using FurEverCarePlatform.Persistence;
+using FurEverCarePlatform.Persistence.DatabaseContext;
+using Microsoft.AspNetCore.Identity;
+
 namespace FurEverCarePlatform.API
 {
     public class Program
@@ -8,7 +13,7 @@ namespace FurEverCarePlatform.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddIdentityService(builder.Configuration);
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -27,10 +32,10 @@ namespace FurEverCarePlatform.API
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
         }
+
     }
 }

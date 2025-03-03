@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace FurEverCarePlatform.Domain.Entities;
 
-public class Payment
+public class Payment : BaseEntity
 {
 	public Guid? OrderId { get; set; } 
 
-	public Guid? BookingServiceId { get; set; } 
+	public Guid? BookingId { get; set; } 
 
 	[Required]
 	[Column(TypeName = "money")]

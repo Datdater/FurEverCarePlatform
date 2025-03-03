@@ -48,3 +48,4 @@ wwwroot/
 # Logs
 logs/
 *.log
+/FurEverCarePlatform.API/appsettings.json

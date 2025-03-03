@@ -13,10 +13,14 @@ public class Booking : BaseEntity
     public float Distance { get; set; }
     public Guid? PromotionId { get; set; }
 
+    public Guid? FeedbackId { get; set; }
+
     //navigation
+    public virtual Delivery Delivery { get; set; }
     public virtual AppUser AppUser { get; set; }
+    public virtual Address Address { get; set; }
     public virtual ICollection<BookingDetail> BookingDetails { get; set; }
     public virtual Promotion Promotion { get; set; }
-    public virtual Feedback Feedback { get; set; }
+    public virtual Feedback? Feedback { get; set; }
     public virtual Payment Payment { get; set; }
 }

@@ -1,5 +1,5 @@
 ﻿using FurEverCarePlatform.Domain.Entities;
-
+using System.ComponentModel.DataAnnotations;
 public class HealthDetail : BaseEntity
 {
     [Required]

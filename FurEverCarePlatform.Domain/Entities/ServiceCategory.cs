@@ -6,5 +6,5 @@ public class ServiceCategory : BaseEntity
     [MaxLength(100)]
     public required string Name { get; set; }
 
-    public ICollection<PetService> PetServices { get; set; } = new List<PetService>();
+    public ICollection<PetService> PetServices { get; set; }
 }

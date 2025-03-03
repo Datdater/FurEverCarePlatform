@@ -8,6 +8,6 @@ public class ProductType : BaseEntity
     public Guid? ProductId { get; set; }
 
     //navigation
-    public virtual ICollection<ProductTypeDetail> ProductTypeDetails { get; set; } =  new List<ProductTypeDetail>();
+    public virtual ICollection<ProductTypeDetail> ProductTypeDetails { get; set; }
     public virtual Product? Product { get; set; }
 }

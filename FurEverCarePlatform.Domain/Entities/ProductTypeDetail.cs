@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 namespace FurEverCarePlatform.Domain.Entities;
 
 public class ProductTypeDetail : BaseEntity

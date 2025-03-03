@@ -18,7 +18,7 @@ public class Address : BaseEntity
     [Required]
     public Guid UserId { get; set; }
     //navigation
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public virtual ICollection<Order> Orders { get; set; } 
+    public virtual ICollection<Booking> Bookings { get; set; }
     public virtual AppUser AppUser { get; set; }
 }

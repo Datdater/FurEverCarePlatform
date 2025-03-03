@@ -50,9 +50,9 @@ public class Store : BaseEntity
 
 
     //navigation    
-    public ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
-    public ICollection<Product> Products { get; set; } = new List<Product>();
-    public ICollection<PetService> PetServices { get; set; } = new List<PetService>();
+    public ICollection<Promotion> Promotions { get; set; }
+    public ICollection<Product> Products { get; set; }
+    public ICollection<PetService> PetServices { get; set; }
     public virtual Address? Address { get; set; }
     public virtual AppUser? AppUser { get; set; }
 }

@@ -7,5 +7,5 @@ public class ProductBrand : BaseEntity
 	[StringLength(255)]
 	public required string Name { get; set; }
 	public string? BrandLink { get; set; }
-	public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+	public virtual ICollection<Product> Products { get; set; }
 }

@@ -9,7 +9,7 @@ public class ProductCategory : BaseEntity
 
 	//navigation	
 	public virtual ProductCategory? ParentCategory { get; set; }
-	public virtual ICollection<ProductCategory> SubCategories { get; set; } = new List<ProductCategory>();
-	public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+	public virtual ICollection<ProductCategory> SubCategories { get; set; }
+	public virtual ICollection<Product> Products { get; set; }
 }
  

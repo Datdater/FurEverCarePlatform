@@ -6,4 +6,32 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Entities\Category.cs" />
+    <Compile Remove="Enums\OrderStatus.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Entities\BookingDetail" />
+    <None Remove="Entities\Category" />
+    <None Remove="Entities\N.txt" />
+    <None Remove="Entities\NewFile2.txt" />
+    <None Remove="Entities\Notification" />
+    <None Remove="Entities\OrderDetail" />
+    <None Remove="Entities\Report" />
+    <None Remove="Entities\ServiceCategory" />
+    <None Remove="Enums\NewFile1.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

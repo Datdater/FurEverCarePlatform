@@ -1,6 +1,7 @@
-﻿namespace FurEverCarePlatform.Application.Contracts;
+﻿using FurEverCarePlatform.Domain;
+using FurEverCarePlatform.Domain.Entities;
 
-public class ICategoryRepository
-{
-    
-}
+    public interface ICategoryRepository : IGenericRepository<ProductCategory>
+    {
+
+    }

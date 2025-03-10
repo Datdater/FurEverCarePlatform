@@ -1,6 +1,8 @@
-﻿namespace FurEverCarePlatform.Application.Contracts;
+﻿
 
-public class IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
-    
+    public ICategoryRepository CategoryRepository { get; }
+    Task<int> SaveAsync();
+
 }

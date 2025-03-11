@@ -1,7 +1,4 @@
-﻿using FurEverCarePlatform.Application.Commons;
-using System.Linq.Expressions;
-
-
+﻿
 public interface IGenericRepository<T> where T : BaseEntity
 {
     Task<T> GetByIdAsync(object id);

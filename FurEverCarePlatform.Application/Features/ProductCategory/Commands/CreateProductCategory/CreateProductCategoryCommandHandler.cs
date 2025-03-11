@@ -1,13 +1,4 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using FluentValidation;
-using FurEverCarePlatform.Application.Exception;
-
+﻿
 namespace FurEverCarePlatform.Application.Features.ProductCategory.Commands.CreateProductCategory
 {
     public class CreateProductCategoryCommandHandler : IRequestHandler<CreateProductCategoryCommand, Guid>

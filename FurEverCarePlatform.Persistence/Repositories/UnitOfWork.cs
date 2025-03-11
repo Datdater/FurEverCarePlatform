@@ -1,19 +1,21 @@
-﻿
-
-using FurEverCarePlatform.Persistence.DatabaseContext;
+﻿using FurEverCarePlatform.Persistence.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace FurEverCarePlatform.Persistence.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly PetDatabaseContext _context;
-    private bool _disposed = false;
+    private readonly IDbContextTransaction? _transaction;
+	private bool _disposed = false;
     public ICategoryRepository CategoryRepository { get; }
 
-    public UnitOfWork(PetDatabaseContext context)
+    public UnitOfWork(PetDatabaseContext context, IDbContextTransaction transaction)
     {
         _context = context;
-        CategoryRepository = new CategoryRepository(_context);
+		_transaction = transaction;
+		CategoryRepository = new CategoryRepository(_context);
     }
 
     public void Dispose()
@@ -46,4 +48,27 @@ public class UnitOfWork : IUnitOfWork
         }
         return await _context.SaveChangesAsync();
     }
+
+    public async Task BeginTransactionAsync()
+    {
+	    await _context.Database.BeginTransactionAsync();
+	}
+
+    public async Task CommitTransactionAsync()
+    {
+	    if (_transaction != null)
+	    {
+		    await _transaction.CommitAsync();
+		    await _transaction.DisposeAsync();
+	    }
+	}
+
+    public async Task RollbackTransactionAsync()
+    {
+	    if (_transaction != null)
+	    {
+		    await _transaction.RollbackAsync();
+		    await _transaction.DisposeAsync();
+	    }
+	}
 }

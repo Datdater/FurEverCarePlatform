@@ -1,5 +1,4 @@
-﻿using FluentValidation.Results;
-
+﻿
 namespace FurEverCarePlatform.Application.Exception;
 
 public class BadRequestException : System.Exception

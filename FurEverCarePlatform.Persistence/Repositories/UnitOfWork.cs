@@ -7,14 +7,13 @@ namespace FurEverCarePlatform.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly PetDatabaseContext _context;
-    private readonly IDbContextTransaction? _transaction;
+    private IDbContextTransaction? _transaction;
 	private bool _disposed = false;
     public ICategoryRepository CategoryRepository { get; }
 
-    public UnitOfWork(PetDatabaseContext context, IDbContextTransaction transaction)
+    public UnitOfWork(PetDatabaseContext context)
     {
         _context = context;
-		_transaction = transaction;
 		CategoryRepository = new CategoryRepository(_context);
     }
 
@@ -51,7 +50,7 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task BeginTransactionAsync()
     {
-	    await _context.Database.BeginTransactionAsync();
+	    _transaction = await _context.Database.BeginTransactionAsync();
 	}
 
     public async Task CommitTransactionAsync()

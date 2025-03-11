@@ -16,7 +16,7 @@ namespace FurEverCarePlatform.API
 
             // Add services to the container.
             builder.Services.AddIdentityService(builder.Configuration);
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddPersistenceService();
 
             builder.Services.ApplicationService();
             builder.Services.AddControllers();

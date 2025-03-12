@@ -1,5 +1,6 @@
 ﻿using FurEverCarePlatform.Domain.Entities;
 using FurEverCarePlatform.Persistence.DatabaseContext;
+using FurEverCarePlatform.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,12 @@ namespace FurEverCarePlatform.Persistence
 {
     public static class DependencyInjection
     {
+
+		public static IServiceCollection AddPersistenceService(this IServiceCollection services)
+		{
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			return services;
+		}
 
 		public static IServiceCollection AddIdentityService(this IServiceCollection services, IConfiguration configuration)
 		{

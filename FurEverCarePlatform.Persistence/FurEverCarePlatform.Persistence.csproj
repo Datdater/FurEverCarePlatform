@@ -27,4 +27,8 @@
     <ProjectReference Include="..\FurEverCarePlatform.Application\FurEverCarePlatform.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\Inteface\" />
+  </ItemGroup>
+
 </Project>

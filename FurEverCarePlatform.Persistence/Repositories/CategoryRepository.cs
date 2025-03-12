@@ -1,6 +1,11 @@
-﻿namespace FurEverCarePlatform.Persistence.Repositories;
+﻿using FurEverCarePlatform.Domain.Entities;
+using FurEverCarePlatform.Persistence.DatabaseContext;
 
-public class CategoryRepository
+namespace FurEverCarePlatform.Persistence.Repositories;
+
+public class CategoryRepository : GenericRepository<ProductCategory>, ICategoryRepository
 {
-    
+    public CategoryRepository(PetDatabaseContext context) : base(context)
+    {
+    }
 }

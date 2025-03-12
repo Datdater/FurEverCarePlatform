@@ -1,29 +1,28 @@
-﻿using FurEverCarePlatform.Application.Services;
 using FurEverCarePlatform.Domain.Entities;
+using FurEverCarePlatform.Persistence;
 using FurEverCarePlatform.Persistence.DatabaseContext;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using FurEverCarePlatform.Application;
+using FurEverCarePlatform.Persistence.Repositories;
+using FurEverCarePlatform.API.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using FurEverCarePlatform.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Đảm bảo đọc file appsettings.json
-IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-
+// Add services to the container.
 builder.Services.AddDbContext<PetDatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PetDB")));
 
-// Cấu hình Identity (giữ cookie-based authentication cho web)
-builder.Services.AddIdentity<AppUser, AppRole>
-//builder.Services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>
-    (options =>
+// Cấu hình Identity
+builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
@@ -37,7 +36,7 @@ builder.Services.AddIdentity<AppUser, AppRole>
 .AddEntityFrameworkStores<PetDatabaseContext>()
 .AddDefaultTokenProviders();
 
-// Cấu hình JWT Authentication (cho API)
+// Cấu hình JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var secret = jwtSettings["SecretKey"];
 if (string.IsNullOrEmpty(secret))
@@ -49,9 +48,6 @@ var key = Encoding.ASCII.GetBytes(secret);
 
 builder.Services.AddAuthentication(options =>
 {
-    // Giữ scheme mặc định cho Identity (cookie)
-    options.DefaultScheme = IdentityConstants.ApplicationScheme;
-    // Đặt JWT làm scheme mặc định cho API
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
@@ -74,8 +70,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // Thêm các service khác
+builder.Services.AddPersistenceService();
+builder.Services.ApplicationService();
 builder.Services.AddControllers();
 builder.Services.AddScoped<JwtTokenService>();
+
 // Cấu hình Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -117,15 +116,23 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(securityRequirement);
 });
 
+// Cấu hình CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("all", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
 var app = builder.Build();
 
-// Cấu hình pipeline HTTP
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors("all");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

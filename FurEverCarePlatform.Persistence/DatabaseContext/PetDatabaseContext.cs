@@ -1,7 +1,9 @@
 ﻿using FurEverCarePlatform.Domain.Entities;
 using FurEverCarePlatform.Persistence.Configurations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace FurEverCarePlatform.Persistence.DatabaseContext;
 
@@ -10,6 +12,26 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     public PetDatabaseContext(DbContextOptions options) : base(options)
     {
     }
+    public PetDatabaseContext() : base() 
+    {
+
+    }
+
+
+    public static string GetConnectionString(string connectionStringName)
+    {
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        string connectionString = config.GetConnectionString(connectionStringName);
+        return connectionString;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer(GetConnectionString("PetDB")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

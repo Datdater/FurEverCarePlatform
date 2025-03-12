@@ -12,7 +12,7 @@ namespace FurEverCarePlatform.Persistence
 
 		public static IServiceCollection AddIdentityService(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddDbContext<PetDatabaseContext>(option => option.UseSqlServer(configuration.GetConnectionString("PetDatabase")));
+			//services.AddDbContext<PetDatabaseContext>(option => option.UseSqlServer(configuration.GetConnectionString("PetDatabase")));
 			// Use IdentityUser<Guid> and IdentityRole<Guid> to ensure both are consistent
 
 			services.AddIdentity<AppUser, AppRole>()

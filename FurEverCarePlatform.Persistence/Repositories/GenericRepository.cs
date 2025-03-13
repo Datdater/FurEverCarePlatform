@@ -2,7 +2,8 @@
 
 namespace FurEverCarePlatform.Persistence.Repositories;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+public class GenericRepository<T> : IGenericRepository<T>
+    where T : BaseEntity
 {
     private readonly PetDatabaseContext _context;
     internal DbSet<T> dbSet;
@@ -12,17 +13,24 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _context = context;
         dbSet = _context.Set<T>();
     }
+
     public Task<T> GetByIdAsync(object id)
     {
         return dbSet.FirstOrDefaultAsync(x => x.Id == (Guid)id);
     }
+
     //Use for navigation included
     public async Task<List<T>> GetAllAsync(string? includeProperties)
     {
         IQueryable<T> query = dbSet;
         if (includeProperties != null)
         {
-            foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (
+                var item in includeProperties.Split(
+                    new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+            )
             {
                 query = query.Include(item);
             }
@@ -30,13 +38,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await query.ToListAsync();
     }
 
-    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter, string? includeProperties)
+    public async Task<List<T>> GetAllAsync(
+        Expression<Func<T, bool>> filter,
+        string? includeProperties
+    )
     {
         IQueryable<T> query = dbSet;
         query = query.Where(filter);
         if (includeProperties != null)
         {
-            foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (
+                var item in includeProperties.Split(
+                    new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+            )
             {
                 query = query.Include(item);
             }
@@ -62,25 +78,43 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return Task.CompletedTask;
     }
 
-    public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null)
+    public async Task<T> GetFirstOrDefaultAsync(
+        Expression<Func<T, bool>> predicate,
+        string? includeProperties = null
+    )
     {
         IQueryable<T> query = dbSet;
         query = query.Where(predicate);
         if (includeProperties != null)
         {
-            foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (
+                var item in includeProperties.Split(
+                    new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+            )
             {
                 query = query.Include(item);
             }
         }
         return await query.FirstOrDefaultAsync();
     }
-    public async Task<Pagination<T>> GetPaginationAsync(string? includeProperties = null, int pageIndex = 0, int pageSize = 10)
+
+    public async Task<Pagination<T>> GetPaginationAsync(
+        string? includeProperties = null,
+        int pageIndex = 0,
+        int pageSize = 10
+    )
     {
         IQueryable<T> query = dbSet;
         if (includeProperties != null)
         {
-            foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (
+                var item in includeProperties.Split(
+                    new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+            )
             {
                 query = query.Include(item);
             }

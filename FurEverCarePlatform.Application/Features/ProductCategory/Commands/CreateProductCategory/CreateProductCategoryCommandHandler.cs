@@ -1,18 +1,24 @@
-﻿
+﻿using FurEverCarePlatform.Application.Contracts;
+
 namespace FurEverCarePlatform.Application.Features.ProductCategory.Commands.CreateProductCategory
 {
-    public class CreateProductCategoryCommandHandler : IRequestHandler<CreateProductCategoryCommand, Guid>
+    public class CreateProductCategoryCommandHandler
+        : IRequestHandler<CreateProductCategoryCommand, Guid>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
         public CreateProductCategoryCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<Guid> Handle(CreateProductCategoryCommand request, CancellationToken cancellationToken)
-        {
 
+        public async Task<Guid> Handle(
+            CreateProductCategoryCommand request,
+            CancellationToken cancellationToken
+        )
+        {
             var validator = new CreateProductCategoryValidator();
             var validationResult = await validator.ValidateAsync(request);
             if (!validationResult.IsValid)

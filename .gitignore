@@ -49,3 +49,4 @@ wwwroot/
 logs/
 *.log
 /FurEverCarePlatform.API/appsettings.json
+/FurEverCarePlatform.API/appsettings.Development.json

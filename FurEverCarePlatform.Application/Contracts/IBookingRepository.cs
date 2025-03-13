@@ -1,7 +1,7 @@
 ﻿
 namespace FurEverCarePlatform.Application.Contracts
 {
-    interface IBookingRepository : IGenericRepository<Booking>
+    public interface IBookingRepository : IGenericRepository<Booking>
 	{
     }
 }

@@ -1,13 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace FurEverCarePlatform.API
 {
-    public class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-        public string? Summary { get; set; }
-    }
+	public class NoOpEmailSender<TUser> : IEmailSender<TUser> where TUser : class
+	{
+		public Task SendConfirmationLinkAsync(TUser user, string email, string confirmationLink) => Task.CompletedTask;
+		public Task SendPasswordResetLinkAsync(TUser user, string email, string resetLink) => Task.CompletedTask;
+		public Task SendPasswordResetCodeAsync(TUser user, string email, string resetCode) => Task.CompletedTask;
+	}
 }

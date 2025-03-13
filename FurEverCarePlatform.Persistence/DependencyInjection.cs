@@ -14,12 +14,17 @@ namespace FurEverCarePlatform.Persistence
 		public static IServiceCollection AddPersistenceService(this IServiceCollection services)
 		{
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			services.AddScoped<ICategoryRepository, CategoryRepository>();
+			services.AddScoped<IPaymentRepository, PaymentRepository>();
+			services.AddScoped<IPetRepository, PetRepository>();
+			services.AddScoped<IPetServiceDetailRepository, PetServiceDetailRepository>();
+
 			return services;
 		}
 
 		public static IServiceCollection AddIdentityService(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddDbContext<PetDatabaseContext>(option => option.UseSqlServer(configuration.GetConnectionString("PetDatabase")));
+			services.AddDbContext<PetDatabaseContext>(option => option.UseSqlServer(configuration.GetConnectionString("PetDBLocal")));
 			// Use IdentityUser<Guid> and IdentityRole<Guid> to ensure both are consistent
 
 			services.AddIdentity<AppUser, AppRole>()
@@ -43,6 +48,8 @@ namespace FurEverCarePlatform.Persistence
 				options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 				options.Lockout.MaxFailedAccessAttempts = 5;
 				options.Lockout.AllowedForNewUsers = true;
+
+				options.SignIn.RequireConfirmedEmail = false;
 			});
 
 			return services;

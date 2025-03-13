@@ -1,6 +1,6 @@
-﻿using FurEverCarePlatform.Persistence.DatabaseContext;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿
+using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
 
 namespace FurEverCarePlatform.Persistence.Repositories;
 
@@ -9,11 +9,30 @@ public class UnitOfWork : IUnitOfWork
     private readonly PetDatabaseContext _context;
     private IDbContextTransaction? _transaction;
 	private bool _disposed = false;
-    public ICategoryRepository CategoryRepository { get; }
+	//private readonly IClaimService _claimService;
+	//private readonly ICurrentTime _currentTime;
 
-    public UnitOfWork(PetDatabaseContext context)
+	private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
+
+	public IGenericRepository<T> GetRepository<T>() where T : BaseEntity
+	{
+		if (_repositories.TryGetValue(typeof(T), out var repository))
+		{
+			return (IGenericRepository<T>)repository;
+		}
+
+		var newRepository = new GenericRepository<T>(_context);
+		_repositories.Add(typeof(T), newRepository);
+		return newRepository;
+	}
+
+	public ICategoryRepository CategoryRepository { get; }
+
+    public UnitOfWork(PetDatabaseContext context/*, IClaimService claimService, ICurrentTime currentTime*/)
     {
         _context = context;
+		//_claimService = claimService;
+		//_currentTime = currentTime;
 		CategoryRepository = new CategoryRepository(_context);
     }
 
@@ -37,18 +56,47 @@ public class UnitOfWork : IUnitOfWork
     }
     public async Task<int> SaveAsync()
     {
-        foreach (var entry in _context.ChangeTracker.Entries<BaseEntity>())
-        {
-            // switch (entry.State)
-            // {
-            //     case EntityState.Added:
-            //         entry.Entity.Created = DateTime.Now;
-            // }
-        }
-        return await _context.SaveChangesAsync();
+		//UpdateTimestamps();
+		return await _context.SaveChangesAsync();
     }
+	//private void UpdateTimestamps()
+	//{
+	//	var entries = _context.ChangeTracker.Entries()
+	//		.Where(e => e.Entity is BaseEntity &&
+	//		            (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
-    public async Task BeginTransactionAsync()
+	//	foreach (var entry in entries)
+	//	{
+	//		var auditable = (BaseEntity)entry.Entity;
+	//		//var currentTime = _currentTime.GetCurrentTime();
+	//		//var currentUser = _claimService.GetCurrentUser;
+
+	//		if (entry.State == EntityState.Added)
+	//		{
+	//			auditable.CreationDate = currentTime;
+	//			if (!currentUser.Equals(Guid.Empty))
+	//			{
+	//				auditable.CreatedBy = currentUser;
+	//			}
+	//		}
+
+	//		if (entry.State == EntityState.Modified)
+	//		{
+	//			if (!auditable.IsDeleted)  
+	//			{
+	//				auditable.ModificationDate = currentTime;
+	//				auditable.ModifiedBy = currentUser;
+	//			}
+	//			else 
+	//			{
+	//				auditable.DeleteDate = currentTime;
+	//				auditable.DeletedBy = currentUser;
+	//			}
+	//		}
+	//	}
+	//}
+
+	public async Task BeginTransactionAsync()
     {
 	    _transaction = await _context.Database.BeginTransactionAsync();
 	}

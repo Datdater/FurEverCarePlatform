@@ -29,7 +29,9 @@ namespace FurEverCarePlatform.API
 
             });
 
-            var app = builder.Build();
+            builder.Services.AddSingleton<IEmailSender<AppUser>, NoOpEmailSender<AppUser>>();
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -39,7 +41,8 @@ namespace FurEverCarePlatform.API
             }
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseCors("all");
-            app.UseHttpsRedirection();
+            app.MapIdentityApi<AppUser>();
+			app.UseHttpsRedirection();
 
             app.UseAuthorization();
 

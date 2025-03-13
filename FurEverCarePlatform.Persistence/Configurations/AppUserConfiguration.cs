@@ -10,9 +10,7 @@ namespace FurEverCarePlatform.Persistence.Configurations
         {
             builder.HasKey(au => au.Id);
 
-            builder.Property(au => au.Name)
-                .IsRequired()
-                .HasMaxLength(100);
+            builder.Property(au => au.Name);
 
             builder.Property(au => au.CreationDate);
             builder.Property(au => au.CreatedBy);

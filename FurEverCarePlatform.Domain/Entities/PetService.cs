@@ -7,7 +7,6 @@ public class PetService : BaseEntity
     public Guid StoreId { get; set; }
     public DateTime EstimatedTime { get; set; }
     public Guid ServiceCategoryId { get; set; }
-    public Guid CategoryServiceId { get; set; }
     
     //navigation
     public virtual Store Store { get; set; }

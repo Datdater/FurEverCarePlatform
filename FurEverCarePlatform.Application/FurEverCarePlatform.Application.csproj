@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\PetService\Queries\" />
     <Folder Include="Features\ProductCategory\Commands\DeleteProductCategory\" />
     <Folder Include="Features\ProductCategory\Commands\UpdateProductCategory\" />
     <Folder Include="Features\ProductCategory\Queries\GetProductCategoryDetails\" />

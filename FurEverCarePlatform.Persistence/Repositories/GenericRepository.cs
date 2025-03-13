@@ -1,8 +1,4 @@
-﻿
-using FurEverCarePlatform.Application.Commons;
-using FurEverCarePlatform.Persistence.DatabaseContext;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using FurEverCarePlatform.Application.Commons;
 
 namespace FurEverCarePlatform.Persistence.Repositories;
 

@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
+using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
 
 namespace FurEverCarePlatform.Application
 {
@@ -7,9 +10,12 @@ namespace FurEverCarePlatform.Application
     {
         public static IServiceCollection ApplicationService(this IServiceCollection services)
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+	        //services.AddHttpContextAccessor();
+	        //services.AddScoped<IClaimService, ClaimService>();
+	        //services.AddScoped<ICurrentTime, CurrentTimeService>();
+			services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            return services;
+			return services;
         }
     }
 }

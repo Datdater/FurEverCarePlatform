@@ -50,16 +50,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return entitySaved.Entity;
     }
 
-    public Task UpdateAsync(T entity)
+    public void Update(T entity)
     {
         dbSet.Update(entity);
-        return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(T entity)
+    public void Delete(T entity)
     {
         dbSet.Remove(entity);
-        return Task.CompletedTask;
     }
 
     public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null)

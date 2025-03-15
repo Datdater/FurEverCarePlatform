@@ -19,9 +19,6 @@ namespace FurEverCarePlatform.Persistence.Configurations
             builder.Property(ps => ps.Description)
                 .HasMaxLength(1000);
 
-            builder.Property(ps => ps.EstimatedTime)
-                .IsRequired();
-
             builder.HasOne(ps => ps.Store)
                 .WithMany(s => s.PetServices)
                 .HasForeignKey(ps => ps.StoreId)

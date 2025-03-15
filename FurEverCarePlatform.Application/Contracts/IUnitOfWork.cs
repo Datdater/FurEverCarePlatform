@@ -5,7 +5,9 @@ public interface IUnitOfWork : IDisposable
 {
     IGenericRepository<T> GetRepository<T>() where T : BaseEntity;
 	public ICategoryRepository CategoryRepository { get; }
-    Task<int> SaveAsync();
+
+    public IPetServiceRepository PetServiceRepository { get; }
+	Task<int> SaveAsync();
 
     Task BeginTransactionAsync();
 

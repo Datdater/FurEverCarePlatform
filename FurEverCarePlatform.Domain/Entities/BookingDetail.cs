@@ -2,13 +2,13 @@
 
 public class BookingDetail : BaseEntity
 {
-    public required Guid BookingServiceId { get; set; }
-    public required Guid PetId { get; set; }
+    public Guid BookingServiceId { get; set; }
+    public Guid PetId { get; set; }
     public required DateTime BookingTime { get; set; }
     public decimal RealAmount { get; set; }
     public bool IsMeasured { get; set; }
     public decimal RawAmount { get; set; }
-    public float PetWeight { get; set; }
+    public float? PetWeight { get; set; }
     public string? Hair { get; set; }
     public Guid? ComboId { get; set; }
     public Guid? AssignedUserId { get; set; }

@@ -10,11 +10,11 @@ namespace FurEverCarePlatform.Persistence.Configurations
         {
             builder.HasKey(bd => bd.Id);
 
-            builder.Property(bd => bd.BookingServiceId)
-                .IsRequired();
+            //builder.Property(bd => bd.BookingServiceId)
+            //    .IsRequired();
 
-            builder.Property(bd => bd.PetId)
-                .IsRequired();
+            //builder.Property(bd => bd.PetId)
+            //    .IsRequired();
 
             builder.Property(bd => bd.BookingTime)
                 .IsRequired();
@@ -26,8 +26,8 @@ namespace FurEverCarePlatform.Persistence.Configurations
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
-            builder.Property(bd => bd.PetWeight)
-                .IsRequired();
+            //builder.Property(bd => bd.PetWeight)
+            //    .IsRequired();
 
             builder.Property(bd => bd.Hair)
                 .HasMaxLength(100);

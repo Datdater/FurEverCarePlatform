@@ -1,11 +1,7 @@
-
-using FurEverCarePlatform.Domain.Entities;
-using FurEverCarePlatform.Persistence;
-using FurEverCarePlatform.Persistence.DatabaseContext;
-using Microsoft.AspNetCore.Identity;
-using FurEverCarePlatform.Application;
-using FurEverCarePlatform.Persistence.Repositories;
 using FurEverCarePlatform.API.Middleware;
+using FurEverCarePlatform.Application;
+using FurEverCarePlatform.Persistence;
+
 namespace FurEverCarePlatform.API
 {
     public class Program
@@ -25,13 +21,15 @@ namespace FurEverCarePlatform.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors(option =>
             {
-                option.AddPolicy("all", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-
+                option.AddPolicy(
+                    "all",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+                );
             });
 
-            builder.Services.AddSingleton<IEmailSender<AppUser>, NoOpEmailSender<AppUser>>();
+            //builder.Services.AddSingleton<IEmailSender<AppUser>, NoOpEmailSender<AppUser>>();
 
-			var app = builder.Build();
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -41,8 +39,8 @@ namespace FurEverCarePlatform.API
             }
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseCors("all");
-            app.MapIdentityApi<AppUser>();
-			app.UseHttpsRedirection();
+            //app.MapIdentityApi<AppUser>();
+            app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
@@ -50,6 +48,5 @@ namespace FurEverCarePlatform.API
 
             app.Run();
         }
-
     }
 }

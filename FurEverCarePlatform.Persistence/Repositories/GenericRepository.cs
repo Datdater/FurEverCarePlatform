@@ -5,7 +5,7 @@ namespace FurEverCarePlatform.Persistence.Repositories;
 public class GenericRepository<T> : IGenericRepository<T>
     where T : BaseEntity
 {
-    private readonly PetDatabaseContext _context;
+    protected readonly PetDatabaseContext _context;
     internal DbSet<T> dbSet;
 
     public GenericRepository(PetDatabaseContext context)
@@ -66,16 +66,14 @@ public class GenericRepository<T> : IGenericRepository<T>
         return entitySaved.Entity;
     }
 
-    public Task UpdateAsync(T entity)
+    public void Update(T entity)
     {
         dbSet.Update(entity);
-        return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(T entity)
+    public void Delete(T entity)
     {
         dbSet.Remove(entity);
-        return Task.CompletedTask;
     }
 
     public async Task<T> GetFirstOrDefaultAsync(
@@ -120,7 +118,7 @@ public class GenericRepository<T> : IGenericRepository<T>
             }
         }
         var itemCount = await query.CountAsync();
-        var items = await query
+        var items = await query.Where(x => !x.IsDeleted)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .AsNoTracking()

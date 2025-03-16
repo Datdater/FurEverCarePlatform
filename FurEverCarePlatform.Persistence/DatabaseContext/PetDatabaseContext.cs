@@ -73,10 +73,10 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<PetServiceDetail> PetServiceDetails { get; set; }
     public DbSet<PetServiceStep> PetServiceSteps { get; set; }
     public DbSet<ProductBrand> ProductBrands { get; set; }
-    public DbSet<ProductCategory> productCategories { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Product> Products { get; set; } 
     public DbSet<ProductPrice> ProductPrices { get; set; }
-    public DbSet<ProductType> productTypes { get; set; }
+    public DbSet<ProductType> ProductTypes { get; set; }
     public DbSet<ProductTypeDetail> ProductTypeDetails { get; set; }
     public DbSet<Promotion> Promotions { get; set; }
     public DbSet<Report> Reports { get; set; }

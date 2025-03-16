@@ -8,8 +8,8 @@ public interface IGenericRepository<T>
     Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter, string? includeProperties);
     Task<T> InsertAsync(T entity);
     Task AddRangeAsync(IEnumerable<T> entities);
-    Task UpdateAsync(T entity);
-    Task DeleteAsync(T entity);
+    void Update(T entity);
+    void Delete(T entity);
     Task<T> GetFirstOrDefaultAsync(
         Expression<Func<T, bool>> predicate,
         string? includeProperties = null

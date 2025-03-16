@@ -6,7 +6,6 @@ using FurEverCarePlatform.Application.Features.Product.DTOs;
 using FurEverCarePlatform.Application.Features.Product.Queries.GetAllProduct;
 using FurEverCarePlatform.Application.Features.Product.Queries.GetProductDetail;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
@@ -21,10 +20,7 @@ namespace FurEverCarePlatform.API.Controllers
         public async Task<ActionResult> Post(CreateProductCommand createProduct)
         {
             var response = await mediator.Send(createProduct);
-            return CreatedAtRoute(
-                "GetProductById",
-                new { id = response }
-            );
+            return CreatedAtRoute("GetProductById", new { id = response });
         }
 
         [HttpGet]
@@ -33,13 +29,13 @@ namespace FurEverCarePlatform.API.Controllers
             return await mediator.Send(query);
         }
 
-        [HttpGet("{id}", Name = "GetProductById")]
+        [HttpGet("{id:guid}", Name = "GetProductById")]
         public async Task<ProductSpecificDTO> GetProductById(Guid id)
         {
             return await mediator.Send(new GetProductSpecificQuery { Id = id });
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteProduct(Guid id)

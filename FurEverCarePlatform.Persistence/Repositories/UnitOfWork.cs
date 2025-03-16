@@ -28,12 +28,15 @@ public class UnitOfWork : IUnitOfWork
 
 	public ICategoryRepository CategoryRepository { get; }
 
+    public IProductRepository ProductRepository { get; }
+
     public UnitOfWork(PetDatabaseContext context/*, IClaimService claimService, ICurrentTime currentTime*/)
     {
         _context = context;
 		//_claimService = claimService;
 		//_currentTime = currentTime;
 		CategoryRepository = new CategoryRepository(_context);
+        ProductRepository = new ProductRepository(_context);
     }
 
     public void Dispose()

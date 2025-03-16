@@ -1,4 +1,5 @@
 ﻿
+
 public interface IGenericRepository<T> where T : BaseEntity
 {
     Task<T> GetByIdAsync(object id);
@@ -11,4 +12,5 @@ public interface IGenericRepository<T> where T : BaseEntity
     Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null);
 
     Task<Pagination<T>> GetPaginationAsync(string? includeProperties = null, int pageIndex = 0, int pageSize = 10);
+    //Task GetAllAsync(Func<PetServiceStep, bool> value);
 }

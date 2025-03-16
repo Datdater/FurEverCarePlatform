@@ -28,7 +28,9 @@ public class UnitOfWork : IUnitOfWork
 
 	public ICategoryRepository CategoryRepository { get; }
 
-    public UnitOfWork(PetDatabaseContext context/*, IClaimService claimService, ICurrentTime currentTime*/)
+    public IServiceRepository PetServiceRepository  {get; }
+
+public UnitOfWork(PetDatabaseContext context/*, IClaimService claimService, ICurrentTime currentTime*/)
     {
         _context = context;
 		//_claimService = claimService;

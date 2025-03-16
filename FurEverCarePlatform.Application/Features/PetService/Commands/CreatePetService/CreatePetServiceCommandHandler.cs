@@ -19,18 +19,35 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
 			_mapper = mapper;
 		}
 
-		public async Task<Guid> Handle(CreatePetServiceCommand request, CancellationToken cancellationToken)
-		{
-			var validator = new CreatePetServiceValidator();
-			var validationResult = await validator.ValidateAsync(request);
-			if (!validationResult.IsValid)
-			{
-				throw new BadRequestException(validationResult.ToString(), validationResult);
-			}
-			var petService = _mapper.Map<Domain.Entities.PetService>(request);
-			await _unitOfWork.GetRepository<Domain.Entities.PetService>().InsertAsync(petService);
-			await _unitOfWork.SaveAsync();
-			return petService.Id;
-		}
-	}
+        //public async Task<Guid> Handle(CreatePetServiceCommand request, CancellationToken cancellationToken)
+        //{
+        //	var validator = new CreatePetServiceValidator();
+        //	var validationResult = await validator.ValidateAsync(request);
+        //	if (!validationResult.IsValid)
+        //	{
+        //		throw new BadRequestException(validationResult.ToString(), validationResult);
+        //	}
+        //	var petService = _mapper.Map<Domain.Entities.PetService>(request);
+        //	await _unitOfWork.GetRepository<Domain.Entities.PetService>().InsertAsync(petService);
+        //	await _unitOfWork.SaveAsync();
+        //	return petService.Id;
+        //}
+        public async Task<Guid> Handle(CreatePetServiceCommand request, CancellationToken cancellationToken)
+        {
+            var petService = new Domain.Entities.PetService
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                Description = request.Description,
+                StoreId = request.StoreId,
+                ServiceCategoryId = request.ServiceCategoryId,
+                EstimatedTime = request.EstimatedTime
+            };
+
+            _unitOfWork.GetRepository<Domain.Entities.PetService>().InsertAsync(petService);
+            await _unitOfWork.SaveAsync();
+
+            return petService.Id;
+        }
+    }
 }

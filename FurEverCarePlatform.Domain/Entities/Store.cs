@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FurEverCarePlatform.Domain.Entities;
-
+[Table("Stores")]
 public class Store : BaseEntity
 {
     [MaxLength(255)]

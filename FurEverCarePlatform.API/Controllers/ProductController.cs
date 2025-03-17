@@ -21,10 +21,8 @@ namespace FurEverCarePlatform.API.Controllers
         public async Task<ActionResult> Post(CreateProductCommand createProduct)
         {
             var response = await mediator.Send(createProduct);
-            return CreatedAtRoute(
-                "GetProductById",
-                new { id = response }
-            );
+            return Ok();
+            
         }
 
         [HttpGet]

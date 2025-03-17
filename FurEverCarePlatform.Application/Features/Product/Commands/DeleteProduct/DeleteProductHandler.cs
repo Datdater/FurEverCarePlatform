@@ -15,7 +15,7 @@ public class DeleteProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<Dele
         {
             throw new NotFoundException(nameof(Product), request.Id);
         }
-        product.IsActive = false;
+        product.IsDeleted = true;
         unitOfWork.ProductRepository.Update(product);
         await unitOfWork.SaveAsync();
     }

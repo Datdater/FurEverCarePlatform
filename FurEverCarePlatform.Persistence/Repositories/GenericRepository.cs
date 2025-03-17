@@ -85,7 +85,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         }
         var itemCount = await query.CountAsync();
         var items = await query.Where(x => !x.IsDeleted)
-            .Skip(pageIndex * pageSize)
+            .Skip((pageIndex-1) * pageSize)
             .Take(pageSize)
             .AsNoTracking()
             .ToListAsync();

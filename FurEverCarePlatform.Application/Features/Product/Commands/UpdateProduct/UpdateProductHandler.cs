@@ -26,7 +26,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
             await unitOfWork.BeginTransactionAsync();
 
             var productRepository = unitOfWork.GetRepository<Domain.Entities.Product>();
-            var product = await productRepository.GetByIdAsync(request.Id);
+            var product = await productRepository.GetFirstOrDefaultAsync(x => x.Id == request.Id, "ProductTypes");
 
             if (product == null)
             {
@@ -41,9 +41,27 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
             product.BrandId = request.BrandId;
             product.StoreId = request.StoreId;
 
+            // Update product prices
+            var productPrices = new List<Domain.Entities.ProductPrice>();
+            var productPriceRepository = unitOfWork.GetRepository<Domain.Entities.ProductPrice>();
+            var productPricesToDelete = unitOfWork.ProductRepository.GetProductPrices(request.Id);
+            foreach (var productPrice in productPricesToDelete)
+            {
+                productPriceRepository.Delete(productPrice);
+            }
+
+            // Delete existing product types
+            var productTypeRepository = unitOfWork.GetRepository<Domain.Entities.ProductType>();
+            
+            foreach (var productType in product.ProductTypes.ToList())
+            {
+                productTypeRepository.Delete(productType);
+            }
+            await unitOfWork.SaveAsync();
+
+            // Update product types
             var productTypes = new List<Domain.Entities.ProductType>();
             var productTypeDetailsDict = new Dictionary<string, Domain.Entities.ProductTypeDetail>();
-
             foreach (var productType in request.ProductTypes)
             {
                 var newProductType = new Domain.Entities.ProductType { Name = productType.Name };
@@ -69,13 +87,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
             productRepository.Update(product);
             await unitOfWork.SaveAsync();
 
-            var productPrices = new List<Domain.Entities.ProductPrice>();
-            var productPriceRepository = unitOfWork.GetRepository<Domain.Entities.ProductPrice>();
-            var productPricesToDelete = unitOfWork.ProductRepository.GetProductPrices(request.Id);
-            foreach (var productPrice in productPricesToDelete)
-            {
-                productPriceRepository.Delete(productPrice);
-            }
+            
 
             foreach (var productPrice in request.ProductPrices)
             {
@@ -89,7 +101,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
                         {
                             Price = productPrice.Price,
                             Inventory = productPrice.Inventory,
-                            ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
+                            ProductTypeDetails1 = productTypeDetail1.Id, // Link by ID
                             ProductTypeDetails2 = productTypeDetail2.Id
                         };
                     }
@@ -99,7 +111,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
                         {
                             Price = productPrice.Price,
                             Inventory = productPrice.Inventory,
-                            ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
+                            ProductTypeDetails1 = productTypeDetail1.Id, // Link by ID
                             ProductTypeDetails2 = null
                         };
                     }
@@ -124,5 +136,4 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
             throw new BadRequestException("Update product failed");
         }
     }
-
 }

@@ -14,7 +14,7 @@ public class UpdateProductCommand : IRequest<Guid>
     public string Name { get; set; }
     public bool? IsActive { get; set; }
     public string ProductCode { get; set; }
-    public int Views { get; set; }
+    public int? Views { get; set; }
     public Guid BrandId { get; set; }
     public Guid StoreId { get; set; }
     public List<ProductTypeDTO> ProductTypes { get; set; }

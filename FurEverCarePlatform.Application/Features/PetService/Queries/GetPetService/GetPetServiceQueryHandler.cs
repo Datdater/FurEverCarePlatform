@@ -46,8 +46,8 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
         public async Task<PetServiceDto> Handle(GetPetServiceQuery request, CancellationToken cancellationToken)
         {
             // Lấy thông tin PetService với các quan hệ Store và ServiceCategory
-            var petService = await unitOfWork.PetServiceRepository
-                .GetFirstOrDefaultAsync(x => x.Id == request.Id, "Stores,ServiceCategories");
+            var petService = await unitOfWork.GetRepository<Domain.Entities.PetService>()
+                .GetFirstOrDefaultAsync(x => x.Id == request.Id, "Store,ServiceCategory");
 
             if (petService == null)
             {
@@ -59,19 +59,19 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
 
             // Lấy danh sách PetServiceSteps
             var petServiceStepsRaw = await unitOfWork.GetRepository<Domain.Entities.PetServiceStep>()
-                .GetAllAsync(x => x.PetServiceId == request.Id, "PetServiceSteps");
+                .GetAllAsync(x => x.PetServiceId == request.Id, "PetService");
             var petServiceSteps = mapper.Map<List<PetServiceStepDto>>(petServiceStepsRaw);
             petServiceDto.PetServiceSteps = petServiceSteps;
 
             // Lấy danh sách PetServiceDetails
             var petServiceDetailsRaw = await unitOfWork.GetRepository<Domain.Entities.PetServiceDetail>()
-                .GetAllAsync(x => x.PetServiceId == request.Id, "PetServiceDetails");
+                .GetAllAsync(x => x.PetServiceId == request.Id, "PetService");
             var petServiceDetails = mapper.Map<List<PetServiceDetailDto>>(petServiceDetailsRaw);
             petServiceDto.PetServiceDetails = petServiceDetails;
 
             // Lấy danh sách ComboServices
             var comboServicesRaw = await unitOfWork.GetRepository<Domain.Entities.ComboService>()
-                .GetAllAsync(x => x.PetServiceId == request.Id, "ComboServices");
+                .GetAllAsync(x => x.PetServiceId == request.Id, "PetService");
             var comboServices = mapper.Map<List<ComboServiceDto>>(comboServicesRaw);
 
             // Lấy thông tin ComboName từ quan hệ Combo (nếu cần)

@@ -54,9 +54,9 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetAllPetS
                 Name = ps.Name,
                 Description = ps.Description,
                 StoreId = ps.StoreId,
-                StoreName = ps.Store?.Name ?? string.Empty,
+                //StoreName = ps.Store?.Name ?? string.Empty,
                 ServiceCategoryId = ps.ServiceCategoryId,
-                ServiceCategoryName = ps.ServiceCategory?.Name ?? string.Empty,
+               // ServiceCategoryName = ps.ServiceCategory?.Name ?? string.Empty,
                 EstimatedTime = ps.EstimatedTime
             })?.ToList() ?? new List<PetServiceDto>();
 

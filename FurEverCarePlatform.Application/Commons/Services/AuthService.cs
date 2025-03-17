@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -26,6 +27,8 @@ namespace FurEverCarePlatform.Application.Commons.Services
         public async Task<(string AccessToken, string RefreshToken)> LoginAsync(string username, string password)
         {
             var user = await _userManager.FindByEmailAsync(username);
+            if (user == null) user = await _userManager.Users
+               .FirstOrDefaultAsync(u => u.PhoneNumber == username);
             Console.WriteLine($"User found: {user?.UserName}"); // Debug
             if (user != null )
             {
@@ -67,9 +70,10 @@ namespace FurEverCarePlatform.Application.Commons.Services
             var user = new AppUser
             {
                 Id = Guid.NewGuid(),
-                UserName = model.Username,
                 Email = model.Email,
                 Name = model.Name,
+                UserName = model.Name,
+                PhoneNumber = model.Phone,
                 CreationDate = DateTime.UtcNow
             };
 
@@ -82,7 +86,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 // Tạo access token
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, "PET OWNER")
                 };
@@ -164,7 +168,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 // Tạo access token mới
                 var claims = new[]
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User")
                 };
@@ -194,8 +198,6 @@ namespace FurEverCarePlatform.Application.Commons.Services
     }
     public class RegisterModel
     {
-        [Required(ErrorMessage = "Username is required")]
-        public string Username { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
@@ -207,11 +209,13 @@ namespace FurEverCarePlatform.Application.Commons.Services
 
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "Phone is required")]
+        public string Phone { get; set; }
     }
 
     public class LoginModel
     {
-        public string Email { get; set; }
+        public string EmailorPhone { get; set; }
         public string Password { get; set; }
     }
 }

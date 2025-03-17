@@ -1,9 +1,4 @@
 ﻿using FurEverCarePlatform.Application.Features.PetService.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetAllPetService
 {
@@ -41,24 +36,36 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetAllPetS
     public class GetAllPetServiceQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<GetAllPetServiceQuery, Pagination<PetServiceDto>>
     {
-        public async Task<Pagination<PetServiceDto>> Handle(GetAllPetServiceQuery request, CancellationToken cancellationToken)
+        public async Task<Pagination<PetServiceDto>> Handle(
+            GetAllPetServiceQuery request,
+            CancellationToken cancellationToken
+        )
         {
             // Lấy dữ liệu PetService với phân trang và các quan hệ liên quan
-            var petServiceRaw = await unitOfWork.GetRepository<Domain.Entities.PetService>()
-                .GetPaginationAsync("Store,ServiceCategory", request.PageNumber, request.PageSize);
+            var petServiceRaw = await unitOfWork
+                .GetRepository<Domain.Entities.PetService>()
+                .GetPaginationAsync(
+                    null,
+                    "Store,ServiceCategory",
+                    request.PageNumber,
+                    request.PageSize
+                );
 
             // Tùy chỉnh các thuộc tính của DTO
-            var petServiceDTOItems = petServiceRaw.Items?.Select(ps => new PetServiceDto
-            {
-                Id = ps.Id,
-                Name = ps.Name,
-                Description = ps.Description,
-                StoreId = ps.StoreId,
-                //StoreName = ps.Store?.Name ?? string.Empty,
-                ServiceCategoryId = ps.ServiceCategoryId,
-               // ServiceCategoryName = ps.ServiceCategory?.Name ?? string.Empty,
-                EstimatedTime = ps.EstimatedTime
-            })?.ToList() ?? new List<PetServiceDto>();
+            var petServiceDTOItems =
+                petServiceRaw
+                    .Items?.Select(ps => new PetServiceDto
+                    {
+                        Id = ps.Id,
+                        Name = ps.Name,
+                        Description = ps.Description,
+                        StoreId = ps.StoreId,
+                        //StoreName = ps.Store?.Name ?? string.Empty,
+                        ServiceCategoryId = ps.ServiceCategoryId,
+                        // ServiceCategoryName = ps.ServiceCategory?.Name ?? string.Empty,
+                        EstimatedTime = ps.EstimatedTime,
+                    })
+                    ?.ToList() ?? new List<PetServiceDto>();
 
             // Tạo đối tượng Pagination mới với dữ liệu đã ánh xạ
             var petServiceDTOs = new Pagination<PetServiceDto>
@@ -66,7 +73,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetAllPetS
                 TotalItemsCount = petServiceRaw.TotalItemsCount,
                 PageSize = petServiceRaw.PageSize,
                 PageIndex = petServiceRaw.PageIndex,
-                Items = petServiceDTOItems
+                Items = petServiceDTOItems,
             };
 
             return petServiceDTOs;

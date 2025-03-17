@@ -1,30 +1,24 @@
 ﻿using FurEverCarePlatform.Application.Commons.Interfaces;
 using FurEverCarePlatform.Application.Dtos;
-using FurEverCarePlatform.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FurEverCarePlatform.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
-    //[Authorize]
-    public class ProfileController : ControllerBase
+    public class ProfileController(IProfileService profileService) : ControllerBase
     {
-        private readonly IProfileService _profileService;
-
-        public ProfileController(IProfileService profileService)
-        {
-            _profileService = profileService;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProfile(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> GetProfile()
         {
             var user = HttpContext.User;
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
             try
             {
-                var userDto = await _profileService.GetProfileAsync(id);
+                var userDto = await profileService.GetProfileAsync(Guid.Parse(userId));
                 return Ok(userDto);
             }
             catch (Exception ex) when (ex.Message == "User not found or deleted.")
@@ -33,7 +27,10 @@ namespace FurEverCarePlatform.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "An unexpected error occurred.", Detail = ex.Message });
+                return StatusCode(
+                    500,
+                    new { Message = "An unexpected error occurred.", Detail = ex.Message }
+                );
             }
         }
 
@@ -47,7 +44,7 @@ namespace FurEverCarePlatform.API.Controllers
 
             try
             {
-                var userDto = await _profileService.UpdateProfileAsync(id, updatedUser);
+                var userDto = await profileService.UpdateProfileAsync(id, updatedUser);
                 return Ok(userDto);
             }
             catch (Exception ex) when (ex.Message == "User not found or deleted.")
@@ -56,7 +53,10 @@ namespace FurEverCarePlatform.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "An unexpected error occurred.", Detail = ex.Message });
+                return StatusCode(
+                    500,
+                    new { Message = "An unexpected error occurred.", Detail = ex.Message }
+                );
             }
         }
     }

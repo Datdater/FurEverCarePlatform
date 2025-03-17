@@ -18,11 +18,12 @@
         )
         {
             var categoryDetails = await _unitOfWork.CategoryRepository.GetPaginationAsync(
-                null,
+                c => true,
                 null,
                 request.PageNumber,
                 request.PageSize
             );
+
             var data = _mapper.Map<Pagination<ProductCategoryDto>>(categoryDetails);
             return data;
         }

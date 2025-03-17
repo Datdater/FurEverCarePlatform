@@ -2,11 +2,16 @@
 
 namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService
 {
-    public class CreatePetServiceCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<CreatePetServiceCommand, Guid>
+    public class CreatePetServiceCommandHandler : IRequestHandler<CreatePetServiceCommand, Guid>
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IMapper _mapper = mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public CreatePetServiceCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
 
         public async Task<Guid> Handle(
             CreatePetServiceCommand request,
@@ -19,10 +24,22 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
             {
                 throw new BadRequestException(validationResult.ToString(), validationResult);
             }
-            var petService = _mapper.Map<Domain.Entities.PetService>(request);
-            await _unitOfWork.GetRepository<Domain.Entities.PetService>().InsertAsync(petService);
-            await _unitOfWork.SaveAsync();
-            return petService.Id;
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var petService = _mapper.Map<Domain.Entities.PetService>(request);
+                await _unitOfWork
+                    .GetRepository<Domain.Entities.PetService>()
+                    .InsertAsync(petService);
+                await _unitOfWork.SaveAsync();
+                await _unitOfWork.CommitTransactionAsync();
+                return petService.Id;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 }

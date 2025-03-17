@@ -1,7 +1,4 @@
-﻿using FurEverCarePlatform.Application.Commons.Interfaces;
-using FurEverCarePlatform.Application.Commons.Services;
-
-namespace FurEverCarePlatform.Persistence.Repositories;
+﻿namespace FurEverCarePlatform.Persistence.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
@@ -29,7 +26,8 @@ public class UnitOfWork : IUnitOfWork
 
     public ICategoryRepository CategoryRepository { get; }
     public IProductRepository ProductRepository { get; }
-    public IServiceRepository PetServiceRepository { get; }
+
+    public IPetServiceRepository PetServiceRepository { get; }
 
     public UnitOfWork(
         PetDatabaseContext context /*, IClaimService claimService, ICurrentTime currentTime*/
@@ -39,7 +37,7 @@ public class UnitOfWork : IUnitOfWork
         //_claimService = claimService;
         //_currentTime = currentTime;
         CategoryRepository = new CategoryRepository(_context);
-        ProductRepository = new ProductRepository(_context);
+        PetServiceRepository = new PetServiceRepository(_context);
     }
 
     public void Dispose()

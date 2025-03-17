@@ -14,7 +14,7 @@ public class AppUser : IdentityUser<Guid>
     public bool IsDeleted { get; set; }
 
     //navigation
-    public virtual Store Store { get; set; }
+    public virtual ICollection<Store> Stores { get; set; }
     public virtual ICollection<Order> Orders { get; set; }
     public virtual ICollection<Booking> Bookings { get; set; }
     public virtual ICollection<Pet> Pets { get; set; }

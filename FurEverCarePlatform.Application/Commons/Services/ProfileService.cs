@@ -1,11 +1,5 @@
 ﻿using FurEverCarePlatform.Application.Commons.Interfaces;
-using FurEverCarePlatform.Application.Contracts;
 using FurEverCarePlatform.Application.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Commons.Services
 {
@@ -62,7 +56,6 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 DeleteDate = user.DeleteDate,
                 DeletedBy = user.DeletedBy,
                 IsDeleted = user.IsDeleted,
-                Store = user.Store,
                 Orders = user.Orders?.ToList() ?? new List<Order>(),
                 Bookings = user.Bookings?.ToList() ?? new List<Booking>(),
                 Pets = user.Pets?.ToList() ?? new List<Pet>(),
@@ -70,7 +63,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 Notifications = user.Notifications?.ToList() ?? new List<Notification>(),
                 Feedback = user.Feedback?.ToList() ?? new List<Feedback>(),
                 ChatMessage = user.ChatMessage?.ToList() ?? new List<ChatMessage>(),
-                Reports = user.Reports?.ToList() ?? new List<Report>()
+                Reports = user.Reports?.ToList() ?? new List<Report>(),
             };
         }
     }

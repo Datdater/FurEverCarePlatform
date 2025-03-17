@@ -6,26 +6,27 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetService
 {
-    public class DeletePetServiceCommandHandler(IUnitOfWork unitOfWork)
-    : IRequestHandler<DeletePetServiceCommand>
+    public class DeletePetServiceCommandHandler : IRequestHandler<DeletePetServiceCommand, Guid>
     {
-        public async Task Handle(DeletePetServiceCommand request, CancellationToken cancellationToken)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DeletePetServiceCommandHandler(IUnitOfWork unitOfWork)
         {
-            var petService = await unitOfWork.PetServiceRepository
-                .GetByIdAsync(request.Id);
-
-            if (petService == null)
-            {
-                throw new NotFoundException(nameof(Domain.Entities.PetService), request.Id);
-            }
-
-            
-            unitOfWork.PetServiceRepository.Update(petService);
-
-            await unitOfWork.SaveAsync();
-
+            _unitOfWork = unitOfWork;
         }
 
-        
+        public async Task<Guid> Handle(
+            DeletePetServiceCommand request,
+            CancellationToken cancellationToken
+        )
+        {
+            var petService = await _unitOfWork
+                .GetRepository<Domain.Entities.PetService>()
+                .GetByIdAsync(request.Id);
+            petService.IsDeleted = true;
+            _unitOfWork.GetRepository<Domain.Entities.PetService>().Update(petService);
+            await _unitOfWork.SaveAsync();
+            return petService.Id;
+        }
     }
 }

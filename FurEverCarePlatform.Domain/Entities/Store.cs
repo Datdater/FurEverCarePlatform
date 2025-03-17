@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FurEverCarePlatform.Domain.Entities;
+
 [Table("Stores")]
 public class Store : BaseEntity
 {
@@ -49,8 +50,7 @@ public class Store : BaseEntity
     [MaxLength(500)]
     public string? BackIdentityCardUrl { get; set; }
 
-
-    //navigation    
+    //navigation
     public ICollection<Promotion> Promotions { get; set; }
     public ICollection<Product> Products { get; set; }
     public ICollection<PetService> PetServices { get; set; }

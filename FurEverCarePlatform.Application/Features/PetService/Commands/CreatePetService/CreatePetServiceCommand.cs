@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService
 {
 	public class CreatePetServiceCommand : IRequest<Guid>
 	{
-		public string Name { get; set; }
-		public string Description { get; set; }
+		public required string Name { get; set; }
+		public string? Description { get; set; }
 		public Guid StoreId { get; set; }
-		public DateTime EstimatedTime { get; set; }
+		public required string EstimatedTime { get; set; }
 		public Guid ServiceCategoryId { get; set; }
 		public List<CreatePetServiceDetailCommand> PetServiceDetails { get; set; }
+
+		public List<CreatePetServiceStepCommand> PetServiceSteps { get; set; }
 	}
 
 	public class CreatePetServiceDetailCommand
@@ -24,6 +21,13 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
 		public bool PetType { get; set; }
 		public string Description { get; set; }
 		public string Name { get; set; }
+	}
+
+	public class CreatePetServiceStepCommand
+	{
+		public required string Name { get; set; }
+		public string? Description { get; set; }
+		public int Priority { get; set; }
 	}
 
 

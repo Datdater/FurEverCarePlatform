@@ -1,80 +1,103 @@
 ﻿using FurEverCarePlatform.Application.Commons;
 using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
 using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetService;
+using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetServiceDetail;
+using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetServiceStep;
 using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
-using FurEverCarePlatform.Application.Features.PetService.DTOs;
-using FurEverCarePlatform.Application.Features.PetService.Queries.GetAllPetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FurEverCarePlatform.API.Controllers
+namespace FurEverCarePlatform.API.Controllers;
+
+[Route("api/v1/services")]
+[ApiController]
+public class PetServiceController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    //   public class PetServiceController : ControllerBase
-    //   {
-    //    private readonly IMediator _mediator;
-    //	public PetServiceController(IMediator mediator)
-    //	{
-    //		_mediator = mediator;
-    //	}
+    private readonly IMediator _mediator;
 
-    //	[HttpPost]
-    //	[ProducesResponseType(201)]
-    //	[ProducesResponseType(400)]
-    //	[ProducesResponseType(500)]
-    //	public async Task<IActionResult> CreatePetService(CreatePetServiceCommand command)
-    //	{
-    //		var result = await _mediator.Send(command);
-    //		return Ok(result);
-    //	}
-    //}
-
-    public class PetServiceController(IMediator mediator) : ControllerBase
+    public PetServiceController(IMediator mediator)
     {
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> Post(CreatePetServiceCommand createPetService)
-        {
-            var response = await mediator.Send(createPetService);
-            return CreatedAtRoute(
-                "GetPetServiceById",
-                new { id = response },
-                response
-            );
-        }
+        _mediator = mediator;
+    }
 
-        [HttpGet]
-        public async Task<Pagination<PetServiceDto>> GetPetServices([FromQuery] GetAllPetServiceQuery query)
-        {
-            return await mediator.Send(query);
-        }
+    [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> CreatePetService(CreatePetServiceCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return Ok(result);
+    }
 
-        [HttpGet("{id}", Name = "GetPetServiceById")]
-        public async Task<PetServiceDto> GetPetServiceById(Guid id)
-        {
-            return await mediator.Send(new GetPetServiceQuery(id));
-        }
+    [HttpGet("{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> GetPetService(Guid id)
+    {
+        GetPetServiceQuery query = new GetPetServiceQuery { Id = id };
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeletePetService(Guid id)
+    [HttpPut("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> UpdatePetService(Guid id, UpdatePetServiceCommand command)
+    {
+        if (id != command.Id)
         {
-            await mediator.Send(new DeletePetServiceCommand(id));
-            return NoContent();
+            return BadRequest();
         }
+        await _mediator.Send(command);
+        return NoContent();
+    }
 
-        //[HttpPut("{id}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> UpdatePetService(UpdatePetServiceCommand updatePetService)
-        //{
-        //    await mediator.Send(updatePetService);
-        //    return NoContent();
-        //}
+    [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> GetAllPetServices([FromQuery] GetPetServicesQuery query)
+    {
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> DeletePetService(Guid id)
+    {
+        DeletePetServiceCommand query = new DeletePetServiceCommand { Id = id };
+        await _mediator.Send(query);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/service-details/{detailId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> DeletePetServiceDetail(Guid id, Guid detailId)
+    {
+        DeletePetServiceDetailCommand query = new DeletePetServiceDetailCommand { Id = detailId };
+        await _mediator.Send(query);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/service-steps/{stepId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> DeletePetServiceStep(Guid id, Guid stepId)
+    {
+        DeletePetServiceStepCommand query = new DeletePetServiceStepCommand { Id = stepId };
+        await _mediator.Send(query);
+        return NoContent();
     }
 }

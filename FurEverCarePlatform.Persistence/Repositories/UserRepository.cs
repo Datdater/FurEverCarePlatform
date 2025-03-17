@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FurEverCarePlatform.Persistence.Repositories
+﻿namespace FurEverCarePlatform.Persistence.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -17,23 +11,23 @@ namespace FurEverCarePlatform.Persistence.Repositories
 
         public async Task<AppUser> GetByIdAsync(Guid id)
         {
-            return await _context.AppUsers
-                .FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.AppUsers.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<AppUser> GetByIdWithRelatedDataAsync(Guid id)
         {
-            var user = await _context.Set<AppUser>()
-        .Include(u => u.Orders)
-        .Include(u => u.Bookings)
-        .Include(u => u.Pets)
-        .Include(u => u.Address)
-        .Include(u => u.Notifications)
-        .Include(u => u.Feedback)
-        .Include(u => u.ChatMessage)
-        .Include(u => u.Reports)
-        .Include(u => u.Store)
-        .FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context
+                .Set<AppUser>()
+                .Include(u => u.Orders)
+                .Include(u => u.Bookings)
+                .Include(u => u.Pets)
+                .Include(u => u.Address)
+                .Include(u => u.Notifications)
+                .Include(u => u.Feedback)
+                .Include(u => u.ChatMessage)
+                .Include(u => u.Reports)
+                .Include(u => u.Stores)
+                .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
             {

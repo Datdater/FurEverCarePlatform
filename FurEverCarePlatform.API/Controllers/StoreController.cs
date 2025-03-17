@@ -4,6 +4,7 @@ using FurEverCarePlatform.Application.Features.Store.Commands.DeleteStore;
 using FurEverCarePlatform.Application.Features.Store.Commands.UpdateStore;
 using FurEverCarePlatform.Application.Features.Store.DTOs;
 using FurEverCarePlatform.Application.Features.Store.Queries.GetAllStores;
+using FurEverCarePlatform.Application.Features.Store.Queries.GetStoreAddress;
 using FurEverCarePlatform.Application.Features.Store.Queries.GetStoreDetail;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -26,13 +27,21 @@ public class StoreController(IMediator mediator) : ControllerBase
         return await mediator.Send(new GetStoreSpecificQuery { Id = id });
     }
 
+    [HttpGet(template: "addresses")]
+    public async Task<IEnumerable<StoreAddressDTO>> GetUserAddress(
+        [FromQuery] GetStoreAddressQuery query
+    )
+    {
+        return await mediator.Send(query);
+    }
+
     [HttpPost]
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
-    public async Task<Guid> Post(CreateStoreCommand createStore)
+    public async Task<ActionResult<Guid>> Post(CreateStoreCommand createStore)
     {
         var response = await mediator.Send(createStore);
-        return response;
+        return Created();
     }
 
     [HttpPut("{id:guid}")]

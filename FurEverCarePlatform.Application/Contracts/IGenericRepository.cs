@@ -6,6 +6,7 @@ public interface IGenericRepository<T>
     Task<T> GetByIdAsync(object id);
     Task<List<T>> GetAllAsync(string? includeProperties = null);
     Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter, string? includeProperties);
+    Task<IQueryable<T>> GetAll();
     Task<T> InsertAsync(T entity);
     Task AddRangeAsync(IEnumerable<T> entities);
     void Update(T entity);

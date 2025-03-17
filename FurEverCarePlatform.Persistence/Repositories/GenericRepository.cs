@@ -60,6 +60,11 @@ public class GenericRepository<T> : IGenericRepository<T>
         return await query.ToListAsync();
     }
 
+    public async Task<IQueryable<T>> GetAll()
+    {
+        return dbSet;
+    }
+
     public async Task<T> InsertAsync(T entity)
     {
         var entitySaved = await dbSet.AddAsync(entity);

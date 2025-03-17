@@ -1,6 +1,8 @@
 using FurEverCarePlatform.API.Middleware;
 using FurEverCarePlatform.Application;
+using FurEverCarePlatform.Application.Features.Image;
 using FurEverCarePlatform.Persistence;
+using FurEverCarePlatform.Persistence.Service;
 
 namespace FurEverCarePlatform.API
 {
@@ -11,6 +13,7 @@ namespace FurEverCarePlatform.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
             builder.Services.AddIdentityService(builder.Configuration);
             builder.Services.AddPersistenceService();
 
@@ -26,7 +29,6 @@ namespace FurEverCarePlatform.API
                     builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
                 );
             });
-
             //builder.Services.AddSingleton<IEmailSender<AppUser>, NoOpEmailSender<AppUser>>();
 
             var app = builder.Build();

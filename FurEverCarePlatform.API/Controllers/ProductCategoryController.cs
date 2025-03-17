@@ -11,6 +11,7 @@ namespace FurEverCarePlatform.API.Controllers;
 public class ProductCategoryController : ControllerBase
 {
     private readonly IMediator _mediator;
+
     public ProductCategoryController(IMediator mediator)
     {
         this._mediator = mediator;
@@ -22,16 +23,14 @@ public class ProductCategoryController : ControllerBase
     public async Task<ActionResult> Post(CreateProductCategoryCommand createCategory)
     {
         var response = await _mediator.Send(createCategory);
-        return CreatedAtRoute(
-            "GetCategoryById",
-            new { id = response }
-        );
+        return CreatedAtRoute("GetCategoryById", new { id = response });
     }
 
     [HttpGet]
-    public async Task<Pagination<ProductCategoryDto>> GetCategories([FromQuery] GetProductCategoryQuery query)
+    public async Task<Pagination<ProductCategoryDto>> GetCategories(
+        [FromQuery] GetProductCategoryQuery query
+    )
     {
         return await _mediator.Send(query);
     }
-
 }

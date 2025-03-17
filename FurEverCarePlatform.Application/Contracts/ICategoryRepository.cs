@@ -1,5 +1,3 @@
-﻿
-    public interface ICategoryRepository : IGenericRepository<ProductCategory>
-    {
+﻿namespace FurEverCarePlatform.Application.Contracts;
 
-    }
+public interface ICategoryRepository : IGenericRepository<ProductCategory> { }

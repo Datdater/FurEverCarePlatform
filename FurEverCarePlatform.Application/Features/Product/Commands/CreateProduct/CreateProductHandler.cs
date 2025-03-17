@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
 
-namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
-
-public class CreateProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateProductCommand, Guid>
+public class CreateProductHandler(IUnitOfWork unitOfWork)
+    : IRequestHandler<CreateProductCommand, Guid>
 {
-
-    public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(
+        CreateProductCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var validator = new CreateProductValidator();
         var validationResult = await validator.ValidateAsync(request);
@@ -30,11 +27,12 @@ public class CreateProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<Crea
                 ProductCode = request.ProductCode,
                 Views = request.Views,
                 BrandId = request.BrandId,
-                StoreId = request.StoreId
+                StoreId = request.StoreId,
             };
 
             var productTypes = new List<Domain.Entities.ProductType>();
-            var productTypeDetailsDict = new Dictionary<string, Domain.Entities.ProductTypeDetail>();
+            var productTypeDetailsDict =
+                new Dictionary<string, Domain.Entities.ProductTypeDetail>();
 
             // Duyệt từng loại sản phẩm (productType)
             foreach (var productType in request.ProductTypes)
@@ -48,7 +46,7 @@ public class CreateProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<Crea
                 {
                     var newProductTypeDetail = new Domain.Entities.ProductTypeDetail
                     {
-                        Name = productTypeDetail.Name
+                        Name = productTypeDetail.Name,
                     };
 
                     productTypeDetails.Add(newProductTypeDetail);
@@ -61,24 +59,34 @@ public class CreateProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<Crea
             product.ProductTypes = productTypes;
 
             await unitOfWork.GetRepository<Domain.Entities.Product>().InsertAsync(product);
-            await unitOfWork.SaveAsync();  // Lưu `Product` và `ProductType` trước
+            await unitOfWork.SaveAsync(); // Lưu `Product` và `ProductType` trước
 
             var productPrices = new List<Domain.Entities.ProductPrice>();
 
             foreach (var productPrice in request.ProductPrices)
             {
-                if (productTypeDetailsDict.TryGetValue(productPrice.ProductTypeDetails1, out var productTypeDetail1))
+                if (
+                    productTypeDetailsDict.TryGetValue(
+                        productPrice.ProductTypeDetails1,
+                        out var productTypeDetail1
+                    )
+                )
                 {
                     var newProductPrice = new Domain.Entities.ProductPrice();
-                    if (productPrice.ProductTypeDetails2 != null &&
-                    productTypeDetailsDict.TryGetValue(productPrice.ProductTypeDetails2, out var productTypeDetail2))
+                    if (
+                        productPrice.ProductTypeDetails2 != null
+                        && productTypeDetailsDict.TryGetValue(
+                            productPrice.ProductTypeDetails2,
+                            out var productTypeDetail2
+                        )
+                    )
                     {
                         newProductPrice = new Domain.Entities.ProductPrice
                         {
                             Price = productPrice.Price,
                             Inventory = productPrice.Inventory,
                             ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
-                            ProductTypeDetails2 = productTypeDetail2.Id
+                            ProductTypeDetails2 = productTypeDetail2.Id,
                         };
                     }
                     else
@@ -88,7 +96,7 @@ public class CreateProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<Crea
                             Price = productPrice.Price,
                             Inventory = productPrice.Inventory,
                             ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
-                            ProductTypeDetails2 = null
+                            ProductTypeDetails2 = null,
                         };
                     }
 
@@ -96,11 +104,16 @@ public class CreateProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<Crea
                 }
                 else
                 {
-                    throw new NotFoundException(nameof(ProductTypeDetail), $"{productPrice.ProductTypeDetails1} or {productPrice.ProductTypeDetails2}");
+                    throw new NotFoundException(
+                        nameof(ProductTypeDetail),
+                        $"{productPrice.ProductTypeDetails1} or {productPrice.ProductTypeDetails2}"
+                    );
                 }
             }
 
-            await unitOfWork.GetRepository<Domain.Entities.ProductPrice>().AddRangeAsync(productPrices);
+            await unitOfWork
+                .GetRepository<Domain.Entities.ProductPrice>()
+                .AddRangeAsync(productPrices);
             await unitOfWork.SaveAsync(); // Lưu `ProductPrice`
 
             await unitOfWork.CommitTransactionAsync();
@@ -111,6 +124,5 @@ public class CreateProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<Crea
             await unitOfWork.RollbackTransactionAsync();
             throw new BadRequestException("Create product failed");
         }
-
     }
 }

@@ -1,9 +1,4 @@
 ﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.MappingProfile;
 
@@ -25,7 +20,10 @@ public class ProductProfile : Profile
             .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProductCode))
             .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.ProductBrand.Name))
             .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name))
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.ProductCategory.Name));
+            .ForMember(
+                dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.ProductCategory.Name)
+            );
         CreateMap<Domain.Entities.ProductType, ProductTypeDetailsDTO>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
         CreateMap<Product, ProductSpecificDTO>()
@@ -34,7 +32,10 @@ public class ProductProfile : Profile
             .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProductCode))
             .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.ProductBrand.Name))
             .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name))
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.ProductCategory.Name))
+            .ForMember(
+                dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.ProductCategory.Name)
+            )
             .ForMember(dest => dest.ProductTypes, opt => opt.MapFrom(src => src.ProductTypes));
         CreateMap<Pagination<Product>, Pagination<ProductDTO>>().ReverseMap();
     }

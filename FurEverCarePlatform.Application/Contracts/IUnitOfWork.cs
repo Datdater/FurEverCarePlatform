@@ -1,10 +1,11 @@
-﻿
-using FurEverCarePlatform.Application.Contracts;
+﻿using FurEverCarePlatform.Application.Contracts;
 
 public interface IUnitOfWork : IDisposable
 {
-    IGenericRepository<T> GetRepository<T>() where T : BaseEntity;
-	public ICategoryRepository CategoryRepository { get; }
+    IGenericRepository<T> GetRepository<T>()
+        where T : BaseEntity;
+    public IServiceRepository PetServiceRepository { get; }
+    public ICategoryRepository CategoryRepository { get; }
     public IProductRepository ProductRepository { get; }
     Task<int> SaveAsync();
 
@@ -12,6 +13,5 @@ public interface IUnitOfWork : IDisposable
 
     Task CommitTransactionAsync();
 
-	Task RollbackTransactionAsync();
-
+    Task RollbackTransactionAsync();
 }

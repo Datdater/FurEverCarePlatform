@@ -18,7 +18,7 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var (accessToken, refreshToken) = await _authService.LoginAsync(model.Username, model.Password);
+            var (accessToken, refreshToken) = await _authService.LoginAsync(model.EmailorPhone, model.Password);
             if (accessToken == null)
                 return Unauthorized("Invalid credentials");
 

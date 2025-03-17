@@ -2,7 +2,6 @@ using FurEverCarePlatform.API.Middleware;
 using FurEverCarePlatform.Application;
 using FurEverCarePlatform.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -31,31 +30,44 @@ namespace FurEverCarePlatform.API
             }
 
             var key = Encoding.ASCII.GetBytes(secret);
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                 {
-                     options.TokenValidationParameters = new TokenValidationParameters
-                     {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
+            builder
+                .Services.AddAuthentication(opts =>
+                {
+                    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateLifetime = false,
+                            ValidateIssuerSigningKey = false,
                             ValidIssuer = builder.Configuration["Jwt:Issuer"],
                             ValidAudience = builder.Configuration["Jwt:Audience"],
                             IssuerSigningKey = new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                     };
-                 });
+                                Encoding.UTF8.GetBytes(secret)
+                            ),
+                        };
+                    }
+                );
             builder.Services.AddAuthorization();
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "FurEverCarePlatform API",
-                    Description = "API for FurEverCarePlatform with JWT Authentication"
-                });
+                c.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
+                        Version = "v1",
+                        Title = "FurEverCarePlatform API",
+                        Description = "API for FurEverCarePlatform with JWT Authentication",
+                    }
+                );
 
                 var jwtSecurityScheme = new OpenApiSecurityScheme
                 {
@@ -64,26 +76,26 @@ namespace FurEverCarePlatform.API
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
-                    BearerFormat = "JWT"
+                    BearerFormat = "JWT",
                 };
 
                 c.AddSecurityDefinition("Bearer", jwtSecurityScheme);
 
                 var securityRequirement = new OpenApiSecurityRequirement
                 {
-                     {
-                         new OpenApiSecurityScheme
-                         {
-                             Reference = new OpenApiReference
-                              {
-                                  Type = ReferenceType.SecurityScheme,
-                                  Id = "Bearer"
-                             }
-                         },
-                        new string[] {}
-                    }
-                };              
-            
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer",
+                            },
+                        },
+                        new string[] { }
+                    },
+                };
+
                 c.AddSecurityRequirement(securityRequirement);
             });
             builder.Services.AddCors(option =>
@@ -105,14 +117,14 @@ namespace FurEverCarePlatform.API
 
             //    foreach (var role in roles)
             //    {
-                    
+
             //            var roleResult =  roleManager.CreateAsync(new IdentityRole<Guid>
             //            {
             //                Id = Guid.NewGuid(),
             //                Name = role,
             //                NormalizedName = role.ToUpper()
             //            });
-                    
+
             //    }
             //}
             // Configure the HTTP request pipeline.
@@ -126,6 +138,7 @@ namespace FurEverCarePlatform.API
             //app.MapIdentityApi<AppUser>();
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

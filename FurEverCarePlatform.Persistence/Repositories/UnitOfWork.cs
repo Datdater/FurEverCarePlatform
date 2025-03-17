@@ -1,5 +1,4 @@
-﻿
-using FurEverCarePlatform.Application.Commons.Interfaces;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
 using FurEverCarePlatform.Application.Commons.Services;
 
 namespace FurEverCarePlatform.Persistence.Repositories;
@@ -8,34 +7,38 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly PetDatabaseContext _context;
     private IDbContextTransaction? _transaction;
-	private bool _disposed = false;
-	//private readonly IClaimService _claimService;
-	//private readonly ICurrentTime _currentTime;
+    private bool _disposed = false;
 
-	private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
+    //private readonly IClaimService _claimService;
+    //private readonly ICurrentTime _currentTime;
 
-	public IGenericRepository<T> GetRepository<T>() where T : BaseEntity
-	{
-		if (_repositories.TryGetValue(typeof(T), out var repository))
-		{
-			return (IGenericRepository<T>)repository;
-		}
+    private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
 
-		var newRepository = new GenericRepository<T>(_context);
-		_repositories.Add(typeof(T), newRepository);
-		return newRepository;
-	}
+    public IGenericRepository<T> GetRepository<T>()
+        where T : BaseEntity
+    {
+        if (_repositories.TryGetValue(typeof(T), out var repository))
+        {
+            return (IGenericRepository<T>)repository;
+        }
 
-	public ICategoryRepository CategoryRepository { get; }
+        var newRepository = new GenericRepository<T>(_context);
+        _repositories.Add(typeof(T), newRepository);
+        return newRepository;
+    }
 
+    public ICategoryRepository CategoryRepository { get; }
     public IProductRepository ProductRepository { get; }
+    public IServiceRepository PetServiceRepository { get; }
 
-    public UnitOfWork(PetDatabaseContext context/*, IClaimService claimService, ICurrentTime currentTime*/)
+    public UnitOfWork(
+        PetDatabaseContext context /*, IClaimService claimService, ICurrentTime currentTime*/
+    )
     {
         _context = context;
-		//_claimService = claimService;
-		//_currentTime = currentTime;
-		CategoryRepository = new CategoryRepository(_context);
+        //_claimService = claimService;
+        //_currentTime = currentTime;
+        CategoryRepository = new CategoryRepository(_context);
         ProductRepository = new ProductRepository(_context);
     }
 
@@ -57,68 +60,70 @@ public class UnitOfWork : IUnitOfWork
             _disposed = true;
         }
     }
+
     public async Task<int> SaveAsync()
     {
-		//UpdateTimestamps();
-		return await _context.SaveChangesAsync();
+        //UpdateTimestamps();
+        return await _context.SaveChangesAsync();
     }
-	//private void UpdateTimestamps()
-	//{
-	//	var entries = _context.ChangeTracker.Entries()
-	//		.Where(e => e.Entity is BaseEntity &&
-	//		            (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
-	//	foreach (var entry in entries)
-	//	{
-	//		var auditable = (BaseEntity)entry.Entity;
-	//		//var currentTime = _currentTime.GetCurrentTime();
-	//		//var currentUser = _claimService.GetCurrentUser;
+    //private void UpdateTimestamps()
+    //{
+    //	var entries = _context.ChangeTracker.Entries()
+    //		.Where(e => e.Entity is BaseEntity &&
+    //		            (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
-	//		if (entry.State == EntityState.Added)
-	//		{
-	//			auditable.CreationDate = currentTime;
-	//			if (!currentUser.Equals(Guid.Empty))
-	//			{
-	//				auditable.CreatedBy = currentUser;
-	//			}
-	//		}
+    //	foreach (var entry in entries)
+    //	{
+    //		var auditable = (BaseEntity)entry.Entity;
+    //		//var currentTime = _currentTime.GetCurrentTime();
+    //		//var currentUser = _claimService.GetCurrentUser;
 
-	//		if (entry.State == EntityState.Modified)
-	//		{
-	//			if (!auditable.IsDeleted)  
-	//			{
-	//				auditable.ModificationDate = currentTime;
-	//				auditable.ModifiedBy = currentUser;
-	//			}
-	//			else 
-	//			{
-	//				auditable.DeleteDate = currentTime;
-	//				auditable.DeletedBy = currentUser;
-	//			}
-	//		}
-	//	}
-	//}
+    //		if (entry.State == EntityState.Added)
+    //		{
+    //			auditable.CreationDate = currentTime;
+    //			if (!currentUser.Equals(Guid.Empty))
+    //			{
+    //				auditable.CreatedBy = currentUser;
+    //			}
+    //		}
 
-	public async Task BeginTransactionAsync()
+    //		if (entry.State == EntityState.Modified)
+    //		{
+    //			if (!auditable.IsDeleted)
+    //			{
+    //				auditable.ModificationDate = currentTime;
+    //				auditable.ModifiedBy = currentUser;
+    //			}
+    //			else
+    //			{
+    //				auditable.DeleteDate = currentTime;
+    //				auditable.DeletedBy = currentUser;
+    //			}
+    //		}
+    //	}
+    //}
+
+    public async Task BeginTransactionAsync()
     {
-	    _transaction = await _context.Database.BeginTransactionAsync();
-	}
+        _transaction = await _context.Database.BeginTransactionAsync();
+    }
 
     public async Task CommitTransactionAsync()
     {
-	    if (_transaction != null)
-	    {
-		    await _transaction.CommitAsync();
-		    await _transaction.DisposeAsync();
-	    }
-	}
+        if (_transaction != null)
+        {
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+        }
+    }
 
     public async Task RollbackTransactionAsync()
     {
-	    if (_transaction != null)
-	    {
-		    await _transaction.RollbackAsync();
-		    await _transaction.DisposeAsync();
-	    }
-	}
+        if (_transaction != null)
+        {
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
+        }
+    }
 }

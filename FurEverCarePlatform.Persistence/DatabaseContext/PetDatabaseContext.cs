@@ -7,7 +7,7 @@ namespace FurEverCarePlatform.Persistence.DatabaseContext;
 
 public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
 {
-    public PetDatabaseContext(DbContextOptions options) : base(options)
+    public PetDatabaseContext(DbContextOptions<PetDatabaseContext> options) : base(options)
     {
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

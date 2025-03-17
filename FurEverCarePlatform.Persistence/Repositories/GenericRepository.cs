@@ -1,4 +1,5 @@
 ﻿using FurEverCarePlatform.Application.Commons;
+using Microsoft.EntityFrameworkCore;
 
 namespace FurEverCarePlatform.Persistence.Repositories;
 
@@ -29,8 +30,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         }
         return await query.ToListAsync();
     }
-
-    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter, string? includeProperties)
+    public IQueryable<T> GetQueryable()
+    {
+        return dbSet;
+    }
+    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter, string? includeProperties = null)
     {
         IQueryable<T> query = dbSet;
         query = query.Where(filter);

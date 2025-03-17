@@ -1,4 +1,6 @@
-﻿using FurEverCarePlatform.Persistence.Repositories;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
+using FurEverCarePlatform.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,8 +15,9 @@ namespace FurEverCarePlatform.Persistence
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<IPetRepository, PetRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPetServiceDetailRepository, PetServiceDetailRepository>();
-
+            services.AddScoped<IProfileService, ProfileService>();
             return services;
         }
 

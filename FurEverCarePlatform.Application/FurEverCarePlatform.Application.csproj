@@ -15,9 +15,6 @@
     <Folder Include="Features\ProductCategory\Commands\DeleteProductCategory\" />
     <Folder Include="Features\ProductCategory\Commands\UpdateProductCategory\" />
     <Folder Include="Features\ProductCategory\Queries\GetProductCategoryDetails\" />
-    <Folder Include="Features\Store\Commands\CreateStore\" />
-    <Folder Include="Features\Store\Commands\DeleteStore\" />
-    <Folder Include="Features\Store\Commands\UpdateStore\" />
   </ItemGroup>
 
   <ItemGroup>

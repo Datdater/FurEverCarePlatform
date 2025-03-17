@@ -1,5 +1,4 @@
-﻿using FurEverCarePlatform.Application.Contracts;
-using FurEverCarePlatform.Application.Features.Store.DTOs;
+﻿using FurEverCarePlatform.Application.Features.Store.DTOs;
 
 namespace FurEverCarePlatform.Application.Features.Store.Queries.GetAllStores;
 
@@ -13,7 +12,12 @@ public class GetAllStoresHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         var storeRaw = await unitOfWork
             .GetRepository<Domain.Entities.Store>()
-            .GetPaginationAsync("Promotions,PetServices", request.PageNumber, request.PageSize);
+            .GetPaginationAsync(
+                predicate: (x) => x.UserId == Guid.Parse("862C5EF9-2F7A-446D-B7E5-3FC3D121600D"),
+                includeProperties: "Promotions,PetServices",
+                request.PageNumber,
+                request.PageSize
+            );
         var storeDTOs = mapper.Map<Pagination<StoreDTO>>(storeRaw);
         var storeDTOItem = storeDTOs
             .Items.Select(s => new StoreDTO

@@ -99,12 +99,15 @@ public class GenericRepository<T> : IGenericRepository<T>
     }
 
     public async Task<Pagination<T>> GetPaginationAsync(
+        Expression<Func<T, bool>>? predicate = null,
         string? includeProperties = null,
         int pageIndex = 0,
         int pageSize = 10
     )
     {
         IQueryable<T> query = dbSet;
+        if (predicate != null)
+            query = query.Where(predicate);
         if (includeProperties != null)
         {
             foreach (
@@ -118,7 +121,8 @@ public class GenericRepository<T> : IGenericRepository<T>
             }
         }
         var itemCount = await query.CountAsync();
-        var items = await query.Where(x => !x.IsDeleted)
+        var items = await query
+            .Where(x => !x.IsDeleted)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .AsNoTracking()

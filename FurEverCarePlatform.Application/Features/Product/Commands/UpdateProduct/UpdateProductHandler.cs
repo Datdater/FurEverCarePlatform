@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using FurEverCarePlatform.Application.Features.Product.DTOs;
-using FurEverCarePlatform.Domain.Entities;
-using MediatR;
+﻿namespace FurEverCarePlatform.Application.Features.Product.Commands.UpdateProduct;
 
-namespace FurEverCarePlatform.Application.Features.Product.Commands.UpdateProduct;
-
-public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<UpdateProductCommand, Guid>
+public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    : IRequestHandler<UpdateProductCommand, Guid>
 {
-    public async Task<Guid> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(
+        UpdateProductCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var validator = new UpdateProductValidator();
         var validationResult = await validator.ValidateAsync(request);
@@ -42,7 +36,8 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
             product.StoreId = request.StoreId;
 
             var productTypes = new List<Domain.Entities.ProductType>();
-            var productTypeDetailsDict = new Dictionary<string, Domain.Entities.ProductTypeDetail>();
+            var productTypeDetailsDict =
+                new Dictionary<string, Domain.Entities.ProductTypeDetail>();
 
             foreach (var productType in request.ProductTypes)
             {
@@ -55,7 +50,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
                 {
                     var newProductTypeDetail = new Domain.Entities.ProductTypeDetail
                     {
-                        Name = productTypeDetail.Name
+                        Name = productTypeDetail.Name,
                     };
 
                     productTypeDetails.Add(newProductTypeDetail);
@@ -79,18 +74,28 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
 
             foreach (var productPrice in request.ProductPrices)
             {
-                if (productTypeDetailsDict.TryGetValue(productPrice.ProductTypeDetails1, out var productTypeDetail1))
+                if (
+                    productTypeDetailsDict.TryGetValue(
+                        productPrice.ProductTypeDetails1,
+                        out var productTypeDetail1
+                    )
+                )
                 {
                     var newProductPrice = new Domain.Entities.ProductPrice();
-                    if (productPrice.ProductTypeDetails2 != null &&
-                    productTypeDetailsDict.TryGetValue(productPrice.ProductTypeDetails2, out var productTypeDetail2))
+                    if (
+                        productPrice.ProductTypeDetails2 != null
+                        && productTypeDetailsDict.TryGetValue(
+                            productPrice.ProductTypeDetails2,
+                            out var productTypeDetail2
+                        )
+                    )
                     {
                         newProductPrice = new Domain.Entities.ProductPrice
                         {
                             Price = productPrice.Price,
                             Inventory = productPrice.Inventory,
                             ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
-                            ProductTypeDetails2 = productTypeDetail2.Id
+                            ProductTypeDetails2 = productTypeDetail2.Id,
                         };
                     }
                     else
@@ -100,7 +105,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
                             Price = productPrice.Price,
                             Inventory = productPrice.Inventory,
                             ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
-                            ProductTypeDetails2 = null
+                            ProductTypeDetails2 = null,
                         };
                     }
 
@@ -108,7 +113,10 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
                 }
                 else
                 {
-                    throw new NotFoundException(nameof(ProductTypeDetail), $"{productPrice.ProductTypeDetails1} or {productPrice.ProductTypeDetails2}");
+                    throw new NotFoundException(
+                        nameof(ProductTypeDetail),
+                        $"{productPrice.ProductTypeDetails1} or {productPrice.ProductTypeDetails2}"
+                    );
                 }
             }
 
@@ -124,5 +132,4 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReq
             throw new BadRequestException("Update product failed");
         }
     }
-
 }

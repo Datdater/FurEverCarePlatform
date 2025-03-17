@@ -1,6 +1,4 @@
-﻿using FurEverCarePlatform.Application.Contracts;
-
-namespace FurEverCarePlatform.Application.Features.ProductCategory.Queries.GetAllProductCategory
+﻿namespace FurEverCarePlatform.Application.Features.ProductCategory.Queries.GetAllProductCategory
 {
     public class GetCategoryQueryHandler
         : IRequestHandler<GetProductCategoryQuery, Pagination<ProductCategoryDto>>
@@ -20,6 +18,7 @@ namespace FurEverCarePlatform.Application.Features.ProductCategory.Queries.GetAl
         )
         {
             var categoryDetails = await _unitOfWork.CategoryRepository.GetPaginationAsync(
+                null,
                 null,
                 request.PageNumber,
                 request.PageSize

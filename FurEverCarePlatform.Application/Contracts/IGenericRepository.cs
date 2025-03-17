@@ -16,6 +16,7 @@ public interface IGenericRepository<T>
     );
 
     Task<Pagination<T>> GetPaginationAsync(
+        Expression<Func<T, bool>>? predicate = null,
         string? includeProperties = null,
         int pageIndex = 0,
         int pageSize = 10

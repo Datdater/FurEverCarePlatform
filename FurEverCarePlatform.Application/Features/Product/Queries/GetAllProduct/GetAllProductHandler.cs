@@ -1,5 +1,4 @@
-﻿using FurEverCarePlatform.Application.Contracts;
-using FurEverCarePlatform.Application.Features.Product.DTOs;
+﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
 
 namespace FurEverCarePlatform.Application.Features.Product.Queries.GetAllProduct;
 
@@ -14,6 +13,7 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
         var productRaw = await unitOfWork
             .GetRepository<Domain.Entities.Product>()
             .GetPaginationAsync(
+                null,
                 "ProductCategory,Store,ProductBrand",
                 request.PageNumber,
                 request.PageSize

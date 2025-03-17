@@ -18,6 +18,6 @@ public class ProductTypeConfiguration : IEntityTypeConfiguration<ProductType>
 		builder.HasMany(p => p.ProductTypeDetails)
 			.WithOne(p => p.ProductType)
 			.HasForeignKey(p => p.ProductTypeId)
-			.OnDelete(DeleteBehavior.Restrict);
-	}
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }

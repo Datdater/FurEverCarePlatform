@@ -12,6 +12,6 @@ public class ProductTypeDetailConfiguration : IEntityTypeConfiguration<ProductTy
 		builder.HasOne(p => p.ProductType)
 			.WithMany(p => p.ProductTypeDetails)
 			.HasForeignKey(p => p.ProductTypeId)
-			.OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 	}
 }

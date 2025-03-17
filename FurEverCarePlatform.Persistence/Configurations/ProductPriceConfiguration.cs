@@ -13,11 +13,11 @@ public class ProductPriceConfiguration : IEntityTypeConfiguration<ProductPrice>
 		builder.HasOne(p => p.ProductType1)
 			.WithMany()
 			.HasForeignKey(p => p.ProductTypeDetails1)
-			.OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
-		builder.HasOne(p => p.ProductType2)
+        builder.HasOne(p => p.ProductType2)
 			.WithMany()
 			.HasForeignKey(p => p.ProductTypeDetails2)
-			.OnDelete(DeleteBehavior.Restrict);
-	}
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }

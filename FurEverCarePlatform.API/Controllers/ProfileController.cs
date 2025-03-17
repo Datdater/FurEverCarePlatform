@@ -21,6 +21,7 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProfile(Guid id)
         {
+            var user = HttpContext.User;
             try
             {
                 var userDto = await _profileService.GetProfileAsync(id);

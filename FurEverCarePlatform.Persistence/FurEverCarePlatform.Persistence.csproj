@@ -15,6 +15,7 @@
     <None Remove="Configurations\NewFile1.txt" />
     <None Remove="Configurations\NewFile2.txt" />
     <None Remove="Configurations\ProductBrandConfiguration" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.4" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.13">

@@ -10,16 +10,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurEverCarePlatform.Application", "FurEverCarePlatform.Application\FurEverCarePlatform.Application.csproj", "{411A5F50-0327-43AE-9B86-D30012F7EC5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{84CD79AF-D1E6-42B8-AAB3-33F63C013171}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurEverCarePlatform.Persistence", "FurEverCarePlatform.Persistence\FurEverCarePlatform.Persistence.csproj", "{D8FD7118-5D53-4AEB-8473-DEDFAC223442}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		Dockerfile = Dockerfile
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurEverCarePlatform.Persistence", "FurEverCarePlatform.Persistence\FurEverCarePlatform.Persistence.csproj", "{D8FD7118-5D53-4AEB-8473-DEDFAC223442}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

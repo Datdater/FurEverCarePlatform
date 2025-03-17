@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService
 {
-    public class UpdatePetServiceCommandHandler : IRequestHandler<UpdatePetServiceCommand, Guid>
+	public class UpdatePetServiceCommandHandler : IRequestHandler<UpdatePetServiceCommand, Guid>
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePet
 				throw new BadRequestException(validationResult.ToString(), validationResult);
 			}
 			var petService = _mapper.Map<Domain.Entities.PetService>(request);
-			await _unitOfWork.GetRepository<Domain.Entities.PetService>().UpdateAsync(petService);
+			_unitOfWork.GetRepository<Domain.Entities.PetService>().Update(petService);
 			await _unitOfWork.SaveAsync();
 			return petService.Id;
 		}

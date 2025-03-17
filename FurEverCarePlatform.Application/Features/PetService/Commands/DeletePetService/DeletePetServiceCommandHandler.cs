@@ -17,8 +17,9 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.DeletePet
 	    public async Task<Guid> Handle(DeletePetServiceCommand request, CancellationToken cancellationToken)
 	    {
 			var petService = await _unitOfWork.GetRepository<Domain.Entities.PetService>().GetByIdAsync(request.Id);
-			petService.Status = false;
-			await _unitOfWork.GetRepository<Domain.Entities.PetService>().UpdateAsync(petService);
+			petService.IsDeleted = true;
+			_unitOfWork.GetRepository<Domain.Entities.PetService>().Update(petService);
+			await _unitOfWork.SaveAsync();
 			return petService.Id;
 		}
     }

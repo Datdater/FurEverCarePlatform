@@ -18,9 +18,26 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
 
 		public async Task<PetServiceDto> Handle(GetPetServiceQuery request, CancellationToken cancellationToken)
 		{
-			var petService = await _unitOfWork.PetServiceRepository.GetPetService(request.Id);
+			var petService = await _unitOfWork.GetRepository<Domain.Entities.PetService>()
+				.GetFirstOrDefaultAsync(
+					p => p.Id == request.Id ,includeProperties: "PetServiceDetails,PetServiceSteps"
+				);
+
+			if (petService != null)
+			{
+				petService.PetServiceDetails = petService.PetServiceDetails
+					.Where(d => d.PetServiceId == request.Id && !d.IsDeleted)
+					.ToList();
+
+				petService.PetServiceSteps = petService.PetServiceSteps
+					.Where(s => s.PetServiceId == request.Id && !s.IsDeleted)
+					.ToList();
+			}
+
 			var data = _mapper.Map<PetServiceDto>(petService);
 			return data;
 		}
+
+
 	}
 }

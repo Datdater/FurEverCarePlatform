@@ -18,7 +18,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
 		}
 		public async Task<Pagination<PetServicesDto>> Handle(GetPetServicesQuery request, CancellationToken cancellationToken)
 		{
-			var petService = await _unitOfWork.GetRepository<Domain.Entities.PetService>().GetPaginationAsync(null, request.PageNumber, request.PageSize);
+			var petService = await _unitOfWork.GetRepository<Domain.Entities.PetService>().GetPaginationAsync(s => !s.IsDeleted ,null, request.PageIndex, request.PageSize);
 			var data = _mapper.Map<Pagination<PetServicesDto>>(petService);
 			return data;
 		}

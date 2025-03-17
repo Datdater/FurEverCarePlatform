@@ -24,7 +24,7 @@ namespace FurEverCarePlatform.Persistence
         )
         {
             services.AddDbContext<PetDatabaseContext>(option =>
-                option.UseSqlServer(configuration.GetConnectionString("PetDB"))
+                option.UseSqlServer(configuration.GetConnectionString("PetDBLocal"))
             );
             // Use IdentityUser<Guid> and IdentityRole<Guid> to ensure both are consistent
 

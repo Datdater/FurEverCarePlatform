@@ -73,10 +73,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         }
         return await query.FirstOrDefaultAsync();
     }
-    public async Task<Pagination<T>> GetPaginationAsync(string? includeProperties = null, int pageIndex = 0, int pageSize = 10)
+    public async Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null, int pageIndex = 0, int pageSize = 10)
     {
         IQueryable<T> query = dbSet;
-        if (includeProperties != null)
+		query = query.Where(predicate);
+		if (includeProperties != null)
         {
             foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {

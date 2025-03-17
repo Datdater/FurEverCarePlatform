@@ -39,7 +39,7 @@ namespace FurEverCarePlatform.Application.Features.Booking.Commands.CreateBookin
 			catch (System.Exception ex)
 			{
 				await _unitOfWork.RollbackTransactionAsync();
-				throw new BadRequestException($"Booking failed: {ex.Message} | InnerException: {ex.InnerException?.Message}", ex);
+				throw;
 			}
 		}
 

@@ -1,4 +1,7 @@
 ﻿using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
+using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetService;
+using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetServiceDetail;
+using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetServiceStep;
 using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
@@ -8,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers;
 
-[Route("api/v1/[controller]")]
+[Route("api/v1/services")]
 [ApiController]
 public class PetServiceController : ControllerBase
 {
@@ -70,8 +73,31 @@ public class PetServiceController : ControllerBase
 	[ProducesResponseType(500)]
 	public async Task<IActionResult> DeletePetService(Guid id)
 	{
-		GetPetServiceQuery query = new GetPetServiceQuery { Id = id };
+		DeletePetServiceCommand query = new DeletePetServiceCommand { Id = id };
 		await _mediator.Send(query);
 		return NoContent();
 	}
+
+	[HttpDelete("{id}/service-details/{detailId}")]
+	[ProducesResponseType(204)]
+	[ProducesResponseType(400)]
+	[ProducesResponseType(500)]
+	public async Task<IActionResult> DeletePetServiceDetail(Guid id, Guid detailId)
+	{
+		DeletePetServiceDetailCommand query = new DeletePetServiceDetailCommand { Id = detailId };
+		await _mediator.Send(query);
+		return NoContent();
+	}
+
+	[HttpDelete("{id}/service-steps/{stepId}")]
+	[ProducesResponseType(204)]
+	[ProducesResponseType(400)]
+	[ProducesResponseType(500)]
+	public async Task<IActionResult> DeletePetServiceStep(Guid id, Guid stepId)
+	{
+		DeletePetServiceStepCommand query = new DeletePetServiceStepCommand { Id = stepId };
+		await _mediator.Send(query);
+		return NoContent();
+	}
+
 }

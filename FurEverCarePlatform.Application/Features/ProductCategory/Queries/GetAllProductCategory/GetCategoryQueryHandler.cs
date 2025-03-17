@@ -12,8 +12,9 @@ namespace FurEverCarePlatform.Application.Features.ProductCategory.Queries.GetAl
         }
         public async Task<Pagination<ProductCategoryDto>> Handle(GetProductCategoryQuery request, CancellationToken cancellationToken)
         {
-            var categoryDetails = await _unitOfWork.CategoryRepository.GetPaginationAsync(null, request.PageNumber, request.PageSize);
-            var data = _mapper.Map<Pagination<ProductCategoryDto>>(categoryDetails);
+			var categoryDetails = await _unitOfWork.CategoryRepository.GetPaginationAsync(c => true, null, request.PageNumber, request.PageSize);
+
+			var data = _mapper.Map<Pagination<ProductCategoryDto>>(categoryDetails);
             return data;
         }
     }

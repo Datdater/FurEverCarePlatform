@@ -10,5 +10,5 @@ public interface IGenericRepository<T> where T : BaseEntity
     void Delete(T entity);
     Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null);
 
-    Task<Pagination<T>> GetPaginationAsync(string? includeProperties = null, int pageIndex = 0, int pageSize = 10);
+    Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null, int pageIndex = 0, int pageSize = 10);
 }

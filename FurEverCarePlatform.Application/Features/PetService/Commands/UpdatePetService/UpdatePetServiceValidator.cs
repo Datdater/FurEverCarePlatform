@@ -31,7 +31,6 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePet
 				.NotEmpty().WithMessage("{PropertyName} is required.");
 
 			RuleFor(p => p.Status)
-				.NotEmpty().WithMessage("{PropertyName} is required.")
 				.Must(status => status == true || status == false).WithMessage("{PropertyName} must be either true or false.");
 
 			RuleForEach(p => p.PetServiceDetails)

@@ -39,8 +39,7 @@ namespace FurEverCarePlatform.API
             }
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseCors("all");
-            //app.MapIdentityApi<AppUser>();
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 

@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FurEverCarePlatform.Application.Commons.Services
 {
@@ -41,7 +41,8 @@ namespace FurEverCarePlatform.Application.Commons.Services
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(
                             ClaimTypes.Role,
-                            (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "PETOWNER"
+                            (await _userManager.GetRolesAsync(user)).FirstOrDefault()
+                                ?? "Store Owner"
                         ),
                     };
 
@@ -94,14 +95,14 @@ namespace FurEverCarePlatform.Application.Commons.Services
             if (result.Succeeded)
             {
                 // Gán vai trò mặc định
-                await _userManager.AddToRoleAsync(user, "PETOWNER");
+                await _userManager.AddToRoleAsync(user, "Store Owner");
 
                 // Tạo access token
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, "PETOWNER"),
+                    new Claim(ClaimTypes.Role, "Store Owner"),
                 };
 
                 var accessKey = new SymmetricSecurityKey(

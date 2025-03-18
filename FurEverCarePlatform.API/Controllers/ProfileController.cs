@@ -1,12 +1,12 @@
-﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+﻿using System.Security.Claims;
+using FurEverCarePlatform.Application.Commons.Interfaces;
 using FurEverCarePlatform.Application.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FurEverCarePlatform.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize]
     [ApiController]
     public class ProfileController(IProfileService profileService) : ControllerBase

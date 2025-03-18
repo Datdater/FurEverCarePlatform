@@ -1,8 +1,9 @@
-﻿using FurEverCarePlatform.Application.Features.Store.DTOs;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Features.Store.DTOs;
 
 namespace FurEverCarePlatform.Application.Features.Store.Queries.GetStoreAddress;
 
-public class GetStoreAddressHandler(IUnitOfWork unitOfWork)
+public class GetStoreAddressHandler(IUnitOfWork unitOfWork, IClaimService claimService)
     : IRequestHandler<GetStoreAddressQuery, IEnumerable<StoreAddressDTO>>
 {
     public async Task<IEnumerable<StoreAddressDTO>> Handle(
@@ -13,7 +14,7 @@ public class GetStoreAddressHandler(IUnitOfWork unitOfWork)
         var userAddresses = await unitOfWork
             .GetRepository<Address>()
             .GetAllAsync(
-                filter: x => x.UserId == Guid.Parse("862C5EF9-2F7A-446D-B7E5-3FC3D121600D"),
+                filter: x => x.UserId == claimService.GetCurrentUser,
                 includeProperties: "Store"
             );
 

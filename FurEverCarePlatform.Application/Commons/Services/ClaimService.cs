@@ -1,25 +1,20 @@
-﻿//using FurEverCarePlatform.Application.Commons.Interfaces;
-//using Microsoft.AspNetCore.Http;
-//using System.Security.Claims;
+﻿using System.Security.Claims;
+using FurEverCarePlatform.Application.Commons.Interfaces;
+using Microsoft.AspNetCore.Http;
 
-//namespace FurEverCarePlatform.Application.Commons.Services
-//{
-//	public class ClaimService : IClaimService
-//	{
-//		private readonly IHttpContextAccessor _httpContextAccessor;
-
-//		public ClaimService(IHttpContextAccessor httpContextAccessor)
-//		{
-//			_httpContextAccessor = httpContextAccessor;
-//		}
-
-//		public Guid GetCurrentUser
-//		{
-//			get
-//			{
-//				var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-//				return Guid.TryParse(userId, out var guid) ? guid : Guid.Empty;
-//			}
-//		}
-//	}
-//}
+namespace FurEverCarePlatform.Application.Commons.Services
+{
+    public class ClaimService(IHttpContextAccessor httpContextAccessor) : IClaimService
+    {
+        public Guid GetCurrentUser
+        {
+            get
+            {
+                var userId = httpContextAccessor
+                    .HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                    ?.Value;
+                return Guid.TryParse(userId, out var guid) ? guid : Guid.Empty;
+            }
+        }
+    }
+}

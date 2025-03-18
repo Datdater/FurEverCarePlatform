@@ -1,6 +1,9 @@
-﻿namespace FurEverCarePlatform.Application.Features.Store.Commands.CreateStore;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
 
-public class CreateStoreHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateStoreCommand, Guid>
+namespace FurEverCarePlatform.Application.Features.Store.Commands.CreateStore;
+
+public class CreateStoreHandler(IUnitOfWork unitOfWork, IClaimService claimService)
+    : IRequestHandler<CreateStoreCommand, Guid>
 {
     public async Task<Guid> Handle(CreateStoreCommand request, CancellationToken cancellationToken)
     {
@@ -17,7 +20,7 @@ public class CreateStoreHandler(IUnitOfWork unitOfWork) : IRequestHandler<Create
             var store = new Domain.Entities.Store()
             {
                 AddressId = request.AddressId,
-                UserId = Guid.Parse("862C5EF9-2F7A-446D-B7E5-3FC3D121600D"),
+                UserId = claimService.GetCurrentUser,
                 Name = request.Name,
                 Hotline = request.Hotline,
                 LogoUrl = request.LogoUrl,

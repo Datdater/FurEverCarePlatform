@@ -4,6 +4,6 @@ namespace FurEverCarePlatform.Application.Features.ProductCategory.Queries.GetAl
     public class GetProductCategoryQuery : IRequest<Pagination<ProductCategoryDto>>
     {
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; } = 5;
     }
 }

@@ -7,13 +7,14 @@ using FurEverCarePlatform.Application.Features.Store.Queries.GetAllStores;
 using FurEverCarePlatform.Application.Features.Store.Queries.GetStoreAddress;
 using FurEverCarePlatform.Application.Features.Store.Queries.GetStoreDetail;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers;
 
 [Route("/api/v1/[controller]")]
 [ApiController]
-//[Authorize(Roles = "Store Owner")]
+[Authorize(Roles = "Store Owner")]
 public class StoreController(IMediator mediator) : ControllerBase
 {
     [HttpGet]

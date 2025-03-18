@@ -9,7 +9,7 @@ namespace FurEverCarePlatform.Application.Commons.Interfaces
 {
     public interface IProfileService
     {
-        Task<AppUserDto> GetProfileAsync(Guid userId);
+        Task<AppUserDto> GetProfileAsync();
         Task<AppUserDto> UpdateProfileAsync(Guid userId, AppUserDto updatedUser);
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.ServiceCategory.Queries.GetServiceCategories
 {
-    public class GetServiceCategoriesQuery : IRequest<List<ServiceCategoriesDto>>
+    public class GetServiceCategoriesQuery : IRequest<IEnumerable<ServiceCategoriesDto>>
 	{
     }
 }

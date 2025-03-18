@@ -14,11 +14,9 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProfile()
         {
-            var user = HttpContext.User;
-            var userId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
             try
             {
-                var userDto = await profileService.GetProfileAsync(Guid.Parse(userId));
+                var userDto = await profileService.GetProfileAsync();
                 return Ok(userDto);
             }
             catch (Exception ex) when (ex.Message == "User not found or deleted.")

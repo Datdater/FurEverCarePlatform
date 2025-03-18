@@ -6,15 +6,17 @@ namespace FurEverCarePlatform.Application.Commons.Services
     public class ProfileService : IProfileService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IClaimService _claimService;
 
-        public ProfileService(IUserRepository userRepository)
+        public ProfileService(IUserRepository userRepository, IClaimService claimService)
         {
             _userRepository = userRepository;
+            _claimService = claimService;
         }
 
-        public async Task<AppUserDto> GetProfileAsync(Guid userId)
+        public async Task<AppUserDto> GetProfileAsync()
         {
-            var user = await _userRepository.GetByIdWithRelatedDataAsync(userId);
+            var user = await _userRepository.GetByIdWithRelatedDataAsync(_claimService.GetCurrentUser);
             if (user == null || user.IsDeleted)
             {
                 throw new System.Exception("User not found or deleted.");

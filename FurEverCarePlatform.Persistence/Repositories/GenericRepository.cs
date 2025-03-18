@@ -112,7 +112,7 @@ public class GenericRepository<T> : IGenericRepository<T>
     public async Task<Pagination<T>> GetPaginationAsync(
         Expression<Func<T, bool>>? predicate = null,
         string? includeProperties = null,
-        int pageIndex = 0,
+        int pageIndex = 1,
         int pageSize = 10
     )
     {

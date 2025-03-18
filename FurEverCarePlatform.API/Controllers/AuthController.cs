@@ -1,10 +1,9 @@
 ﻿using FurEverCarePlatform.Application.Commons.Services;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -18,7 +17,10 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var (accessToken, refreshToken) = await _authService.LoginAsync(model.EmailorPhone, model.Password);
+            var (accessToken, refreshToken) = await _authService.LoginAsync(
+                model.EmailorPhone,
+                model.Password
+            );
             if (accessToken == null)
                 return Unauthorized("Invalid credentials");
 
@@ -29,7 +31,9 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var (succeeded, accessToken, refreshToken, errors) = await _authService.RegisterAsync(model);
+            var (succeeded, accessToken, refreshToken, errors) = await _authService.RegisterAsync(
+                model
+            );
             if (!succeeded)
                 return BadRequest(new { errors });
 
@@ -39,17 +43,18 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            var (accessToken, refreshToken) = await _authService.RefreshTokenAsync(request.RefreshToken);
+            var (accessToken, refreshToken) = await _authService.RefreshTokenAsync(
+                request.RefreshToken
+            );
             if (accessToken == null)
                 return Unauthorized("Invalid refresh token");
 
             return Ok(new { accessToken, refreshToken });
         }
     }
+
     public class RefreshTokenRequest
     {
         public string RefreshToken { get; set; }
     }
-
-
 }

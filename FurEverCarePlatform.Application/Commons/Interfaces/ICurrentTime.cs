@@ -1,8 +1,7 @@
-﻿
-namespace FurEverCarePlatform.Application.Commons.Interfaces
+﻿namespace FurEverCarePlatform.Application.Commons.Interfaces
 {
     public interface ICurrentTime
     {
-	    DateTime GetCurrentTime();
-	}
+        DateTime GetCurrentTime();
+    }
 }

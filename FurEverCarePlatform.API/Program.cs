@@ -20,6 +20,9 @@ namespace FurEverCarePlatform.API
             builder.Services.Configure<CloudinarySettings>(
                 builder.Configuration.GetSection("CloudinarySettings")
             );
+
+
+            
             builder.Services.AddIdentityService(builder.Configuration);
             builder.Services.AddPersistenceService();
 

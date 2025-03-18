@@ -25,6 +25,7 @@ namespace FurEverCarePlatform.API.Controllers
             }
             var result = await imageService.UploadImageAsync(file);
             return Ok(result);
+            
         }
     }
 }

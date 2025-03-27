@@ -70,7 +70,8 @@ namespace FurEverCarePlatform.Application.Commons.Services
                     {
                         Id = user.Id,
                         Name = user.Name,
-                        PhoneNumber = user.PhoneNumber
+                        PhoneNumber = user.PhoneNumber,
+                        Email = user.Email
                     };
 
                     return (accessTokenString, refreshTokenString, userDto);
@@ -124,7 +125,8 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 {
                     Id = user.Id,
                     Name = user.Name,
-                    PhoneNumber = user.PhoneNumber
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email
                 };
 
                 return (true, accessTokenString, refreshTokenString, userDto, null);
@@ -222,7 +224,8 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 {
                     Id = user.Id,
                     Name = user.Name,
-                    PhoneNumber = user.PhoneNumber
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email
                 };
 
                 return (newAccessTokenString, newRefreshTokenString, userDto);

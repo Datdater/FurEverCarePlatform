@@ -1,4 +1,5 @@
-﻿using FurEverCarePlatform.Application.Commons.Services;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
@@ -8,49 +9,82 @@ namespace FurEverCarePlatform.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
-
-        public AuthController(AuthService authService)
+        private readonly IProfileService _profileService; 
+        public AuthController(AuthService authService, IProfileService profileService)
         {
             _authService = authService;
+            _profileService = profileService;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
-            var (accessToken, refreshToken) = await _authService.LoginAsync(
-                model.EmailorPhone,
-                model.Password
-            );
-            if (accessToken == null)
-                return Unauthorized("Invalid credentials");
+            var (accessToken, refreshToken, user) = await _authService.LoginAsync(loginModel.EmailorPhone, loginModel.Password);
 
-            // Trả về access token và refresh token (có thể gửi refresh token trong cookie HttpOnly nếu muốn)
-            return Ok(new { accessToken, refreshToken });
+            if (accessToken == null || refreshToken == null || user == null)
+            {
+                return BadRequest(new
+                {
+                    Succeeded = false,
+                    Message = "Invalid username or password."
+                });
+            }
+
+            return Ok(new
+            {
+                Succeeded = true,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                User = user
+            });
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
         {
-            var (succeeded, accessToken, refreshToken, errors) = await _authService.RegisterAsync(
-                model
-            );
-            if (!succeeded)
-                return BadRequest(new { errors });
+            var (succeeded, accessToken, refreshToken, user, errors) = await _authService.RegisterAsync(registerModel);
 
-            return Ok(new { accessToken, refreshToken });
+            if (!succeeded)
+            {
+                return BadRequest(new
+                {
+                    Succeeded = false,
+                    Errors = errors
+                });
+            }
+
+            return Ok(new
+            {
+                Succeeded = true,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                User = user
+            });
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenModel)
         {
-            var (accessToken, refreshToken) = await _authService.RefreshTokenAsync(
-                request.RefreshToken
-            );
-            if (accessToken == null)
-                return Unauthorized("Invalid refresh token");
+            var (accessToken, refreshToken, user) = await _authService.RefreshTokenAsync(refreshTokenModel.RefreshToken);
 
-            return Ok(new { accessToken, refreshToken });
+            if (accessToken == null || refreshToken == null || user == null)
+            {
+                return BadRequest(new
+                {
+                    Succeeded = false,
+                    Message = "Invalid refresh token."
+                });
+            }
+
+            return Ok(new
+            {
+                Succeeded = true,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                User = user
+            });
         }
+    
     }
 
     public class RefreshTokenRequest

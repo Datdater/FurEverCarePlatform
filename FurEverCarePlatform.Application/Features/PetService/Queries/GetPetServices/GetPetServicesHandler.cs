@@ -1,4 +1,5 @@
-﻿using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +12,16 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
-		public GetPetServicesHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly Guid userId;
+		public GetPetServicesHandler(IUnitOfWork unitOfWork, IMapper mapper, IClaimService service)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
+            userId = service.GetCurrentUser;
 		}
 		public async Task<Pagination<PetServicesDto>> Handle(GetPetServicesQuery request, CancellationToken cancellationToken)
 		{
-			var petService = await _unitOfWork.GetRepository<Domain.Entities.PetService>().GetPaginationAsync(s => !s.IsDeleted ,null, request.PageIndex, request.PageSize);
+			var petService = await _unitOfWork.GetRepository<Domain.Entities.PetService>().GetPaginationAsync(s => !s.IsDeleted && s.Store.UserId == userId, includeProperties: "Store,ServiceCategory", request.PageIndex, request.PageSize);
 			var data = _mapper.Map<Pagination<PetServicesDto>>(petService);
 			return data;
 		}

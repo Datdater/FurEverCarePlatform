@@ -58,7 +58,10 @@ namespace FurEverCarePlatform.Application.MappingProfile
             CreateMap<UpdatePetServiceStepCommand, PetServiceStep>();
             #endregion
 
-            CreateMap<PetService, PetServicesDto>().ReverseMap();
+            CreateMap<PetService, PetServicesDto>()
+                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name)) 
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.ServiceCategory.Name))
+                .ReverseMap();
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }
     }

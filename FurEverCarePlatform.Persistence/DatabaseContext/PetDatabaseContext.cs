@@ -83,5 +83,6 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<ServiceCategory> ServiceCategories { get; set; }
     public DbSet<ServiceTracking> ServiceTrackings { get; set; }
     public DbSet<Store> Stores { get; set; }
+    public DbSet<ProductImages> ProductImages { get; set; }
 
 }

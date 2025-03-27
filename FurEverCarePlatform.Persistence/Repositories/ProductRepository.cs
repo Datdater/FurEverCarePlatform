@@ -43,4 +43,15 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             select pp;
         return query.ToList();
     }
+
+    public List<ProductImages> GetProductImages(Guid productId)
+    {
+        var query =
+            from p in _context.Products
+            join pi in _context.ProductImages on p.Id equals pi.ProductId into piGroup
+            from pi in piGroup.DefaultIfEmpty() // RIGHT JOIN
+            where p.Id == productId
+            select pi;
+        return query.ToList();
+    }
 }

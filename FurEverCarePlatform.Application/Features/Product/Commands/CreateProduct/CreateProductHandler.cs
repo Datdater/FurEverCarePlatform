@@ -24,8 +24,11 @@ public class CreateProductHandler(IUnitOfWork unitOfWork)
                 Name = request.Name,
                 ProductCategoryId = request.ProductCategoryId,
                 IsActive = request.IsActive,
-                ProductCode = request.ProductCode,
-                Views = request.Views,
+                ProductDescription = request.ProductDescription,
+                Height = request.Height,
+                Length = request.Length,
+                Weight = request.Weight,
+                Width = request.Width,
                 BrandId = request.BrandId,
                 StoreId = request.StoreId,
             };
@@ -60,6 +63,14 @@ public class CreateProductHandler(IUnitOfWork unitOfWork)
 
             await unitOfWork.GetRepository<Domain.Entities.Product>().InsertAsync(product);
             await unitOfWork.SaveAsync(); // Lưu `Product` và `ProductType` trước
+            
+            product.ProductImages = request.ProductImages.Select(
+                x => new Domain.Entities.ProductImages
+                {
+                    URL = x.URL,
+                    ProductId = product.Id,
+                }
+            ).ToList(); ;
 
             var productPrices = new List<Domain.Entities.ProductPrice>();
 

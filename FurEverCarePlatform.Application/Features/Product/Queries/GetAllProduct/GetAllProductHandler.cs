@@ -24,7 +24,7 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
             {
                 Id = p.Id,
                 Name = p.Name,
-                ProductCode = p.ProductCode,
+                ProductDescription = p.ProductDescription,
                 BrandName = p.BrandName,
                 CategoryName = p.CategoryName,
                 StoreName = p.StoreName,

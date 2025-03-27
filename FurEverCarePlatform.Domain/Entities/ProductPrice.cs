@@ -9,6 +9,7 @@ public class ProductPrice : BaseEntity
 	[Required]
 	[Column(TypeName = "money")]
 	public decimal Price { get; set; }
+    public string URLImage { get; set; }
 	[Required]
 	public int Inventory { get; set; } 
 

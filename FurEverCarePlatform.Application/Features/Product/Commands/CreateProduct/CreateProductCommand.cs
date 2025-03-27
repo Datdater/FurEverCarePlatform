@@ -19,10 +19,12 @@ public class CreateProductCommand : IRequest<Guid>
 
     public bool? IsActive { get; set; }
 
-    [MaxLength(50)]
-    public string? ProductCode { get; set; }
-
-    public int? Views { get; set; }
+    [MaxLength(1000)]
+    public string? ProductDescription { get; set; }
+    public decimal Weight { get; set; }
+    public int Length { get; set; }
+    public int Height { get; set; }
+    public int Width { get; set; }
 
     [Required]
     public Guid BrandId { get; set; }
@@ -32,5 +34,6 @@ public class CreateProductCommand : IRequest<Guid>
 
     // Navigation properties
     public List<ProductTypeDTO> ProductTypes { get; set; }
+    public List<ProductImagesDTO> ProductImages { get; set; }
     public List<ProductPricesDTO> ProductPrices { get; set; }
 }

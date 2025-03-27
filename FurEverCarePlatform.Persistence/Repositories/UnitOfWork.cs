@@ -42,6 +42,7 @@ public class UnitOfWork : IUnitOfWork
         _currentTime = currentTime;
         CategoryRepository = new CategoryRepository(_context);
         PetServiceRepository = new PetServiceRepository(_context);
+        ProductRepository = new ProductRepository(_context);
     }
 
     public void Dispose()

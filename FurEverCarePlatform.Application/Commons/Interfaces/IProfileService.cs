@@ -11,5 +11,6 @@ namespace FurEverCarePlatform.Application.Commons.Interfaces
     {
         Task<AppUserDto> GetProfileAsync();
         Task<AppUserDto> UpdateProfileAsync(Guid userId, AppUserDto updatedUser);
+        Task<AppUserDto> UpdatePassWord(Guid userId, string oldPassword, string password);
     }
 }

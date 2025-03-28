@@ -23,11 +23,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
-		.git = .git
 		.gitignore = .gitignore
 		DataInsert.sql = DataInsert.sql
 		Dockerfile = Dockerfile
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{6A3AF008-7047-4D3C-82E9-7F2E024A554B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "Application.UnitTests\Application.UnitTests.csproj", "{06A07351-73FF-4845-BCEE-FE87C7708969}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,12 +54,17 @@ Global
 		{D8FD7118-5D53-4AEB-8473-DEDFAC223442}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8FD7118-5D53-4AEB-8473-DEDFAC223442}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8FD7118-5D53-4AEB-8473-DEDFAC223442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06A07351-73FF-4845-BCEE-FE87C7708969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06A07351-73FF-4845-BCEE-FE87C7708969}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06A07351-73FF-4845-BCEE-FE87C7708969}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06A07351-73FF-4845-BCEE-FE87C7708969}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D8FD7118-5D53-4AEB-8473-DEDFAC223442} = {84CD79AF-D1E6-42B8-AAB3-33F63C013171}
+		{06A07351-73FF-4845-BCEE-FE87C7708969} = {6A3AF008-7047-4D3C-82E9-7F2E024A554B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2BA2D7D8-01B2-4EAD-B558-CCEA2F64ADC0}

@@ -17,7 +17,6 @@ public class UpdateProductCommand : IRequest<Guid>
     public int Lenght { get; set; }
     public int Height { get; set; }
     public int Width { get; set; }
-    public string Image { get; set; }
     public string ProductDescription { get; set; }
     public int? Views { get; set; }
     public Guid BrandId { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
+﻿using FurEverCarePlatform.Application.Features.Product.Validations;
+
+namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
 
 public class CreateProductHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<CreateProductCommand, Guid>

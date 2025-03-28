@@ -10,7 +10,7 @@ public class ProductDTO
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string? ProductCode { get; set; }
+    public string? ProductDescription { get; set; }
     public string? BrandName { get; set; }
     public string? StoreName { get; set; }
     public string? CategoryName { get; set; }

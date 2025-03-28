@@ -10,6 +10,7 @@ public class ProductPricesDTO
 {
     public decimal Price { get; set; }
     public int Inventory { get; set; }
+    public string? URLImage { get; set; }
     public string ProductTypeDetails1 { get; set; }
     public string? ProductTypeDetails2 { get; set; }
 }

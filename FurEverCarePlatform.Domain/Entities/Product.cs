@@ -15,7 +15,11 @@ public class Product : BaseEntity
 	public bool? IsActive { get; set; }
 
 	[MaxLength(50)]
-	public string? ProductCode { get; set; }
+	public string? ProductDescription { get; set; }
+    public decimal Weight { get; set; }
+    public int Length { get; set; } 
+    public int Height { get; set; } 
+    public int Width { get; set; } 
 
 	public int? Views { get; set; }
 
@@ -30,6 +34,7 @@ public class Product : BaseEntity
 	public virtual ProductBrand ProductBrand { get; set; }
 	public virtual Store Store { get; set; }
 
-	public virtual ICollection<ProductType> ProductTypes { get; set; } = new List<ProductType>();
+    public virtual ICollection<ProductImages> ProductImages { get; set; } = new List<ProductImages>();
+    public virtual ICollection<ProductType> ProductTypes { get; set; } = new List<ProductType>();
 	public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }

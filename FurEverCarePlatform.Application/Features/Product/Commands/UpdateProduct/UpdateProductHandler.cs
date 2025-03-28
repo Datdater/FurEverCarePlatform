@@ -33,10 +33,24 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
             product.Name = request.Name;
             product.ProductCategoryId = request.ProductCategoryId;
             product.IsActive = request.IsActive;
-            product.ProductCode = request.ProductCode;
+            product.ProductDescription = request.ProductDescription;
             product.Views = request.Views;
             product.BrandId = request.BrandId;
             product.StoreId = request.StoreId;
+
+            var productImages = new List<Domain.Entities.ProductImages>();
+            var productImageRepository = unitOfWork.GetRepository<Domain.Entities.ProductImages>();
+            var productImagesToDelete = unitOfWork.ProductRepository.GetProductImages(request.Id);
+            foreach (var productImage in productImagesToDelete)
+            {
+                productImageRepository.Delete(productImage);
+            }
+            product.ProductImages = request.ProductImages.Select(
+                x => new Domain.Entities.ProductImages
+                {
+                    URL = x.URL,
+                }
+            ).ToList();
 
             // Update product prices
             var productPrices = new List<Domain.Entities.ProductPrice>();

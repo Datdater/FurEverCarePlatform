@@ -80,7 +80,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 Id = user.Id,
                 Name = user.Name,
                 PhoneNumber = user.PhoneNumber,
-                
+                Email = user.Email
             };
         }
     }

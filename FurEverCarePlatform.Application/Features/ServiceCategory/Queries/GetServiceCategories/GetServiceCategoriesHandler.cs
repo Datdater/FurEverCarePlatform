@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.ServiceCategory.Queries.GetServiceCategories
 {
-    public class GetServiceCategoriesHandler : IRequestHandler<GetServiceCategoriesQuery, List<ServiceCategoriesDto>>
+    public class GetServiceCategoriesHandler : IRequestHandler<GetServiceCategoriesQuery, IEnumerable<ServiceCategoriesDto>>
 	{
 
 		private readonly IUnitOfWork _unitOfWork;
@@ -17,10 +17,10 @@ namespace FurEverCarePlatform.Application.Features.ServiceCategory.Queries.GetSe
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 		}
-		public async Task<List<ServiceCategoriesDto>> Handle(GetServiceCategoriesQuery request, CancellationToken cancellationToken)
+		public async Task<IEnumerable<ServiceCategoriesDto>> Handle(GetServiceCategoriesQuery request, CancellationToken cancellationToken)
 		{
 			var serviceCategories = await _unitOfWork.GetRepository<Domain.Entities.ServiceCategory>().GetAllAsync();
-			var data = _mapper.Map<List<ServiceCategoriesDto>>(serviceCategories);
+			var data = _mapper.Map<IEnumerable<ServiceCategoriesDto>>(serviceCategories);
 			return data;
 		}
 	}

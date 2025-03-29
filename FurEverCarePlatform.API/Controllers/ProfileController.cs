@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
+using FurEverCarePlatform.API.Models;
 using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
 using FurEverCarePlatform.Application.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,16 +11,14 @@ namespace FurEverCarePlatform.API.Controllers
     [Route("api/v1/[controller]")]
     [Authorize]
     [ApiController]
-    public class ProfileController(IProfileService profileService) : ControllerBase
+    public class ProfileController(IProfileService profileService, IClaimService claimService) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetProfile()
         {
-            var user = HttpContext.User;
-            var userId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
             try
             {
-                var userDto = await profileService.GetProfileAsync(Guid.Parse(userId));
+                var userDto = await profileService.GetProfileAsync();
                 return Ok(userDto);
             }
             catch (Exception ex) when (ex.Message == "User not found or deleted.")
@@ -57,6 +57,34 @@ namespace FurEverCarePlatform.API.Controllers
                     500,
                     new { Message = "An unexpected error occurred.", Detail = ex.Message }
                 );
+            }
+        }
+        [HttpPut("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDto)
+        {
+            try
+            {
+                // Lấy ID của người dùng hiện tại từ token
+                var userId = claimService.GetCurrentUser;
+
+                // Gọi ProfileService để cập nhật mật khẩu
+                var updatedUser = await profileService.UpdatePassWord(userId, updatePasswordDto.OldPassword, updatePasswordDto.NewPassword);
+
+                return Ok(new
+                {
+                    Succeeded = true,
+                    Message = "Password updated successfully.",
+                    Data = updatedUser
+                });
+            }
+            catch (Exception ex)
+            {
+                // Không log thông tin nhạy cảm
+                return BadRequest(new
+                {
+                    Succeeded = false,
+                    Message = ex.Message
+                });
             }
         }
     }

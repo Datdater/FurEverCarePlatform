@@ -12,8 +12,12 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         var product = await unitOfWork.ProductRepository.GetFirstOrDefaultAsync(
             x => x.Id == request.Id,
-            "ProductCategory,Store,ProductBrand"
+            "ProductCategory,Store,ProductBrand,ProductImages"
         );
+        if (product == null)
+        {
+            throw new NotFoundException(nameof(Domain.Entities.Product), request.Id);
+        }
         var productSpecific = mapper.Map<ProductSpecificDTO>(product);
         var productTypesListRaw = await unitOfWork
             .GetRepository<ProductType>()

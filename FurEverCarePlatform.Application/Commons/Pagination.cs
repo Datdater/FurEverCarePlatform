@@ -3,7 +3,9 @@
 public class Pagination<T>
 {
     public int TotalItemsCount { get; set; }
-    public int PageSize { get; set; }
+    public int PageSize { get; set; } = 10;
+    public int PageIndex { get; set; } = 1;
+
     public int TotalPagesCount
     {
         get
@@ -16,7 +18,6 @@ public class Pagination<T>
             return temp + 1;
         }
     }
-    public int PageIndex { get; set; }
 
     /// <summary>
     /// page number start from 0

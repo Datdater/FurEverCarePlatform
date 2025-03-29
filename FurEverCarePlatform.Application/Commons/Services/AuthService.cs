@@ -2,6 +2,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,19 +22,15 @@ namespace FurEverCarePlatform.Application.Commons.Services
             _configuration = configuration;
         }
 
-        public async Task<(string AccessToken, string RefreshToken)> LoginAsync(
-            string username,
-            string password
-        )
+        public async Task<(string AccessToken, string RefreshToken, AppUserDto User)> LoginAsync(string username, string password)
         {
             var user = await _userManager.FindByEmailAsync(username);
             if (user == null)
                 user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == username);
-            Console.WriteLine($"User found: {user?.UserName}"); // Debug
+
             if (user != null)
             {
                 var passwordValid = await _userManager.CheckPasswordAsync(user, password);
-                Console.WriteLine($"Password valid: {passwordValid}");
                 if (passwordValid)
                 {
                     var claims = new[]
@@ -41,8 +39,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(
                             ClaimTypes.Role,
-                            (await _userManager.GetRolesAsync(user)).FirstOrDefault()
-                                ?? "Store Owner"
+                            (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "Store Owner"
                         ),
                     };
 
@@ -59,7 +56,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
                         issuer: _configuration["Jwt:Issuer"],
                         audience: _configuration["Jwt:Audience"],
                         claims: claims,
-                        expires: DateTime.UtcNow.AddMinutes(45), // Access token hết hạn sau 15 phút
+                        expires: DateTime.UtcNow.AddMinutes(45),
                         signingCredentials: accessCreds
                     );
 
@@ -68,18 +65,22 @@ namespace FurEverCarePlatform.Application.Commons.Services
                     // Tạo refresh token
                     var refreshTokenString = GenerateRefreshTokenAsJwt(user.Id);
 
-                    return (accessTokenString, refreshTokenString);
+                    // Tạo AppUserDto
+                    var userDto = new AppUserDto
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        PhoneNumber = user.PhoneNumber,
+                        Email = user.Email
+                    };
+
+                    return (accessTokenString, refreshTokenString, userDto);
                 }
             }
-            return (null, null); // Đăng nhập thất bại
+            return (null, null, null); // Đăng nhập thất bại
         }
 
-        public async Task<(
-            bool Succeeded,
-            string AccessToken,
-            string RefreshToken,
-            string[] Errors
-        )> RegisterAsync(RegisterModel model)
+        public async Task<(bool Succeeded, string AccessToken, string RefreshToken, AppUserDto User, string[] Errors)> RegisterAsync(RegisterModel model)
         {
             var user = new AppUser
             {
@@ -94,10 +95,8 @@ namespace FurEverCarePlatform.Application.Commons.Services
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                // Gán vai trò mặc định
                 await _userManager.AddToRoleAsync(user, "Store Owner");
 
-                // Tạo access token
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Name),
@@ -120,13 +119,20 @@ namespace FurEverCarePlatform.Application.Commons.Services
 
                 var accessTokenString = new JwtSecurityTokenHandler().WriteToken(accessToken);
 
-                // Tạo refresh token
                 var refreshTokenString = GenerateRefreshTokenAsJwt(user.Id);
 
-                return (true, accessTokenString, refreshTokenString, null);
+                var userDto = new AppUserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email
+                };
+
+                return (true, accessTokenString, refreshTokenString, userDto, null);
             }
 
-            return (false, null, null, result.Errors.Select(e => e.Description).ToArray());
+            return (false, null, null, null, result.Errors.Select(e => e.Description).ToArray());
         }
 
         private string GenerateRefreshTokenAsJwt(Guid userId)
@@ -134,11 +140,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                new Claim(
-                    "type",
-                    "refresh"
-                ) // Đánh dấu đây là refresh token
-                ,
+                new Claim("type", "refresh")
             };
 
             var refreshKey = new SymmetricSecurityKey(
@@ -150,23 +152,20 @@ namespace FurEverCarePlatform.Application.Commons.Services
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(7), // Refresh token hết hạn sau 7 ngày
+                expires: DateTime.UtcNow.AddDays(7),
                 signingCredentials: refreshCreds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(refreshToken);
         }
 
-        public async Task<(string AccessToken, string RefreshToken)> RefreshTokenAsync(
-            string refreshToken
-        )
+        public async Task<(string AccessToken, string RefreshToken, AppUserDto User)> RefreshTokenAsync(string refreshToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var refreshKey = Encoding.UTF8.GetBytes(_configuration["Jwt:RefreshSecretKey"]);
 
             try
             {
-                // Xác thực refresh token
                 var principal = tokenHandler.ValidateToken(
                     refreshToken,
                     new TokenValidationParameters
@@ -178,26 +177,22 @@ namespace FurEverCarePlatform.Application.Commons.Services
                         ValidateAudience = true,
                         ValidAudience = _configuration["Jwt:Audience"],
                         ValidateLifetime = true,
-                        ClockSkew =
-                            TimeSpan.Zero // Không cho phép lệch thời gian
-                        ,
+                        ClockSkew = TimeSpan.Zero
                     },
                     out SecurityToken validatedToken
                 );
 
-                // Kiểm tra loại token
                 if (principal.FindFirst("type")?.Value != "refresh")
-                    return (null, null);
+                    return (null, null, null);
 
                 var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (userId == null)
-                    return (null, null);
+                    return (null, null, null);
 
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
-                    return (null, null);
+                    return (null, null, null);
 
-                // Tạo access token mới
                 var claims = new[]
                 {
                     new Claim(ClaimTypes.Name, user.Name),
@@ -223,14 +218,21 @@ namespace FurEverCarePlatform.Application.Commons.Services
 
                 var newAccessTokenString = new JwtSecurityTokenHandler().WriteToken(newAccessToken);
 
-                // Tạo refresh token mới (tùy chọn để tăng bảo mật)
                 var newRefreshTokenString = GenerateRefreshTokenAsJwt(user.Id);
 
-                return (newAccessTokenString, newRefreshTokenString);
+                var userDto = new AppUserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email
+                };
+
+                return (newAccessTokenString, newRefreshTokenString, userDto);
             }
             catch
             {
-                return (null, null); // Refresh token không hợp lệ
+                return (null, null, null);
             }
         }
     }

@@ -13,10 +13,15 @@ public class UpdateProductCommand : IRequest<Guid>
     public Guid ProductCategoryId { get; set; }
     public string Name { get; set; }
     public bool? IsActive { get; set; }
-    public string ProductCode { get; set; }
+    public decimal Weight { get; set; }
+    public int Lenght { get; set; }
+    public int Height { get; set; }
+    public int Width { get; set; }
+    public string ProductDescription { get; set; }
     public int? Views { get; set; }
     public Guid BrandId { get; set; }
     public Guid StoreId { get; set; }
     public List<ProductTypeDTO> ProductTypes { get; set; }
+    public List<ProductImagesDTO> ProductImages { get; set; }
     public List<ProductPricesDTO> ProductPrices { get; set; }
 }

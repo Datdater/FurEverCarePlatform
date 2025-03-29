@@ -13,11 +13,11 @@ public class ProductProfile : Profile
         //    .ForMember(dest => dest.ProductTypeDetails2, opt => opt.MapFrom(src => src.ProductType2.Name))
         //.ReverseMap();
         //CreateMap<List<ProductPrice>, List<ProductPricesDTO>>().ReverseMap();
-
+        CreateMap<ProductImages, ProductImagesDTO>().ReverseMap();
         CreateMap<Product, ProductDTO>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProductCode))
+            .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.ProductDescription))
             .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.ProductBrand.Name))
             .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name))
             .ForMember(
@@ -29,7 +29,7 @@ public class ProductProfile : Profile
         CreateMap<Product, ProductSpecificDTO>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProductCode))
+            .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.ProductDescription))
             .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.ProductBrand.Name))
             .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name))
             .ForMember(

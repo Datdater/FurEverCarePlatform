@@ -16,8 +16,5 @@ public class PetServiceDetail : BaseEntity
 
     //navigation
     public virtual PetService PetService { get; set; }
-    public virtual ICollection<BookingDetailService> BookingDetailServices { get; set; }
-
-
 
 }

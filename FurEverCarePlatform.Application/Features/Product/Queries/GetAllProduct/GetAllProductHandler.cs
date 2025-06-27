@@ -28,7 +28,7 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
                 BrandName = p.BrandName,
                 CategoryName = p.CategoryName,
                 StoreName = p.StoreName,
-                MinPrices = unitOfWork.ProductRepository.GetMinProductPrice(p.Id),
+                //MinPrices = unitOfWork.ProductRepository.GetMinProductPrice(p.Id),
             })
             .ToList();
         productDTOs.Items = productDTOItem;

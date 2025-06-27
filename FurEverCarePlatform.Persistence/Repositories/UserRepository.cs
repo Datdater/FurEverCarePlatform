@@ -24,7 +24,6 @@
                 .Include(u => u.Address)
                 .Include(u => u.Notifications)
                 .Include(u => u.Feedback)
-                .Include(u => u.ChatMessage)
                 .Include(u => u.Reports)
                 .Include(u => u.Stores)
                 .FirstOrDefaultAsync(u => u.Id == id);

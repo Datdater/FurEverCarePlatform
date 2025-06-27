@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FurEverCarePlatform.Domain.Entities;
 
@@ -19,7 +20,8 @@ public class ChatMessage : BaseEntity
     public bool IdToUserDeleted { get; set; }
     public string AttachmentName { get; set; }
     public string FieldAttachmentUrl { get; set; }
-
+    [ForeignKey("UserId")]
     public virtual AppUser AppUser { get; set; }
+    [ForeignKey("ToUserId")]
     public virtual AppUser ToAppUser { get; set; }
 }

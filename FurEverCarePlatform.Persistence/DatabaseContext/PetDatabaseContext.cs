@@ -12,7 +12,14 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-	}
+        modelBuilder.Entity<Order>()
+            .HasIndex(o => o.Code)
+            .IsUnique(false);
+
+        modelBuilder.Entity<Booking>()
+            .HasIndex(b => b.Code)
+            .IsUnique(false);
+    }
 
     public DbSet<AppUser> AppUsers { get; set; }
 	public DbSet<AppRole> AppRoles { get; set; }
@@ -28,7 +35,7 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentMethod> PaymentMethods { get; set; }
     public DbSet<Pet> Pets { get; set; }
-    public DbSet<PetService> PetServices { get; set; }
+    public DbSet<Domain.Entities.PetService> PetServices { get; set; }
     public DbSet<PetServiceDetail> PetServiceDetails { get; set; }
     public DbSet<PetServiceStep> PetServiceSteps { get; set; }
     public DbSet<ProductCategory> ProductCategories { get; set; }

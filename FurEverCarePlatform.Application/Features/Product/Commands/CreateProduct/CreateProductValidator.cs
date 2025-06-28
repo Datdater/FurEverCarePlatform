@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
-using FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
 using FurEverCarePlatform.Application.Features.Product.DTOs;
 
-namespace FurEverCarePlatform.Application.Features.Product.Validations
+namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct
 {
     public class CreateProductValidator : AbstractValidator<CreateProductCommand>
     {

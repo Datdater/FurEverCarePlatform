@@ -8,6 +8,7 @@ public class Booking : BaseEntity
     public required Guid UserId { get; set; }
     public required decimal RawAmount { get; set; }
     public required decimal TotalAmount { get; set; }
+    public required string Code { get; set; }
     public Guid? PromotionId { get; set; }
 
     public Guid? FeedbackId { get; set; }

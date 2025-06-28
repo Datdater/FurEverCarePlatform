@@ -9,6 +9,7 @@ public class Order : BaseEntity
 
 	[Column(TypeName = "money")]
 	public required decimal TotalPrice { get; set; } 
+	public required string Code { get; set; } 
 
 	public Guid? PromotionId { get; set; } 
 

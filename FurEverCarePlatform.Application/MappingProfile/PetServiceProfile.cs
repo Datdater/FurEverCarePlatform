@@ -15,7 +15,7 @@ namespace FurEverCarePlatform.Application.MappingProfile
         public PetServiceProfile()
         {
             #region CreatePetService
-            CreateMap<CreatePetServiceCommand, PetService>()
+            CreateMap<CreatePetServiceCommand, Domain.Entities.PetService>()
                 .ForMember(
                     dest => dest.PetServiceDetails,
                     opt => opt.MapFrom(src => src.PetServiceDetails)
@@ -30,7 +30,7 @@ namespace FurEverCarePlatform.Application.MappingProfile
             #endregion
 
             #region PetService
-            CreateMap<PetService, PetServiceDto>()
+            CreateMap<Domain.Entities.PetService, PetServiceDto>()
                 .ForMember(
                     dest => dest.PetServiceDetails,
                     opt => opt.MapFrom(src => src.PetServiceDetails)
@@ -45,7 +45,7 @@ namespace FurEverCarePlatform.Application.MappingProfile
 
 
             #region UpdatePetService
-            CreateMap<UpdatePetServiceCommand, PetService>()
+            CreateMap<UpdatePetServiceCommand, Domain.Entities.PetService>()
                 .ForMember(
                     dest => dest.PetServiceDetails,
                     opt => opt.MapFrom(src => src.PetServiceDetails)
@@ -58,7 +58,7 @@ namespace FurEverCarePlatform.Application.MappingProfile
             CreateMap<UpdatePetServiceStepCommand, PetServiceStep>();
             #endregion
 
-            CreateMap<PetService, PetServicesDto>().ReverseMap();
+            CreateMap<Domain.Entities.PetService, PetServicesDto>().ReverseMap();
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }
     }

@@ -18,7 +18,7 @@ public class Store : BaseEntity
     public string? LogoUrl { get; set; }
 
     [Required]
-    public Guid UserId { get; set; }
+    public Guid AppUserId { get; set; }
 
     [MaxLength(500)]
     public string? BannerUrl { get; set; }

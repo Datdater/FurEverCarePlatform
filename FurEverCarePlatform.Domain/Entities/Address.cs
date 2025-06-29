@@ -20,7 +20,7 @@ public class Address : BaseEntity
     public int? PostalCode { get; set; }
 
     [Required]
-    public Guid UserId { get; set; }
+    public Guid AppUserId { get; set; }
 
     //navigation
     public virtual ICollection<Order> Orders { get; set; }

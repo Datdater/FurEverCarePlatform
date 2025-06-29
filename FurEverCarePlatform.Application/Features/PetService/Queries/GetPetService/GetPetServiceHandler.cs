@@ -30,6 +30,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
 					.ToList();
 
 				petService.PetServiceSteps = petService.PetServiceSteps
+                    .OrderBy(s => s.Priority)
 					.Where(s => s.PetServiceId == request.Id && !s.IsDeleted)
 					.ToList();
 			}

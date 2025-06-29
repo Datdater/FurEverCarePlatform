@@ -1,12 +1,13 @@
-﻿using System;
+﻿using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
+using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
+using FurEverCarePlatform.Application.Features.Product.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
-using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
-using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
-using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
 
 namespace FurEverCarePlatform.Application.MappingProfile
 {
@@ -62,7 +63,9 @@ namespace FurEverCarePlatform.Application.MappingProfile
                 .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name)) 
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.ServiceCategory.Name))
                 .ReverseMap();
-            CreateMap(typeof(Pagination<>), typeof(Pagination<>));
+
+            CreateMap<Pagination<Domain.Entities.PetService>, Pagination<PetServicesDto>>().ReverseMap();
+
         }
     }
 }

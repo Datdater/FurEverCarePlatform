@@ -858,6 +858,9 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<string>("SpecialRequirement")
                         .HasColumnType("text");
 
+                    b.Property<float?>("Weight")
+                        .HasColumnType("real");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");

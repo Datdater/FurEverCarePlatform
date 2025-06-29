@@ -16,5 +16,9 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
 	    public Guid ServiceCategoryId { get; set; }
 
 		public bool Status { get; set; }
+
+        public string StoreName { get; set; }
+
+        public string CategoryName { get; set; }
 	}
 }

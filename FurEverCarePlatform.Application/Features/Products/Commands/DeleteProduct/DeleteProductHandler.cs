@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FurEverCarePlatform.Application.Features.Product.Commands.DeleteProduct;
+namespace FurEverCarePlatform.Application.Features.Products.Commands.DeleteProduct;
 
 public class DeleteProductHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteProductCommand>
 {

@@ -328,7 +328,7 @@ public static class SeedData
             {
                 Id = Guid.NewGuid(),
                 Name = "Cửa Hàng Thú Cưng Hạnh Phúc",
-                AddressId = addresses[0].Id,
+                //AddressId = addresses[0].Id,
                 Hotline = "1900-1234",
                 LogoUrl = "https://example.com/logos/hanh-phuc-logo.jpg",
                 BannerUrl = "https://example.com/banners/hanh-phuc-banner.jpg",
@@ -348,7 +348,7 @@ public static class SeedData
             {
                 Id = Guid.NewGuid(),
                 Name = "Siêu Thị Thú Cưng Minh Châu",
-                AddressId = addresses[1].Id,
+                //AddressId = addresses[1].Id,
                 Hotline = "1900-5678",
                 LogoUrl = "https://example.com/logos/minh-chau-logo.jpg",
                 BannerUrl = "https://example.com/banners/minh-chau-banner.jpg",
@@ -368,7 +368,7 @@ public static class SeedData
             {
                 Id = Guid.NewGuid(),
                 Name = "Cửa Hàng Thú Cưng Cao Cấp PetCare",
-                AddressId = addresses[2].Id,
+                //AddressId = addresses[2].Id,
                 Hotline = "1900-9012",
                 LogoUrl = "https://example.com/logos/petcare-logo.jpg",
                 BannerUrl = "https://example.com/banners/petcare-banner.jpg",

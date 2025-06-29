@@ -1,7 +1,7 @@
-﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
+﻿using FurEverCarePlatform.Application.Features.Products.DTOs;
 using Microsoft.EntityFrameworkCore;
 
-namespace FurEverCarePlatform.Application.Features.Product.Queries.GetAllProduct;
+namespace FurEverCarePlatform.Application.Features.Products.Queries.GetAllProduct;
 
 public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
     : IRequestHandler<GetAllProductQuery, Pagination<ProductDTO>>
@@ -12,11 +12,11 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
     )
     {
         var product = unitOfWork
-            .GetRepository<Domain.Entities.Product>()
+            .GetRepository<Product>()
             .GetQueryable()
             .Include(x => x.Store)
             .Where(x => !x.IsDeleted);
-        var productRaw = await Pagination<Domain.Entities.Product>.CreateAsync(
+        var productRaw = await Pagination<Product>.CreateAsync(
             product,
             request.PageNumber,
             request.PageSize

@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
-using FurEverCarePlatform.Application.Features.Product.DTOs;
+using FurEverCarePlatform.Application.Features.Products.DTOs;
 
-namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct
+namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProduct
 {
     public class CreateProductValidator : AbstractValidator<CreateProductCommand>
     {
         public CreateProductValidator()
         {
             RuleFor(p => p.Name)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
+                .NotEmpty()
+                .WithMessage("{PropertyName} is required.")
                 .NotNull()
-                .MaximumLength(100).WithMessage("{PropertyName} must not exceed 100 characters.");
+                .MaximumLength(100)
+                .WithMessage("{PropertyName} must not exceed 100 characters.");
 
             RuleFor(p => p.ProductTypes)
                 .Must(BeUniqueProductTypeNames)
@@ -21,7 +23,9 @@ namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduc
 
             RuleFor(p => p.ProductPrices)
                 .Must(HaveDifferentProductTypeDetails)
-                .WithMessage("Product type details (ProductTypeDetails1 and ProductTypeDetails2) must be different when both are provided.");
+                .WithMessage(
+                    "Product type details (ProductTypeDetails1 and ProductTypeDetails2) must be different when both are provided."
+                );
         }
 
         private bool BeUniqueProductTypeNames(List<ProductTypeDTO> productTypes)
@@ -45,13 +49,18 @@ namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduc
 
             foreach (var price in productPrices)
             {
-                if (!string.IsNullOrWhiteSpace(price.ProductTypeDetails1) &&
-                    !string.IsNullOrWhiteSpace(price.ProductTypeDetails2))
+                if (
+                    !string.IsNullOrWhiteSpace(price.ProductTypeDetails1)
+                    && !string.IsNullOrWhiteSpace(price.ProductTypeDetails2)
+                )
                 {
-                    if (string.Equals(
-                        price.ProductTypeDetails1.Trim(),
-                        price.ProductTypeDetails2.Trim(),
-                        StringComparison.OrdinalIgnoreCase))
+                    if (
+                        string.Equals(
+                            price.ProductTypeDetails1.Trim(),
+                            price.ProductTypeDetails2.Trim(),
+                            StringComparison.OrdinalIgnoreCase
+                        )
+                    )
                     {
                         return false;
                     }

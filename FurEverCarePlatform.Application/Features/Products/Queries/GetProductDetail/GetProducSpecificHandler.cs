@@ -1,7 +1,7 @@
-﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
+﻿using FurEverCarePlatform.Application.Features.Products.DTOs;
 using Microsoft.EntityFrameworkCore;
 
-namespace FurEverCarePlatform.Application.Features.Product.Queries.GetProductDetail;
+namespace FurEverCarePlatform.Application.Features.Products.Queries.GetProductDetail;
 
 public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
     : IRequestHandler<GetProductSpecificQuery, ProductSpecificDTO>
@@ -12,7 +12,7 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
     )
     {
         var productDetail = await unitOfWork
-            .GetRepository<Domain.Entities.Product>()
+            .GetRepository<Product>()
             .GetQueryable()
             .Include(x => x.Variants)
             .Include(x => x.Images)

@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace FurEverCarePlatform.Application.Features.Product.DTOs;
+namespace FurEverCarePlatform.Application.Features.Products.DTOs;
 
 public class ProductSpecificDTO
 {

@@ -1,4 +1,4 @@
-﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
+﻿using FurEverCarePlatform.Application.Features.Products.DTOs;
 
 namespace FurEverCarePlatform.Application.MappingProfile;
 
@@ -17,7 +17,7 @@ public class ProductProfile : Profile
         CreateMap<Product, ProductDTO>()
             .ForMember(
                 dest => dest.ProductImage,
-                opt => opt.MapFrom(src => src.Images.FirstOrDefault())
+                opt => opt.MapFrom(src => src.Images.FirstOrDefault().ImageUrl)
             )
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))

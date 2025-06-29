@@ -1,12 +1,12 @@
-﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Features.Products.DTOs;
 
-namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
+namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProduct;
 
 public class CreateProductCommand : IRequest<Guid>
 {

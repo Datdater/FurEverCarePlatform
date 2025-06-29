@@ -1,30 +1,32 @@
-﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Features.Products.DTOs;
 
-namespace FurEverCarePlatform.Application.Features.Product.Commands.UpdateProduct;
+namespace FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 
 public class UpdateProductValidator : AbstractValidator<UpdateProductCommand>
 {
     public UpdateProductValidator()
     {
-        RuleFor(p => p.Id)
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull();
+        RuleFor(p => p.Id).NotEmpty().WithMessage("{PropertyName} is required.").NotNull();
         RuleFor(p => p.Name)
-            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required.")
             .NotNull()
-            .MaximumLength(100).WithMessage("{PropertyName} must not exceed 100 characters.");
+            .MaximumLength(100)
+            .WithMessage("{PropertyName} must not exceed 100 characters.");
         RuleFor(p => p.ProductTypes)
-               .Must(BeUniqueProductTypeNames)
-               .WithMessage("Product type names must be unique.");
+            .Must(BeUniqueProductTypeNames)
+            .WithMessage("Product type names must be unique.");
 
         RuleFor(p => p.ProductPrices)
             .Must(HaveDifferentProductTypeDetails)
-            .WithMessage("Product type details (ProductTypeDetails1 and ProductTypeDetails2) must be different when both are provided.");
+            .WithMessage(
+                "Product type details (ProductTypeDetails1 and ProductTypeDetails2) must be different when both are provided."
+            );
     }
 
     private bool BeUniqueProductTypeNames(List<ProductTypeDTO> productTypes)
@@ -48,13 +50,18 @@ public class UpdateProductValidator : AbstractValidator<UpdateProductCommand>
 
         foreach (var price in productPrices)
         {
-            if (!string.IsNullOrWhiteSpace(price.ProductTypeDetails1) &&
-                !string.IsNullOrWhiteSpace(price.ProductTypeDetails2))
+            if (
+                !string.IsNullOrWhiteSpace(price.ProductTypeDetails1)
+                && !string.IsNullOrWhiteSpace(price.ProductTypeDetails2)
+            )
             {
-                if (string.Equals(
-                    price.ProductTypeDetails1.Trim(),
-                    price.ProductTypeDetails2.Trim(),
-                    StringComparison.OrdinalIgnoreCase))
+                if (
+                    string.Equals(
+                        price.ProductTypeDetails1.Trim(),
+                        price.ProductTypeDetails2.Trim(),
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                )
                 {
                     return false;
                 }

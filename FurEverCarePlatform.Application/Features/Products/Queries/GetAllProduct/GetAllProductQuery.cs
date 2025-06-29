@@ -1,6 +1,6 @@
-﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
+﻿using FurEverCarePlatform.Application.Features.Products.DTOs;
 
-namespace FurEverCarePlatform.Application.Features.Product.Queries.GetAllProduct;
+namespace FurEverCarePlatform.Application.Features.Products.Queries.GetAllProduct;
 
 public class GetAllProductQuery : IRequest<Pagination<ProductDTO>>
 {

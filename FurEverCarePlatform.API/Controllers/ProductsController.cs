@@ -1,10 +1,11 @@
 ﻿using FurEverCarePlatform.Application.Commons;
-using FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
-using FurEverCarePlatform.Application.Features.Product.Commands.DeleteProduct;
-using FurEverCarePlatform.Application.Features.Product.Commands.UpdateProduct;
-using FurEverCarePlatform.Application.Features.Product.DTOs;
-using FurEverCarePlatform.Application.Features.Product.Queries.GetAllProduct;
-using FurEverCarePlatform.Application.Features.Product.Queries.GetProductDetail;
+using FurEverCarePlatform.Application.Features.Products.Commands.CreateProduct;
+using FurEverCarePlatform.Application.Features.Products.Commands.DeleteProduct;
+using FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
+using FurEverCarePlatform.Application.Features.Products.DTOs;
+using FurEverCarePlatform.Application.Features.Products.Queries.GetAllProduct;
+using FurEverCarePlatform.Application.Features.Products.Queries.GetProductDetail;
+using FurEverCarePlatform.Application.Features.Products.Queries.GetProductReviews;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +52,20 @@ namespace FurEverCarePlatform.API.Controllers
         {
             await mediator.Send(updateProduct);
             return NoContent();
+        }
+
+        [HttpGet("{id}/reviews")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetProductReviews(Guid id)
+        {
+            // Assuming you have a query to get product reviews
+            var reviews = await mediator.Send(new GetProductReviewsQuery { ProductId = id });
+            if (reviews == null)
+            {
+                return NotFound();
+            }
+            return Ok(reviews);
         }
     }
 }

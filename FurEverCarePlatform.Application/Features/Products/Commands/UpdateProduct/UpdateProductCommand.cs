@@ -1,11 +1,11 @@
-﻿using FurEverCarePlatform.Application.Features.Product.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Features.Products.DTOs;
 
-namespace FurEverCarePlatform.Application.Features.Product.Commands.UpdateProduct;
+namespace FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 
 public class UpdateProductCommand : IRequest<Guid>
 {

@@ -858,9 +858,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<string>("SpecialRequirement")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");

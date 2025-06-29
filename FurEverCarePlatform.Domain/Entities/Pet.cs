@@ -8,7 +8,7 @@ public class Pet : BaseEntity
 
     public string? SpecialRequirement { get; set; }
     public string? Image { get; set; }
-    public required Guid UserId { get; set; }
+    public required Guid AppUserId { get; set; }
     public string? Color { get; set; }
 
     public virtual AppUser AppUser { get; set; }

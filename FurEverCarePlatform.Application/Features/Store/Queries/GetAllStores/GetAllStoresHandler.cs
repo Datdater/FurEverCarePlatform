@@ -1,7 +1,7 @@
-﻿//using FurEverCarePlatform.Application.Commons.Interfaces;
-//using FurEverCarePlatform.Application.Features.Store.DTOs;
+﻿////using FurEverCarePlatform.Application.Commons.Interfaces;
+////using FurEverCarePlatform.Application.Features.Store.DTOs;
 
-//namespace FurEverCarePlatform.Application.Features.Store.Queries.GetAllStores;
+////namespace FurEverCarePlatform.Application.Features.Store.Queries.GetAllStores;
 
 //public class GetAllStoresHandler(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claimService)
 //    : IRequestHandler<GetAllStoresQuery, Pagination<StoreDTO>>

@@ -9,7 +9,7 @@ public class Product : BaseEntity
     public Guid StoreId { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
-    public decimal BasePrice { get; set; }
+    public float BasePrice { get; set; }
     public decimal Weight { get; set; }
     public decimal Length { get; set; }
     public decimal Height { get; set; }
@@ -61,7 +61,7 @@ public class ProductVariant : BaseEntity
 {
     public Guid ProductId { get; set; }
     public JsonDocument Attributes { get; set; }
-    public decimal Price { get; set; }
+    public float Price { get; set; }
     public int Stock { get; set; }
 
     // Navigation property nếu dùng EF Core

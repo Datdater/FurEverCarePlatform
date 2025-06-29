@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetListServiceCategory
 {
-	public class GetListServiceCategoryQuery : IRequest<List<ServiceCategoryDto>>
-	{
-	}
+    public class GetListServiceCategoryQuery : IRequest<List<ServiceCategoryDto>> { }
 }

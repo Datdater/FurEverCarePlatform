@@ -32,6 +32,15 @@ namespace FurEverCarePlatform.Persistence
             services.AddDbContext<PetDatabaseContext>(option =>
                 option.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             );
+            // Add Redis Cache
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("Redis");
+                options.InstanceName = "CartInstance_";
+            });
+
+            // Register repositories
+            services.AddScoped<ICartRepository, RedisCartRepository>();
 
             services
                 .AddIdentity<AppUser, AppRole>()

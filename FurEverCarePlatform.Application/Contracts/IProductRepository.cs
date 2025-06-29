@@ -6,6 +6,4 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Contracts;
 
-public interface IProductRepository : IGenericRepository<Product>
-{
-}
+public interface IProductRepository : IGenericRepository<Domain.Entities.Product> { }

@@ -650,10 +650,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<JsonDocument>("Attribute")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -678,12 +674,8 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("OrderId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("PictureUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
@@ -691,11 +683,14 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("ProductName")
+                    b.Property<Guid>("ProductVariationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ProductVariationName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ProductVariationId")
+                    b.Property<string>("ProductionName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -710,6 +705,8 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductVariationId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -1053,8 +1050,8 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("BasePrice")
-                        .HasColumnType("numeric");
+                    b.Property<float>("BasePrice")
+                        .HasColumnType("real");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
@@ -1292,8 +1289,8 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
@@ -1794,9 +1791,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .WithOne("OrderDetail")
                         .HasForeignKey("FurEverCarePlatform.Domain.Entities.OrderDetail", "FeedbackId");
 
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Order", null)
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.Order", "Order")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FurEverCarePlatform.Domain.Entities.Product", "Product")
                         .WithMany()
@@ -1804,9 +1803,19 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.ProductVariant", "ProductVariation")
+                        .WithMany()
+                        .HasForeignKey("ProductVariationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Feedback");
 
+                    b.Navigation("Order");
+
                     b.Navigation("Product");
+
+                    b.Navigation("ProductVariation");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Payment", b =>

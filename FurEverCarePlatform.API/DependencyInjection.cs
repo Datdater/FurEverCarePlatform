@@ -1,21 +1,25 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 namespace FurEverCarePlatform.API
 {
     public static class DependencyInjection
     {
-        public static void AddApiService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApiService(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
-            var secret = configuration["Jwt:SecretKey"];
+            var secret = configuration["Jwt:Key"];
             if (string.IsNullOrEmpty(secret))
             {
                 throw new ArgumentException("JWT SecretKey is not configured in appsettings.json.");
             }
 
-            services.AddAuthentication(opts =>
+            services
+                .AddAuthentication(opts =>
                 {
                     opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

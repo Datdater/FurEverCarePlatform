@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
 
 namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices
 {

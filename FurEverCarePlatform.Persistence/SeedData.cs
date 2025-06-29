@@ -409,10 +409,10 @@ public static class SeedData
             c.Id == Guid.Parse("e11c4d8a-0707-446e-a95a-078342a656ee")
         );
 
-        var products = new List<Product>
+        var products = new List<Domain.Entities.Product>
         {
             // Dog Food Products
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogFoodCategory.Id,
@@ -420,7 +420,7 @@ public static class SeedData
                 Name = "Thức Ăn Chó Cao Cấp - Gà & Gạo Lứt",
                 Description =
                     "Thức ăn chó chất lượng cao được làm từ thịt gà thật và gạo lứt. Hoàn hảo cho chó trưởng thành.",
-                BasePrice = 250000m,
+                BasePrice = 250000f,
                 Weight = 2.5m,
                 Length = 30.0m,
                 Height = 15.0m,
@@ -430,7 +430,7 @@ public static class SeedData
                 TotalRating = 202,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogFoodCategory.Id,
@@ -438,7 +438,7 @@ public static class SeedData
                 Name = "Thức Ăn Chó Không Ngũ Cốc - Cá Hồi",
                 Description =
                     "Thức ăn chó không chứa ngũ cốc với cá hồi làm protein chính. Lý tưởng cho chó có dạ dày nhạy cảm.",
-                BasePrice = 320000m,
+                BasePrice = 320000f,
                 Weight = 3.0m,
                 Length = 35.0m,
                 Height = 18.0m,
@@ -449,7 +449,7 @@ public static class SeedData
                 CreationDate = DateTime.UtcNow,
             },
             // Cat Food Products
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catFoodCategory.Id,
@@ -457,7 +457,7 @@ public static class SeedData
                 Name = "Thức Ăn Mèo Cao Cấp - Cá Ngừ & Cá Hồi",
                 Description =
                     "Thức ăn mèo ngon miệng với cá ngừ và cá hồi. Giàu axit béo omega-3 cho da và lông khỏe mạnh.",
-                BasePrice = 180000m,
+                BasePrice = 180000f,
                 Weight = 1.5m,
                 Length = 25.0m,
                 Height = 12.0m,
@@ -467,7 +467,7 @@ public static class SeedData
                 TotalRating = 308,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catFoodCategory.Id,
@@ -475,7 +475,7 @@ public static class SeedData
                 Name = "Thức Ăn Mèo Hữu Cơ - Gà & Rau Củ",
                 Description =
                     "Thức ăn mèo hữu cơ làm từ gà thả vườn và rau củ tươi. Không có chất bảo quản nhân tạo.",
-                BasePrice = 280000m,
+                BasePrice = 280000f,
                 Weight = 2.0m,
                 Length = 28.0m,
                 Height = 14.0m,
@@ -486,7 +486,7 @@ public static class SeedData
                 CreationDate = DateTime.UtcNow,
             },
             // Dog Toys
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogToysCategory.Id,
@@ -494,7 +494,7 @@ public static class SeedData
                 Name = "Đồ Chơi Thông Minh Cho Chó - Puzzle",
                 Description =
                     "Đồ chơi puzzle kích thích trí não giúp chó của bạn thông minh hơn và giải trí hàng giờ.",
-                BasePrice = 150000m,
+                BasePrice = 150000f,
                 Weight = 0.5m,
                 Length = 20.0m,
                 Height = 8.0m,
@@ -504,7 +504,7 @@ public static class SeedData
                 TotalRating = 263,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogToysCategory.Id,
@@ -512,7 +512,7 @@ public static class SeedData
                 Name = "Đồ Chơi Gặm Nhai Bền - Bóng Dây Thừng",
                 Description =
                     "Bóng dây thừng siêu bền cho chó gặm nhai mạnh. Tốt cho sức khỏe răng miệng và thỏa mãn bản năng gặm nhai.",
-                BasePrice = 120000m,
+                BasePrice = 120000f,
                 Weight = 0.3m,
                 Length = 15.0m,
                 Height = 15.0m,
@@ -523,7 +523,7 @@ public static class SeedData
                 CreationDate = DateTime.UtcNow,
             },
             // Cat Toys
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catToysCategory.Id,
@@ -531,7 +531,7 @@ public static class SeedData
                 Name = "Đồ Chơi Laser Cho Mèo",
                 Description =
                     "Đồ chơi laser tương tác mang lại niềm vui vô tận cho mèo cưng của bạn.",
-                BasePrice = 85000m,
+                BasePrice = 85000f,
                 Weight = 0.1m,
                 Length = 12.0m,
                 Height = 3.0m,
@@ -541,7 +541,7 @@ public static class SeedData
                 TotalRating = 529,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catToysCategory.Id,
@@ -549,7 +549,7 @@ public static class SeedData
                 Name = "Bộ Đồ Chơi Chuột Có Cỏ Mèo",
                 Description =
                     "Bộ 3 chuột đồ chơi có tẩm cỏ mèo. Hoàn hảo để khuyến khích bản năng săn mồi tự nhiên.",
-                BasePrice = 65000m,
+                BasePrice = 65000f,
                 Weight = 0.2m,
                 Length = 8.0m,
                 Height = 5.0m,
@@ -579,7 +579,7 @@ public static class SeedData
             //    CreationDate = DateTime.UtcNow,
             //},
             // Collars & Leashes
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = collarsCategory.Id,
@@ -587,7 +587,7 @@ public static class SeedData
                 Name = "Vòng Cổ Chó Điều Chỉnh - Da Thật",
                 Description =
                     "Vòng cổ chó da thật cao cấp với khóa điều chỉnh. Thoải mái và bền bỉ cho sử dụng hàng ngày.",
-                BasePrice = 220000m,
+                BasePrice = 220000f,
                 Weight = 0.2m,
                 Length = 60.0m,
                 Height = 3.0m,
@@ -599,7 +599,7 @@ public static class SeedData
             },
         };
 
-        await context.Products.AddRangeAsync(products);
+        //await context.Products.AddRangeAsync(products);
         await context.SaveChangesAsync();
 
         // Add product variants
@@ -611,7 +611,7 @@ public static class SeedData
 
     private static async Task SeedProductVariants(
         PetDatabaseContext context,
-        List<Product> products
+        List<Domain.Entities.Product> products
     )
     {
         if (await context.ProductVariations.AnyAsync())
@@ -627,19 +627,19 @@ public static class SeedData
                 new
                 {
                     Size = "Nhỏ",
-                    PriceModifier = 0.0m,
+                    PriceModifier = 0.0f,
                     Stock = 50,
                 },
                 new
                 {
                     Size = "Vừa",
-                    PriceModifier = 50000m,
+                    PriceModifier = 50000f,
                     Stock = 75,
                 },
                 new
                 {
                     Size = "Lớn",
-                    PriceModifier = 100000m,
+                    PriceModifier = 100000f,
                     Stock = 30,
                 },
             };
@@ -666,7 +666,10 @@ public static class SeedData
         await context.SaveChangesAsync();
     }
 
-    private static async Task SeedProductImages(PetDatabaseContext context, List<Product> products)
+    private static async Task SeedProductImages(
+        PetDatabaseContext context,
+        List<Domain.Entities.Product> products
+    )
     {
         if (await context.ProductImages.AnyAsync())
             return;

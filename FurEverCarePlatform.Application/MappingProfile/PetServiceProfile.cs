@@ -2,7 +2,6 @@
 using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
-using FurEverCarePlatform.Application.Features.Product.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

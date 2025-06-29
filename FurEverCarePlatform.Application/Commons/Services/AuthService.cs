@@ -1,266 +1,167 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using FurEverCarePlatform.Application.Commons.Interfaces;
-using FurEverCarePlatform.Application.Dtos;
+using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Commons.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging;
 
-namespace FurEverCarePlatform.Application.Commons.Services
+public class AuthService
 {
-    public class AuthService
+    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly JwtTokenGenerator _jwtTokenGenerator;
+    private readonly UserService _userService;
+    private readonly ILogger<AuthService> _logger;
+
+    public AuthService(
+        UserManager<AppUser> userManager,
+        SignInManager<AppUser> signInManager,
+        JwtTokenGenerator jwtTokenGenerator,
+        UserService userService,
+        ILogger<AuthService> logger
+    )
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly IConfiguration _configuration;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _jwtTokenGenerator = jwtTokenGenerator;
+        _userService = userService;
+        _logger = logger;
+    }
 
-        public AuthService(UserManager<AppUser> userManager, IConfiguration configuration)
+    public async Task<(bool Success, string Message, LoginResponseDto Response)> LoginAsync(
+        string email,
+        string password
+    )
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
         {
-            _userManager = userManager;
-            _configuration = configuration;
+            return (false, "User does not exist", null);
         }
 
-        public async Task<(string AccessToken, string RefreshToken, AppUserDto User)> LoginAsync(string username, string password)
+        var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, true);
+
+        if (signInResult.Succeeded)
         {
-            var user = await _userManager.FindByEmailAsync(username);
-            if (user == null)
-                user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == username);
+            // Update last login date
+            await _userManager.UpdateAsync(user);
 
-            if (user != null)
-            {
-                var passwordValid = await _userManager.CheckPasswordAsync(user, password);
-                if (passwordValid)
-                {
-                    var claims = new[]
-                    {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(
-                            ClaimTypes.Role,
-                            (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "Store Owner"
-                        ),
-                    };
-
-                    // Tạo access token
-                    var accessKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])
-                    );
-                    var accessCreds = new SigningCredentials(
-                        accessKey,
-                        SecurityAlgorithms.HmacSha256
-                    );
-
-                    var accessToken = new JwtSecurityToken(
-                        issuer: _configuration["Jwt:Issuer"],
-                        audience: _configuration["Jwt:Audience"],
-                        claims: claims,
-                        expires: DateTime.UtcNow.AddMinutes(45),
-                        signingCredentials: accessCreds
-                    );
-
-                    var accessTokenString = new JwtSecurityTokenHandler().WriteToken(accessToken);
-
-                    // Tạo refresh token
-                    var refreshTokenString = GenerateRefreshTokenAsJwt(user.Id);
-
-                    // Tạo AppUserDto
-                    var userDto = new AppUserDto
-                    {
-                        Id = user.Id,
-                        Name = user.Name,
-                        PhoneNumber = user.PhoneNumber,
-                        Email = user.Email
-                    };
-
-                    return (accessTokenString, refreshTokenString, userDto);
-                }
-            }
-            return (null, null, null); // Đăng nhập thất bại
-        }
-
-        public async Task<(bool Succeeded, string AccessToken, string RefreshToken, AppUserDto User, string[] Errors)> RegisterAsync(RegisterModel model)
-        {
-            var user = new AppUser
-            {
-                Id = Guid.NewGuid(),
-                Email = model.Email,
-                Name = model.Name,
-                UserName = model.Name,
-                PhoneNumber = model.Phone,
-                CreationDate = DateTime.UtcNow,
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, "Store Owner");
-
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, "Store Owner"),
-                };
-
-                var accessKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])
-                );
-                var accessCreds = new SigningCredentials(accessKey, SecurityAlgorithms.HmacSha256);
-
-                var accessToken = new JwtSecurityToken(
-                    issuer: _configuration["Jwt:Issuer"],
-                    audience: _configuration["Jwt:Audience"],
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(15),
-                    signingCredentials: accessCreds
-                );
-
-                var accessTokenString = new JwtSecurityTokenHandler().WriteToken(accessToken);
-
-                var refreshTokenString = GenerateRefreshTokenAsJwt(user.Id);
-
-                var userDto = new AppUserDto
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    PhoneNumber = user.PhoneNumber,
-                    Email = user.Email
-                };
-
-                return (true, accessTokenString, refreshTokenString, userDto, null);
-            }
-
-            return (false, null, null, null, result.Errors.Select(e => e.Description).ToArray());
-        }
-
-        private string GenerateRefreshTokenAsJwt(Guid userId)
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                new Claim("type", "refresh")
-            };
-
-            var refreshKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:RefreshSecretKey"])
-            );
-            var refreshCreds = new SigningCredentials(refreshKey, SecurityAlgorithms.HmacSha256);
-
-            var refreshToken = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(7),
-                signingCredentials: refreshCreds
+            // Generate tokens
+            var (accessToken, expiresAt) = await _jwtTokenGenerator.GenerateAccessTokenAsync(user);
+            var refreshToken = await _jwtTokenGenerator.GenerateRefreshTokenAsync(
+                user.Id.ToString()
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(refreshToken);
+            // Get user details
+            var userDetails = await _userService.GetUserDetailsAsync(user.Id.ToString());
+
+            var response = new LoginResponseDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim() },
+            };
+
+            return (true, "Login successful", response);
         }
 
-        public async Task<(string AccessToken, string RefreshToken, AppUserDto User)> RefreshTokenAsync(string refreshToken)
+        if (signInResult.IsLockedOut)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var refreshKey = Encoding.UTF8.GetBytes(_configuration["Jwt:RefreshSecretKey"]);
-
-            try
-            {
-                var principal = tokenHandler.ValidateToken(
-                    refreshToken,
-                    new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(refreshKey),
-                        ValidateIssuer = true,
-                        ValidIssuer = _configuration["Jwt:Issuer"],
-                        ValidateAudience = true,
-                        ValidAudience = _configuration["Jwt:Audience"],
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero
-                    },
-                    out SecurityToken validatedToken
-                );
-
-                if (principal.FindFirst("type")?.Value != "refresh")
-                    return (null, null, null);
-
-                var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null)
-                    return (null, null, null);
-
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                    return (null, null, null);
-
-                var claims = new[]
-                {
-                    new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(
-                        ClaimTypes.Role,
-                        (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User"
-                    ),
-                };
-
-                var accessKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])
-                );
-                var creds = new SigningCredentials(accessKey, SecurityAlgorithms.HmacSha256);
-
-                var newAccessToken = new JwtSecurityToken(
-                    issuer: _configuration["Jwt:Issuer"],
-                    audience: _configuration["Jwt:Audience"],
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(15),
-                    signingCredentials: creds
-                );
-
-                var newAccessTokenString = new JwtSecurityTokenHandler().WriteToken(newAccessToken);
-
-                var newRefreshTokenString = GenerateRefreshTokenAsJwt(user.Id);
-
-                var userDto = new AppUserDto
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    PhoneNumber = user.PhoneNumber,
-                    Email = user.Email
-                };
-
-                return (newAccessTokenString, newRefreshTokenString, userDto);
-            }
-            catch
-            {
-                return (null, null, null);
-            }
+            return (false, "Account is locked out", null);
         }
+
+        return (false, "Invalid credentials", null);
     }
 
-    public class RegisterModel
+    public async Task<(bool Success, string Message)> RegisterAsync(RegisterRequestDto request)
     {
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; }
+        var existingUser = await _userManager.FindByEmailAsync(request.Email);
+        if (existingUser != null)
+        {
+            return (false, "User with this email already exists");
+        }
 
-        [Required(ErrorMessage = "Password is required")]
-        [StringLength(
-            100,
-            MinimumLength = 6,
-            ErrorMessage = "Password must be at least 6 characters long"
-        )]
-        public string Password { get; set; }
+        var user = new AppUser
+        {
+            UserName = request.Email,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            EmailConfirmed = false, // For simplicity; in production, implement email confirmation
+        };
 
-        [Required(ErrorMessage = "Name is required")]
-        public string Name { get; set; }
+        var createResult = await _userManager.CreateAsync(user, request.Password);
 
-        [Required(ErrorMessage = "Phone is required")]
-        public string Phone { get; set; }
+        if (!createResult.Succeeded)
+        {
+            var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+            return (false, $"User creation failed: {errors}");
+        }
+
+        // Add user to role
+        var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+
+        if (!roleResult.Succeeded)
+        {
+            var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+            _logger.LogWarning("Role assignment failed: {Errors}", errors);
+        }
+
+        // Generate tokens
+        var (accessToken, expiresAt) = await _jwtTokenGenerator.GenerateAccessTokenAsync(user);
+        var refreshToken = await _jwtTokenGenerator.GenerateRefreshTokenAsync(user.Id.ToString());
+
+        return (true, "Registration successful");
     }
 
-    public class LoginModel
+    public async Task<LoginResponseDto> RefreshTokenAsync(string refreshToken)
     {
-        public string EmailorPhone { get; set; }
-        public string Password { get; set; }
+        var (isValid, userId) = await _jwtTokenGenerator.ValidateRefreshTokenAsync(refreshToken);
+
+        if (!isValid || string.IsNullOrEmpty(userId))
+        {
+            return null;
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+
+        // Generate new tokens
+        var (accessToken, expiresAt) = await _jwtTokenGenerator.GenerateAccessTokenAsync(user);
+        var newRefreshToken = await _jwtTokenGenerator.GenerateRefreshTokenAsync(
+            user.Id.ToString()
+        );
+
+        var response = new LoginResponseDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = newRefreshToken,
+            User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim() },
+        };
+
+        return null;
     }
+}
+
+public class LoginResponseDto
+{
+    public string AccessToken { get; set; }
+    public string RefreshToken { get; set; }
+    public UserDto User { get; set; }
+}
+
+public class UserDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Avatar { get; set; }
+}
+
+public class RegisterRequestDto
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
 }

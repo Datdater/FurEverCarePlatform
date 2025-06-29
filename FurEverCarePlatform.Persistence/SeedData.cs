@@ -412,10 +412,10 @@ public static class SeedData
             c.Id == Guid.Parse("e11c4d8a-0707-446e-a95a-078342a656ee")
         );
 
-        var products = new List<Product>
+        var products = new List<Domain.Entities.Product>
         {
             // Dog Food Products
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogFoodCategory.Id,
@@ -433,7 +433,7 @@ public static class SeedData
                 TotalRating = 202,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogFoodCategory.Id,
@@ -452,7 +452,7 @@ public static class SeedData
                 CreationDate = DateTime.UtcNow,
             },
             // Cat Food Products
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catFoodCategory.Id,
@@ -470,7 +470,7 @@ public static class SeedData
                 TotalRating = 308,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catFoodCategory.Id,
@@ -489,7 +489,7 @@ public static class SeedData
                 CreationDate = DateTime.UtcNow,
             },
             // Dog Toys
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogToysCategory.Id,
@@ -507,7 +507,7 @@ public static class SeedData
                 TotalRating = 263,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = dogToysCategory.Id,
@@ -526,7 +526,7 @@ public static class SeedData
                 CreationDate = DateTime.UtcNow,
             },
             // Cat Toys
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catToysCategory.Id,
@@ -544,7 +544,7 @@ public static class SeedData
                 TotalRating = 529,
                 CreationDate = DateTime.UtcNow,
             },
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = catToysCategory.Id,
@@ -582,7 +582,7 @@ public static class SeedData
             //    CreationDate = DateTime.UtcNow,
             //},
             // Collars & Leashes
-            new Product
+            new Domain.Entities.Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = collarsCategory.Id,
@@ -602,7 +602,7 @@ public static class SeedData
             },
         };
 
-        await context.Products.AddRangeAsync(products);
+        //await context.Products.AddRangeAsync(products);
         await context.SaveChangesAsync();
 
         // Add product variants
@@ -614,7 +614,7 @@ public static class SeedData
 
     private static async Task SeedProductVariants(
         PetDatabaseContext context,
-        List<Product> products
+        List<Domain.Entities.Product> products
     )
     {
         if (await context.ProductVariations.AnyAsync())
@@ -669,7 +669,10 @@ public static class SeedData
         await context.SaveChangesAsync();
     }
 
-    private static async Task SeedProductImages(PetDatabaseContext context, List<Product> products)
+    private static async Task SeedProductImages(
+        PetDatabaseContext context,
+        List<Domain.Entities.Product> products
+    )
     {
         if (await context.ProductImages.AnyAsync())
             return;

@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Order.Application.Feature.Orders.Commands
+namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
 {
     public class CreateOrderCommand : IRequest
     {

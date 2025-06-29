@@ -12,7 +12,7 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
     )
     {
         var productDetail = await unitOfWork
-            .GetRepository<Product>()
+            .GetRepository<Domain.Entities.Product>()
             .GetQueryable()
             .Include(x => x.Variants)
             .Include(x => x.Images)

@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Order.Application.Feature.Orders.Commands
+namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
 {
     public class CreateOrderHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateOrderCommand>
     {
@@ -24,14 +24,14 @@ namespace Order.Application.Feature.Orders.Commands
                 totalPrice += productVariation.Price * item.Quantity;
             }
 
-            var order = new FurEverCarePlatform.Domain.Entities.Order
+            var order = new Order
             {
                 AddressId = request.AddressId,
                 UserId = request.CustomerId,
                 TotalPrice = totalPrice,
                 Code = GenerateOrderCode(),
                 OrderDetails = request
-                    .OrderDetails.Select(x => new FurEverCarePlatform.Domain.Entities.OrderDetail
+                    .OrderDetails.Select(x => new OrderDetail
                     {
                         ProductVariationId = x.ProductVariationId,
                         Quantity = x.Quantity,
@@ -45,15 +45,10 @@ namespace Order.Application.Feature.Orders.Commands
                                 .FirstOrDefault(),
                     })
                     .ToList(),
-                OrderStatus = FurEverCarePlatform.Domain.Enums.EnumOrderStatus.Pending,
-                Payment = new FurEverCarePlatform.Domain.Entities.Payment
-                {
-                    PaymentMethod = request.PaymentMethod,
-                },
+                OrderStatus = Domain.Enums.EnumOrderStatus.Pending,
+                Payment = new Payment { PaymentMethod = request.PaymentMethod },
             };
-            await unitOfWork
-                .GetRepository<FurEverCarePlatform.Domain.Entities.Order>()
-                .InsertAsync(order);
+            await unitOfWork.GetRepository<Order>().InsertAsync(order);
             await unitOfWork.SaveAsync();
         }
 

@@ -12,11 +12,11 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
     )
     {
         var product = unitOfWork
-            .GetRepository<Product>()
+            .GetRepository<Domain.Entities.Product>()
             .GetQueryable()
             .Include(x => x.Store)
             .Where(x => !x.IsDeleted);
-        var productRaw = await Pagination<Product>.CreateAsync(
+        var productRaw = await Pagination<Domain.Entities.Product>.CreateAsync(
             product,
             request.PageNumber,
             request.PageSize

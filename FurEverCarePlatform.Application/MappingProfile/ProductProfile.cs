@@ -14,7 +14,7 @@ public class ProductProfile : Profile
         //.ReverseMap();
         //CreateMap<List<ProductPrice>, List<ProductPricesDTO>>().ReverseMap();
         //CreateMap<ProductImages, ProductImagesDTO>().ReverseMap();
-        CreateMap<Product, ProductDTO>()
+        CreateMap<Domain.Entities.Product, ProductDTO>()
             .ForMember(
                 dest => dest.ProductImage,
                 opt => opt.MapFrom(src => src.Images.FirstOrDefault().ImageUrl)
@@ -55,6 +55,7 @@ public class ProductProfile : Profile
         //        opt => opt.MapFrom(src => src.ProductCategory.Name)
         //    )
         //    .ForMember(dest => dest.ProductTypes, opt => opt.MapFrom(src => src.ProductTypes));
-        CreateMap<Pagination<Product>, Pagination<ProductDTO>>().ReverseMap();
+        CreateMap<Pagination<Domain.Entities.Product>, Pagination<ProductDTO>>()
+            .ReverseMap();
     }
 }

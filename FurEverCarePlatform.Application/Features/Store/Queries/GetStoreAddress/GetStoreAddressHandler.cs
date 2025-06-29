@@ -19,7 +19,6 @@ public class GetStoreAddressHandler(IUnitOfWork unitOfWork, IClaimService claimS
             );
 
         var userAddressDtos = userAddresses
-            .Where(address => address.Store == null)
             .Select(address => new StoreAddressDTO()
             {
                 Id = address.Id,

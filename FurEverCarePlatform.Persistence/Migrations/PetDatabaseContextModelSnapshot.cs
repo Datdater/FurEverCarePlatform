@@ -81,9 +81,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
@@ -1461,10 +1458,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AddressId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("AppUserId")
+                    b.Property<Guid>("AppUserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("BackIdentityCardUrl")
@@ -1542,13 +1536,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique();
 
                     b.HasIndex("AppUserId");
 
@@ -1978,17 +1966,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Store", b =>
                 {
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Address", "Address")
-                        .WithOne("Store")
-                        .HasForeignKey("FurEverCarePlatform.Domain.Entities.Store", "AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FurEverCarePlatform.Domain.Entities.AppUser", "AppUser")
                         .WithMany("Stores")
-                        .HasForeignKey("AppUserId");
-
-                    b.Navigation("Address");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
                 });
@@ -2049,8 +2031,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.AppUser", b =>

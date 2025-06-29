@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using FurEverCarePlatform.Application.Features.Pets.dto;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
+using FurEverCarePlatform.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -14,8 +16,15 @@ namespace FurEverCarePlatform.Application.Features.Pets.Queries.GetAllPets
 
 		public async Task<Pagination<PetDTO>> Handle(GetAllPetsQuery request, CancellationToken cancellationToken)
 		{
-			//return mapper.Map<Pagination<PetDTO>>(petRaw);
-            throw new NotImplementedException();
-		}
+            var pets = unitOfWork.GetRepository<Pet>().GetQueryable();
+
+            var petPagination = await Pagination<Pet>.CreateAsync(
+                pets,
+                request.PageIndex,
+                request.PageSize
+            );
+            var data = mapper.Map<Pagination<PetDTO>>(petPagination);
+            return data;
+        }
 	}
 }

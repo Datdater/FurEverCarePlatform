@@ -18,6 +18,7 @@ namespace FurEverCarePlatform.Application.Features.Pets.Commands.CreatePet
         {
             var pet = mapper.Map<Pet>(request);
             await unitOfWork.GetRepository<Pet>().InsertAsync(pet);
+            await unitOfWork.SaveAsync();
             return pet.Id;
         }
     }

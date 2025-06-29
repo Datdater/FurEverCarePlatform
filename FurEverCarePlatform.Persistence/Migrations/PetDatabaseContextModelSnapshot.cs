@@ -85,7 +85,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.AppRole", b =>
@@ -280,7 +280,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.BookingDetail", b =>
@@ -350,7 +350,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("BookingDetails");
+                    b.ToTable("BookingDetails", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ChatMessage", b =>
@@ -425,7 +425,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Delivery", b =>
@@ -469,7 +469,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deliveries");
+                    b.ToTable("Deliveries", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Feedback", b =>
@@ -521,7 +521,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Notification", b =>
@@ -569,7 +569,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Order", b =>
@@ -641,7 +641,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.OrderDetail", b =>
@@ -711,7 +711,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Payment", b =>
@@ -769,7 +769,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.PaymentMethod", b =>
@@ -806,7 +806,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentMethods");
+                    b.ToTable("PaymentMethods", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Pet", b =>
@@ -862,7 +862,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Pets");
+                    b.ToTable("Pets", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.PetService", b =>
@@ -931,7 +931,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("PetServices");
+                    b.ToTable("PetServices", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.PetServiceDetail", b =>
@@ -991,7 +991,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("PetServiceId");
 
-                    b.ToTable("PetServiceDetails");
+                    b.ToTable("PetServiceDetails", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.PetServiceStep", b =>
@@ -1041,7 +1041,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("PetServiceId");
 
-                    b.ToTable("PetServiceSteps");
+                    b.ToTable("PetServiceSteps", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Product", b =>
@@ -1114,7 +1114,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ProductCategory", b =>
@@ -1156,7 +1156,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("ProductCategories", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ProductImage", b =>
@@ -1200,7 +1200,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ProductReviews", b =>
@@ -1255,7 +1255,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductReviews");
+                    b.ToTable("ProductReviews", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ProductVariant", b =>
@@ -1302,7 +1302,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVariations");
+                    b.ToTable("ProductVariations", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Promotion", b =>
@@ -1359,7 +1359,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("Promotions");
+                    b.ToTable("Promotions", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Report", b =>
@@ -1412,7 +1412,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ServiceCategory", b =>
@@ -1449,7 +1449,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServiceCategories");
+                    b.ToTable("ServiceCategories", (string)null);
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Store", b =>
@@ -1540,7 +1540,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Stores");
+                    b.ToTable("Stores", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
-using Pet.Domain.Repositories;
 
 namespace FurEverCarePlatform.Application.Features.Pets.Commands.UpdatePet
 {

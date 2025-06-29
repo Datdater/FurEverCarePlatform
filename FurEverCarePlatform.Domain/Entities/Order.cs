@@ -8,7 +8,7 @@ public class Order : BaseEntity
 	public required Guid UserId { get; set; } 
 
 	[Column(TypeName = "money")]
-	public required decimal TotalPrice { get; set; } 
+	public required float TotalPrice { get; set; } 
 	public required string Code { get; set; } 
 
 	public Guid? PromotionId { get; set; } 

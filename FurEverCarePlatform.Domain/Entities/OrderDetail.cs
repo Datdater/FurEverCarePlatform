@@ -10,7 +10,7 @@ public class OrderDetail : BaseEntity
     public JsonDocument Attribute { get; set; }
     public string ProductVariationId { get; set; }
     public int Quantity { get; set; }
-    public decimal Price { get; set; }
+    public float Price { get; set; }
 
     public Guid? FeedbackId { get; set; }
 

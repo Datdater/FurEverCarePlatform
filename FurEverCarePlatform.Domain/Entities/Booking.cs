@@ -6,8 +6,8 @@ public class Booking : BaseEntity
     public string? Description { get; set; }
 
     public required Guid UserId { get; set; }
-    public required decimal RawAmount { get; set; }
-    public required decimal TotalAmount { get; set; }
+    public required float RawAmount { get; set; }
+    public required float TotalAmount { get; set; }
     public required string Code { get; set; }
     public Guid? PromotionId { get; set; }
 

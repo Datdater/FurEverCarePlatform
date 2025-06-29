@@ -256,11 +256,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("PromotionId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("RawAmount")
-                        .HasColumnType("numeric");
+                    b.Property<float>("RawAmount")
+                        .HasColumnType("real");
 
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("numeric");
+                    b.Property<float>("TotalAmount")
+                        .HasColumnType("real");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -331,11 +331,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<float?>("PetWeight")
                         .HasColumnType("real");
 
-                    b.Property<decimal>("RawAmount")
-                        .HasColumnType("numeric");
+                    b.Property<float>("RawAmount")
+                        .HasColumnType("real");
 
-                    b.Property<decimal>("RealAmount")
-                        .HasColumnType("numeric");
+                    b.Property<float>("RealAmount")
+                        .HasColumnType("real");
 
                     b.Property<Guid>("ServiceId")
                         .HasColumnType("uuid");
@@ -685,8 +685,8 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");

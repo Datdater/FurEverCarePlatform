@@ -14,7 +14,7 @@ public class GetAllStoresHandler(IUnitOfWork unitOfWork, IMapper mapper, IClaimS
         var storeRaw = await unitOfWork
             .GetRepository<Domain.Entities.Store>()
             .GetPaginationAsync(
-                predicate: (x) => x.UserId == claimService.GetCurrentUser,
+                predicate: (x) => x.AppUserId == claimService.GetCurrentUser,
                 includeProperties: "Promotions,PetServices",
                 request.PageNumber,
                 request.PageSize

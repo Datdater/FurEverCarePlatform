@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Repositories\Inteface\" />
+    <Folder Include="SeedData\" />
   </ItemGroup>
 
 </Project>

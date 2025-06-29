@@ -4,6 +4,7 @@ using System.Text.Json;
 using FurEverCarePlatform.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FurEverCarePlatform.Persistence.Migrations
 {
     [DbContext(typeof(PetDatabaseContext))]
-    partial class PetDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250629082549_FixPet")]
+    partial class FixPet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -857,9 +860,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Property<string>("SpecialRequirement")
                         .HasColumnType("text");
-
-                    b.Property<float?>("Weight")
-                        .HasColumnType("real");
 
                     b.HasKey("Id");
 

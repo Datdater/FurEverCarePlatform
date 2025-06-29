@@ -4,6 +4,7 @@ namespace FurEverCarePlatform.Application.Features.Store.Commands.CreateStore;
 
 public class CreateStoreCommand : IRequest<Guid>
 {
+    public required string Username { get; set; }
     [Required]
     [MaxLength(20)]
     public required string Name { get; set; }

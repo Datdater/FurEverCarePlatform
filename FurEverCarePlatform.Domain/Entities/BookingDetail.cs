@@ -4,7 +4,7 @@ namespace FurEverCarePlatform.Domain.Entities;
 
 public class BookingDetail : BaseEntity
 {
-    public Guid ServiceId { get; set; }
+    public Guid PetServiceDetailId { get; set; }
     public Guid PetId { get; set; }
     public required DateTime BookingTime { get; set; }
     public float RealAmount { get; set; }
@@ -16,8 +16,8 @@ public class BookingDetail : BaseEntity
 
     //Navigation
     public virtual Booking? Booking { get; set; }
-    public virtual Pet? Pet { get; set; }
+    public virtual Pet Pet { get; set; } = null!;
     public virtual AppUser? AssignedUser { get; set; }
-    [ForeignKey("ServiceId")]
-    public virtual PetService PetService { get; set; }
+    [ForeignKey("PetServiceDetailId")]
+    public virtual PetServiceDetail PetServiceDetail { get; set; } = null!;
 }

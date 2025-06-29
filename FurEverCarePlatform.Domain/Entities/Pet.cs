@@ -3,7 +3,7 @@
 public class Pet : BaseEntity
 {
     public required string Name { get; set; }
-    public bool? PetType { get; set; }
+    public bool PetType { get; set; }
     public DateTime? Dob { get; set; }
     public float? Weight { get; set; }
 
@@ -12,6 +12,6 @@ public class Pet : BaseEntity
     public required Guid AppUserId { get; set; }
     public string? Color { get; set; }
 
-    public virtual AppUser AppUser { get; set; }
-    public ICollection<BookingDetail> BookingDetails { get; set; }
+    public virtual AppUser AppUser { get; set; } = null!;
+    public ICollection<BookingDetail> BookingDetails { get; set; } = [];
 }

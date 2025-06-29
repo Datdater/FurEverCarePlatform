@@ -4,6 +4,7 @@ using System.Text.Json;
 using FurEverCarePlatform.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FurEverCarePlatform.Persistence.Migrations
 {
     [DbContext(typeof(PetDatabaseContext))]
-    partial class PetDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250629162808_FixBooking")]
+    partial class FixBooking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,11 +265,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("StoreId")
-                        .HasColumnType("uuid");
-
                     b.Property<float>("TotalAmount")
                         .HasColumnType("real");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -282,8 +285,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .IsUnique();
 
                     b.HasIndex("PromotionId");
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("Bookings");
                 });
@@ -854,7 +855,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("PetType")
+                    b.Property<bool?>("PetType")
                         .HasColumnType("boolean");
 
                     b.Property<string>("SpecialRequirement")
@@ -1686,19 +1687,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .WithMany("Bookings")
                         .HasForeignKey("PromotionId");
 
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Store", "Store")
-                        .WithMany()
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("AppUser");
 
                     b.Navigation("Feedback");
 
                     b.Navigation("Promotion");
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.BookingDetail", b =>

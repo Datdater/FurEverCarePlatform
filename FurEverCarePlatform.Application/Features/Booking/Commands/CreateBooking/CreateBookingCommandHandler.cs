@@ -1,4 +1,6 @@
 ﻿
+using FurEverCarePlatform.Application.Contracts;
+
 namespace FurEverCarePlatform.Application.Features.Booking.Commands.CreateBooking;
 
 public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand, Guid>
@@ -13,65 +15,78 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
 
     public async Task<Guid> Handle(CreateBookingCommand command, CancellationToken cancellationToken)
     {
-        var bookingCode = Utils.UtilityHelper.GenerateRandomCode(6);
-
-        var booking = new Domain.Entities.Booking
+        try
         {
-            BookingTime = command.BookingTime,
-            Description = command.Description,
-            UserId = command.UserId,
-            Code = bookingCode,
-            RawAmount = 0, // Will be calculated
-            TotalAmount = 0, // Will be calculated  
-            PromotionId = command.PromotionId,
-            BookingDetails = new List<BookingDetail>()
-        };
+            await _unitOfWork.BeginTransactionAsync();
 
-        var bookingDetails = new List<BookingDetail>();
+            var bookingCode = Utils.UtilityHelper.GenerateRandomCode(6);
 
-        foreach (var detailCommand in command.BookingDetails)
-        {
-            var pet = await _unitOfWork.GetRepository<Pet>().GetByIdAsync(detailCommand.Pet.Id);
-            if (pet == null)
+            var booking = new Domain.Entities.Booking
             {
-                throw new NotFoundException("Pet", detailCommand.Pet.Id);
-            }
+                BookingTime = command.BookingTime,
+                Description = command.Description,
+                AppUserId = command.AppUserId,
+                Code = bookingCode,
+                RawAmount = 0, // Will be calculated
+                TotalAmount = 0, // Will be calculated  
+                PromotionId = command.PromotionId,
+                StoreId = command.StoreId,
+                BookingDetails = new List<BookingDetail>()
+            };
 
-            foreach (var serviceCommand in detailCommand.Services)
+            var bookingDetails = new List<BookingDetail>();
+
+            foreach (var detailCommand in command.BookingDetails)
             {
-                var service = await _unitOfWork.GetRepository<PetServiceDetail>().GetByIdAsync(serviceCommand.Id);
-                if (service == null)
+                var pet = await _unitOfWork.GetRepository<Pet>().GetByIdAsync(detailCommand.Pet.Id);
+                if (pet == null)
                 {
-                    throw new NotFoundException("Service", serviceCommand.Id);
+                    throw new NotFoundException("Pet", detailCommand.Pet.Id);
                 }
 
-                var bookingDetail = new BookingDetail
+                foreach (var serviceCommand in detailCommand.Services)
                 {
-                    ServiceId = serviceCommand.Id,
-                    PetId = detailCommand.Pet.Id,
-                    BookingTime = command.BookingTime,
-                    RealAmount = 0, // Will be set during service execution
-                    IsMeasured = false, // Will be updated when pet is measured
-                    RawAmount = service.Amount, // Use service price as raw amount
-                    PetWeight = null, // Will be measured later
-                    Hair = null, // Will be updated during service
-                    AssignedUserId = null, // Will be assigned later
-                    Booking = booking
-                };
+                    var service = await _unitOfWork.GetRepository<PetServiceDetail>().GetByIdAsync(serviceCommand.Id);
+                    if (service == null)
+                    {
+                        throw new NotFoundException("Service", serviceCommand.Id);
+                    }
 
-                bookingDetails.Add(bookingDetail);
+                    var bookingDetail = new BookingDetail
+                    {
+                        PetServiceDetailId = serviceCommand.Id,
+                        PetId = detailCommand.Pet.Id,
+                        BookingTime = command.BookingTime,
+                        RealAmount = 0, // Will be set during service execution
+                        IsMeasured = false, // Will be updated when pet is measured
+                        RawAmount = service.Amount, // Use service price as raw amount
+                        PetWeight = null, // Will be measured later
+                        Hair = null, // Will be updated during service
+                        AssignedUserId = null, // Will be assigned later
+                        Booking = booking
+                    };
+
+                    bookingDetails.Add(bookingDetail);
+                }
             }
+
+            booking.BookingDetails = bookingDetails;
+
+            CalculateBookingTotals(booking);
+
+            await _unitOfWork.GetRepository<Domain.Entities.Booking>().InsertAsync(booking);
+
+            await _unitOfWork.SaveAsync();
+
+            await _unitOfWork.CommitTransactionAsync();
+
+            return booking.Id;
         }
-
-        booking.BookingDetails = bookingDetails;
-
-        CalculateBookingTotals(booking);
-
-        await _unitOfWork.GetRepository<Domain.Entities.Booking>().InsertAsync(booking);
-
-        await _unitOfWork.SaveAsync();
-
-        return booking.Id;
+        catch (System.Exception ex)
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw new BadRequestException($"Error in creating booking: {ex.Message}");
+        }
     }
 
     private void CalculateBookingTotals(Domain.Entities.Booking booking)

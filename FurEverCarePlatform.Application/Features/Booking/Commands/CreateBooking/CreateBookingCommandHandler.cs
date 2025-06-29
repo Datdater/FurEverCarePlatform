@@ -17,7 +17,6 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
 
         var booking = new Domain.Entities.Booking
         {
-            Id = Guid.NewGuid(),
             BookingTime = command.BookingTime,
             Description = command.Description,
             UserId = command.UserId,
@@ -48,7 +47,6 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
 
                 var bookingDetail = new BookingDetail
                 {
-                    Id = Guid.NewGuid(),
                     ServiceId = serviceCommand.Id,
                     PetId = detailCommand.Pet.Id,
                     BookingTime = command.BookingTime,

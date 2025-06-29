@@ -4,9 +4,10 @@ public class Pet : BaseEntity
 {
     public required string Name { get; set; }
     public bool? PetType { get; set; }
-    public DateTime? Age { get; set; }
+    public DateTime? Dob { get; set; }
 
     public string? SpecialRequirement { get; set; }
+    public string? Image { get; set; }
     public required Guid UserId { get; set; }
     public string? Color { get; set; }
 

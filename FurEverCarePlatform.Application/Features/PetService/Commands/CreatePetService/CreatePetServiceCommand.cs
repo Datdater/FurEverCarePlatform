@@ -7,6 +7,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
 		public string? Description { get; set; }
 		public Guid StoreId { get; set; }
 		public required string EstimatedTime { get; set; }
+		public string? Image { get; set; }
 		public Guid ServiceCategoryId { get; set; }
 		public List<CreatePetServiceDetailCommand> PetServiceDetails { get; set; }
 
@@ -21,9 +22,11 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
 		public bool PetType { get; set; }
 		public string Description { get; set; }
 		public string Name { get; set; }
-	}
+        public string? Image { get; set; }
 
-	public class CreatePetServiceStepCommand
+    }
+
+    public class CreatePetServiceStepCommand
 	{
 		public required string Name { get; set; }
 		public string? Description { get; set; }

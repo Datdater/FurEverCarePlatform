@@ -14,5 +14,4 @@ public class PetServiceStep : BaseEntity
 	public Guid PetServiceId { get; set; }
 	//navigation
 	public virtual PetService PetService { get; set; }
-	public virtual ServiceTracking ServiceTracking { get; set; }
 }

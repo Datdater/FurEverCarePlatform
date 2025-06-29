@@ -30,9 +30,8 @@ namespace FurEverCarePlatform.Persistence
         )
         {
             services.AddDbContext<PetDatabaseContext>(option =>
-                option.UseSqlServer(configuration.GetConnectionString("PetDB"))
+                option.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             );
-            // Use IdentityUser<Guid> and IdentityRole<Guid> to ensure both are consistent
 
             services
                 .AddIdentity<AppUser, AppRole>()

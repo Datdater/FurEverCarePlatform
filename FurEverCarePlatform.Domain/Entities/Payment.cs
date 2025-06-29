@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FurEverCarePlatform.Domain.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace FurEverCarePlatform.Domain.Entities;
@@ -7,9 +8,12 @@ public class Payment : BaseEntity
 {
 	public Guid? OrderId { get; set; } 
 
-	public Guid? BookingId { get; set; } 
+	public Guid? BookingId { get; set; }
+    public PaymentStatus PaymentStatus { get; private set; }
+    public string? TransactionId { get; private set; }
 
-	[Required]
+
+    [Required]
 	[Column(TypeName = "money")]
 	public decimal Amount { get; set; } 
 

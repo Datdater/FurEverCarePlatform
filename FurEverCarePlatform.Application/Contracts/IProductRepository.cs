@@ -8,7 +8,4 @@ namespace FurEverCarePlatform.Application.Contracts;
 
 public interface IProductRepository : IGenericRepository<Product>
 {
-    public decimal GetMinProductPrice(Guid productId);
-    public List<ProductPrice> GetProductPrices(Guid productId);
-    public List<ProductImages> GetProductImages(Guid productId);
 }

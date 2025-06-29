@@ -19,8 +19,7 @@ public class CreateStoreHandler(IUnitOfWork unitOfWork, IClaimService claimServi
             await unitOfWork.BeginTransactionAsync();
             var store = new Domain.Entities.Store()
             {
-                AddressId = request.AddressId,
-                UserId = claimService.GetCurrentUser,
+                AppUserId = claimService.GetCurrentUser,
                 Name = request.Name,
                 Hotline = request.Hotline,
                 LogoUrl = request.LogoUrl,

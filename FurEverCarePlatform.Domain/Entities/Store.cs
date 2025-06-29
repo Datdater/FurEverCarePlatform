@@ -9,7 +9,6 @@ public class Store : BaseEntity
     [MaxLength(255)]
     public required string Name { get; set; }
 
-    public required Guid AddressId { get; set; }
 
     [MaxLength(20)]
     public required string Hotline { get; set; }
@@ -18,7 +17,7 @@ public class Store : BaseEntity
     public string? LogoUrl { get; set; }
 
     [Required]
-    public Guid UserId { get; set; }
+    public Guid AppUserId { get; set; }
 
     [MaxLength(500)]
     public string? BannerUrl { get; set; }
@@ -54,6 +53,5 @@ public class Store : BaseEntity
     public ICollection<Promotion> Promotions { get; set; }
     public ICollection<Product> Products { get; set; }
     public ICollection<PetService> PetServices { get; set; }
-    public virtual Address? Address { get; set; }
     public virtual AppUser? AppUser { get; set; }
 }

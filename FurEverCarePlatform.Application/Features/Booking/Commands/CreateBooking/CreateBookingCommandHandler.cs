@@ -53,13 +53,6 @@ namespace FurEverCarePlatform.Application.Features.Booking.Commands.CreateBookin
 					Pet = _mapper.Map<Pet>(bd.Pet),
 					RealAmount = CalculateTotalAmount(bd),
 					BookingTime = request.BookingTime,
-					ComboId = bd.Combo?.Id,
-					BookingDetailServices = bd.Services
-						.Select(service => new BookingDetailService
-						{
-							PetServiceDetailId = service.Id 
-						})
-						.ToList()
 				};
 				bookingDetails.Add(bookingDetail);
 			}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Persistence.Repositories
 {
-    public class PetServiceRepository : GenericRepository<PetService>, IPetServiceRepository
+    public class PetServiceRepository : GenericRepository<Domain.Entities.PetService>, IPetServiceRepository
 	{
 		public PetServiceRepository(PetDatabaseContext context) : base(context)
 		{

@@ -21,6 +21,5 @@ public class AppUser : IdentityUser<Guid>
     public virtual ICollection<Address> Address { get; set; }
     public virtual ICollection<Notification> Notifications { get; set; }
     public virtual ICollection<Feedback> Feedback { get; set; }
-    public virtual ICollection<ChatMessage> ChatMessage { get; set; }
     public virtual ICollection<Report> Reports { get; set; }
 }

@@ -13,11 +13,10 @@ public class PetServiceDetail : BaseEntity
     public bool PetType { get; set; }
     public string Description { get; set; }
     public string Name { get; set; }
+    public string? Image { get; set; }
+
 
     //navigation
     public virtual PetService PetService { get; set; }
-    public virtual ICollection<BookingDetailService> BookingDetailServices { get; set; }
-
-
 
 }

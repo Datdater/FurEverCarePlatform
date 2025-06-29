@@ -109,45 +109,45 @@ public class GenericRepository<T> : IGenericRepository<T>
         return await query.FirstOrDefaultAsync();
     }
 
-    public async Task<Pagination<T>> GetPaginationAsync(
-        Expression<Func<T, bool>>? predicate = null,
-        string? includeProperties = null,
-        int pageIndex = 1,
-        int pageSize = 10
-    )
-    {
-        IQueryable<T> query = dbSet;
-        if (predicate != null)
-            query = query.Where(predicate);
-        if (includeProperties != null)
-        {
-            foreach (
-                var item in includeProperties.Split(
-                    new char[] { ',' },
-                    StringSplitOptions.RemoveEmptyEntries
-                )
-            )
-            {
-                query = query.Include(item);
-            }
-        }
-        var itemCount = await query.CountAsync();
-        var items = await query
-            .Where(x => !x.IsDeleted)
-            .Skip((pageIndex - 1) * pageSize)
-            .Take(pageSize)
-            .AsNoTracking()
-            .ToListAsync();
-        var result = new Pagination<T>()
-        {
-            PageIndex = pageIndex,
-            PageSize = pageSize,
-            TotalItemsCount = itemCount,
-            Items = items,
-        };
+    //public async Task<Pagination<T>> GetPaginationAsync(
+    //    Expression<Func<T, bool>>? predicate = null,
+    //    string? includeProperties = null,
+    //    int pageIndex = 1,
+    //    int pageSize = 10
+    //)
+    //{
+    //    IQueryable<T> query = dbSet;
+    //    if (predicate != null)
+    //        query = query.Where(predicate);
+    //    if (includeProperties != null)
+    //    {
+    //        foreach (
+    //            var item in includeProperties.Split(
+    //                new char[] { ',' },
+    //                StringSplitOptions.RemoveEmptyEntries
+    //            )
+    //        )
+    //        {
+    //            query = query.Include(item);
+    //        }
+    //    }
+    //    var itemCount = await query.CountAsync();
+    //    var items = await query
+    //        .Where(x => !x.IsDeleted)
+    //        .Skip((pageIndex - 1) * pageSize)
+    //        .Take(pageSize)
+    //        .AsNoTracking()
+    //        .ToListAsync();
+    //    //var result = new Pagination<T>()
+    //    //{
+    //    //    //PageIndex = pageIndex,
+    //    //    //PageSize = pageSize,
+    //    //    //TotalItemsCount = itemCount,
+    //    //    //Items = items,
+    //    //};
 
-        return result;
-    }
+    //    return result;
+    //}
 
     public async Task AddRangeAsync(IEnumerable<T> entities)
     {

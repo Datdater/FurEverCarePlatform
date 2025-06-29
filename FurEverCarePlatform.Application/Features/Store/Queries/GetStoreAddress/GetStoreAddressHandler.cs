@@ -14,12 +14,11 @@ public class GetStoreAddressHandler(IUnitOfWork unitOfWork, IClaimService claimS
         var userAddresses = await unitOfWork
             .GetRepository<Address>()
             .GetAllAsync(
-                filter: x => x.UserId == claimService.GetCurrentUser,
+                filter: x => x.AppUserId == claimService.GetCurrentUser,
                 includeProperties: "Store"
             );
 
         var userAddressDtos = userAddresses
-            .Where(address => address.Store == null)
             .Select(address => new StoreAddressDTO()
             {
                 Id = address.Id,

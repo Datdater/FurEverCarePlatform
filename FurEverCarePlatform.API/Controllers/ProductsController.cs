@@ -12,7 +12,7 @@ namespace FurEverCarePlatform.API.Controllers
 {
     [Route("/api/v1/[controller]")]
     [ApiController]
-    public class ProductController(IMediator mediator) : ControllerBase
+    public class ProductsController(IMediator mediator) : ControllerBase
     {
         [HttpPost]
         [ProducesResponseType(201)]

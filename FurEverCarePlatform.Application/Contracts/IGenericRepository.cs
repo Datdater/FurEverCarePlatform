@@ -16,10 +16,12 @@ public interface IGenericRepository<T>
         string? includeProperties = null
     );
 
-    Task<Pagination<T>> GetPaginationAsync(
-        Expression<Func<T, bool>>? predicate = null,
-        string? includeProperties = null,
-        int pageIndex = 1,
-        int pageSize = 10
-    );
+    //Task<Pagination<T>> GetPaginationAsync(
+    //    Expression<Func<T, bool>>? predicate = null,
+    //    string? includeProperties = null,
+    //    int pageIndex = 1,
+    //    int pageSize = 10
+    //);
+
+    IQueryable<T> GetQueryable();
 }

@@ -208,7 +208,7 @@ namespace FurEverCarePlatform.API.Controllers
             }
 
             var address = await _identityContext.Addresses.FirstOrDefaultAsync(a =>
-                a.AppUserId == Guid.Parse(id) && a.AppUserId == Guid.Parse(userId)
+                a.Id == Guid.Parse(id) && a.AppUserId == Guid.Parse(userId)
             );
 
             if (address == null)

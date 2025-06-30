@@ -100,8 +100,7 @@ namespace FurEverCarePlatform.API.Controllers
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = HttpUtility.UrlEncode(token);
             var confirmationLink =
-                $"{Request.Scheme}://{Request.Host}/api/v1/auth/email-confirm?email={email}&token={encodedToken}";
-
+                "https://senandpet.vercel.app/email-confirm?email={email}&token={encodedToken}";
             var message =
                 $@"
                 <h1>Confirm your email</h1>

@@ -33,6 +33,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
                 .GetQueryable()
                 .Include(ps => ps.Store)
                 .Include(ps => ps.ServiceCategory)
+                .Include(ps => ps.PetServiceDetails)
                 .Where(s => !s.IsDeleted);
 
             var petServicePagination = await Pagination<Domain.Entities.PetService>.CreateAsync(

@@ -87,6 +87,7 @@ public class AuthService
         {
             UserName = request.Email,
             Email = request.Email,
+            Name = request.Name,
             PhoneNumber = request.PhoneNumber,
             EmailConfirmed = false, // For simplicity; in production, implement email confirmation
         };
@@ -161,7 +162,6 @@ public class RegisterRequestDto
 {
     public string Email { get; set; }
     public string Password { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string Name { get; set; }
     public string PhoneNumber { get; set; }
 }

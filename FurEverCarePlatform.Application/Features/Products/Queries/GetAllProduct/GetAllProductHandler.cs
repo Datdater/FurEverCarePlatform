@@ -15,6 +15,7 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
             .GetRepository<Domain.Entities.Product>()
             .GetQueryable()
             .Include(x => x.Store)
+            .Include(x => x.Images)
             .Where(x => !x.IsDeleted);
         var productRaw = await Pagination<Domain.Entities.Product>.CreateAsync(
             product,

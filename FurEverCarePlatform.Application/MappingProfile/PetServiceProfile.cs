@@ -1,12 +1,12 @@
-﻿using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
-using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
-using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
-using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
+using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
 
 namespace FurEverCarePlatform.Application.MappingProfile
 {
@@ -59,12 +59,27 @@ namespace FurEverCarePlatform.Application.MappingProfile
             #endregion
 
             CreateMap<Domain.Entities.PetService, PetServicesDto>()
-                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name)) 
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.ServiceCategory.Name))
+                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name))
+                .ForMember(
+                    dest => dest.CategoryName,
+                    opt => opt.MapFrom(src => src.ServiceCategory.Name)
+                )
+                .ForMember(
+                    dest => dest.Price,
+                    opt => opt.MapFrom(src => src.PetServiceDetails.Min(x => x.Amount))
+                )
+                .ForMember(
+                    dest => dest.StoreCity,
+                    memberOptions => memberOptions.MapFrom(src => src.Store.BusinessAddressProvince)
+                )
+                .ForMember(
+                    dest => dest.StoreDistrict,
+                    memberOptions => memberOptions.MapFrom(src => src.Store.BusinessAddressDistrict)
+                )
                 .ReverseMap();
 
-            CreateMap<Pagination<Domain.Entities.PetService>, Pagination<PetServicesDto>>().ReverseMap();
-
+            CreateMap<Pagination<Domain.Entities.PetService>, Pagination<PetServicesDto>>()
+                .ReverseMap();
         }
     }
 }

@@ -1,15 +1,18 @@
-﻿using FurEverCarePlatform.Application.Features.Pets.Commands.CreatePet;
+﻿using System.Security.Claims;
+using FurEverCarePlatform.Application.Features.Pets.Commands.CreatePet;
 using FurEverCarePlatform.Application.Features.Pets.Commands.DeletePet;
 using FurEverCarePlatform.Application.Features.Pets.Commands.UpdatePet;
 using FurEverCarePlatform.Application.Features.Pets.Queries.GetAllPets;
 using FurEverCarePlatform.Application.Features.Pets.Queries.GetPetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize]
     public class PetsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -39,6 +42,7 @@ namespace FurEverCarePlatform.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
+
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -46,6 +50,8 @@ namespace FurEverCarePlatform.API.Controllers
         public async Task<IActionResult> GetPets()
         {
             GetAllPetsQuery query = new GetAllPetsQuery();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            query.UserId = userId != null ? Guid.Parse(userId) : Guid.Empty; // Ensure UserId is set
             var result = await _mediator.Send(query);
             return Ok(result);
         }
@@ -63,6 +69,7 @@ namespace FurEverCarePlatform.API.Controllers
             await _mediator.Send(command);
             return Ok();
         }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

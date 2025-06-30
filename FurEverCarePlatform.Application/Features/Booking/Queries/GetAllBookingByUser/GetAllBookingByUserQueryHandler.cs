@@ -1,20 +1,26 @@
-﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Commons.Interfaces;
 using FurEverCarePlatform.Application.Features.Booking.DTOs;
 using FurEverCarePlatform.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.Booking.Queries.GetAllBookingByUser;
 
-public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimService claimService, UserManager<AppUser> userManager)
-    : IRequestHandler<GetAllBookingByUserQuery, Pagination<GetAllBookingDto>>
+public class GetAllBookingByUserQueryHandler(
+    IUnitOfWork unitOfWork,
+    IClaimService claimService,
+    UserManager<AppUser> userManager
+) : IRequestHandler<GetAllBookingByUserQuery, Pagination<GetAllBookingDto>>
 {
-    public async Task<Pagination<GetAllBookingDto>> Handle(GetAllBookingByUserQuery request, CancellationToken cancellationToken)
+    public async Task<Pagination<GetAllBookingDto>> Handle(
+        GetAllBookingByUserQuery request,
+        CancellationToken cancellationToken
+    )
     {
         var userId = claimService.GetCurrentUser;
         var user = await userManager.FindByIdAsync(userId.ToString());
@@ -22,12 +28,14 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
         var roles = await userManager.GetRolesAsync(user);
 
         // Build the base query with all includes
-        var baseQuery = unitOfWork.GetRepository<Domain.Entities.Booking>().GetQueryable()
+        var baseQuery = unitOfWork
+            .GetRepository<Domain.Entities.Booking>()
+            .GetQueryable()
             .Include(b => b.BookingDetails)
-                .ThenInclude(bd => bd.Pet)
+            .ThenInclude(bd => bd.Pet)
             .Include(b => b.BookingDetails)
-                .ThenInclude(bd => bd.PetServiceDetail)
-                    .ThenInclude(psd => psd.PetService)
+            .ThenInclude(bd => bd.PetServiceDetail)
+            .ThenInclude(psd => psd.PetService)
             .Include(b => b.AppUser)
             .Include(b => b.Store);
 
@@ -36,7 +44,9 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
 
         if (roles.Contains("Store Owner"))
         {
-            var store = await unitOfWork.GetRepository<Domain.Entities.Store>().GetQueryable()
+            var store = await unitOfWork
+                .GetRepository<Domain.Entities.Store>()
+                .GetQueryable()
                 .FirstOrDefaultAsync(s => s.AppUserId == userId);
 
             if (store != null)
@@ -56,15 +66,14 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
         var bookingsPage = await Pagination<Domain.Entities.Booking>.CreateAsync(
             filteredQuery,
             request.PageIndex,
-            request.PageSize);
+            request.PageSize
+        );
 
         var bookingDtos = new List<GetAllBookingDto>();
 
         foreach (var booking in bookingsPage.Items)
         {
-            var petServiceGroups = booking.BookingDetails
-                .GroupBy(bd => bd.PetId)
-                .ToList();
+            var petServiceGroups = booking.BookingDetails.GroupBy(bd => bd.PetId).ToList();
 
             var petWithServicesList = new List<PetWithServices>();
 
@@ -73,7 +82,8 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
                 var petId = petGroup.Key;
 
                 var firstBookingDetail = petGroup.First();
-                if (firstBookingDetail.Pet == null) continue;
+                if (firstBookingDetail.Pet == null)
+                    continue;
 
                 var pet = new DTOs.Pet
                 {
@@ -89,32 +99,37 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
                 {
                     if (bookingDetail.PetServiceDetail != null)
                     {
-                        services.Add(new Service
-                        {
-                            Id = bookingDetail.PetServiceDetailId,
-                            ServiceDetailName = bookingDetail.PetServiceDetail.Name,
-                            Price = bookingDetail.RawAmount,
-                        });
+                        services.Add(
+                            new Service
+                            {
+                                Id = bookingDetail.PetServiceDetailId,
+                                ServiceDetailName = bookingDetail.PetServiceDetail.Name,
+                                Price = bookingDetail.RawAmount,
+                                ImageUrl = bookingDetail.PetServiceDetail.Image ?? string.Empty,
+                            }
+                        );
                     }
                 }
 
-                petWithServicesList.Add(new PetWithServices
-                {
-                    Pet = pet,
-                    Services = services.Distinct().ToList()
-                });
+                petWithServicesList.Add(
+                    new PetWithServices { Pet = pet, Services = services.Distinct().ToList() }
+                );
             }
 
             var bookingDto = new GetAllBookingDto
             {
                 BookingId = booking.Id,
                 ShopName = booking.Store.Name,
+                StoreAddressDistrict = booking.Store.BusinessAddressDistrict ?? string.Empty,
+                StoreAddressProvince = booking.Store.BusinessAddressProvince ?? string.Empty,
+                StoreAddressWard = booking.Store.BusinessAddressWard ?? string.Empty,
+                StoreAddressStreet = booking.Store.BusinessAddressStreet ?? string.Empty,
                 UserName = booking.AppUser?.Name!,
                 UserPhone = booking.AppUser?.PhoneNumber ?? string.Empty,
                 Status = booking.Status,
                 TotalPrice = booking.TotalAmount,
                 BookingTime = booking.BookingTime,
-                PetWithServices = petWithServicesList
+                PetWithServices = petWithServicesList,
             };
 
             bookingDtos.Add(bookingDto);

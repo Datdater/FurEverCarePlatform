@@ -1,5 +1,4 @@
-﻿
-using FurEverCarePlatform.Application.Contracts;
+﻿using FurEverCarePlatform.Application.Contracts;
 
 namespace FurEverCarePlatform.Application.Features.Booking.Commands.CreateBooking;
 
@@ -7,13 +6,15 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateBookingCommandHandler(
-        IUnitOfWork unitOfWork)
+    public CreateBookingCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> Handle(CreateBookingCommand command, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(
+        CreateBookingCommand command,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
@@ -25,13 +26,13 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
             {
                 BookingTime = command.BookingTime,
                 Description = command.Description,
-                AppUserId = command.AppUserId,
+                AppUserId = command.UserId,
                 Code = bookingCode,
                 RawAmount = 0, // Will be calculated
-                TotalAmount = 0, // Will be calculated  
+                TotalAmount = 0, // Will be calculated
                 PromotionId = command.PromotionId,
                 StoreId = command.StoreId,
-                BookingDetails = new List<BookingDetail>()
+                BookingDetails = new List<BookingDetail>(),
             };
 
             var bookingDetails = new List<BookingDetail>();
@@ -46,7 +47,9 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
 
                 foreach (var serviceCommand in detailCommand.Services)
                 {
-                    var service = await _unitOfWork.GetRepository<PetServiceDetail>().GetByIdAsync(serviceCommand.Id);
+                    var service = await _unitOfWork
+                        .GetRepository<PetServiceDetail>()
+                        .GetByIdAsync(serviceCommand.Id);
                     if (service == null)
                     {
                         throw new NotFoundException("Service", serviceCommand.Id);
@@ -63,7 +66,7 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
                         PetWeight = null, // Will be measured later
                         Hair = null, // Will be updated during service
                         AssignedUserId = null, // Will be assigned later
-                        Booking = booking
+                        Booking = booking,
                     };
 
                     bookingDetails.Add(bookingDetail);
@@ -103,9 +106,7 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
         booking.RawAmount = rawAmount;
 
         totalAmount = rawAmount;
-        if (booking.PromotionId.HasValue)
-        {
-        }
+        if (booking.PromotionId.HasValue) { }
 
         booking.TotalAmount = totalAmount;
     }

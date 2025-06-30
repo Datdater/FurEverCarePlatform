@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.Booking.Commands.CreateBooking
 {
-     public class CreateBookingCommand : IRequest<Guid>
+    public class CreateBookingCommand : IRequest<Guid>
     {
         public DateTime BookingTime { get; set; }
         public string? Description { get; set; }
-        public required Guid AppUserId { get; set; }
+        public required Guid UserId { get; set; }
         public Guid? PromotionId { get; set; }
 
         public Guid StoreId { get; set; }

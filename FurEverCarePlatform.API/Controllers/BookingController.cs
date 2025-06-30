@@ -2,6 +2,7 @@
 using FurEverCarePlatform.Application.Features.Booking.Commands.UpdateBooking;
 using FurEverCarePlatform.Application.Features.Booking.Queries.GetAllBookingByUser;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,7 @@ namespace FurEverCarePlatform.API.Controllers
 		[ProducesResponseType(200)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(500)]
+        [Authorize]
 		public async Task<IActionResult> GetBookings([FromQuery] GetAllBookingByUserQuery query)
 		{
 			var result = await _mediator.Send(query);

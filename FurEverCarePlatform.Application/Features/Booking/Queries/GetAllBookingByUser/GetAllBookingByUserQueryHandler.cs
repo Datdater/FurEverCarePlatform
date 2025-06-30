@@ -1,6 +1,8 @@
-﻿using FurEverCarePlatform.Application.Features.Booking.DTOs;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Features.Booking.DTOs;
 using FurEverCarePlatform.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +11,16 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Features.Booking.Queries.GetAllBookingByUser;
 
-public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork)
+public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimService claimService, UserManager<AppUser> userManager)
     : IRequestHandler<GetAllBookingByUserQuery, Pagination<GetAllBookingDto>>
 {
     public async Task<Pagination<GetAllBookingDto>> Handle(GetAllBookingByUserQuery request, CancellationToken cancellationToken)
     {
+        var userId = claimService.GetCurrentUser;
+        var user = await userManager.FindByIdAsync(userId.ToString());
+
+        var roles = await userManager.GetRolesAsync(user);
+
         var query = unitOfWork.GetRepository<Domain.Entities.Booking>().GetQueryable()
             .Include(b => b.BookingDetails)
                 .ThenInclude(bd => bd.Pet)
@@ -21,9 +28,22 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork)
                 .ThenInclude(bd => bd.PetServiceDetail)
                     .ThenInclude(psd => psd.PetService)
             .Include(b => b.AppUser)
-            .Include(b => b.Store)
-            .Where(b => (!request.AppUserId.HasValue || b.AppUserId == request.AppUserId.Value) &&
-                        (!request.StoreId.HasValue || b.StoreId == request.StoreId.Value));
+            .Include(b => b.Store);
+
+        if (roles.Contains("Store Owner"))
+        {
+            var store = await unitOfWork.GetRepository<Domain.Entities.Store>().GetQueryable()
+                .FirstOrDefaultAsync(s => s.AppUserId == userId);
+            
+            if (store != null)
+            {
+                query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Domain.Entities.Booking, Domain.Entities.Store>)query.Where(b => b.StoreId == store.Id);
+            }
+        }
+        else
+        {
+            query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Domain.Entities.Booking, Domain.Entities.Store>)query.Where(b => (!request.AppUserId.HasValue || b.AppUserId == request.AppUserId.Value));
+        }
 
         var bookingsPage = await Pagination<Domain.Entities.Booking>.CreateAsync(
             query,

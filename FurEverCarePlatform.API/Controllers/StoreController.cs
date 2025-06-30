@@ -14,7 +14,6 @@ namespace FurEverCarePlatform.API.Controllers;
 
 [Route("/api/v1/[controller]")]
 [ApiController]
-[Authorize(Roles = "Store Owner")]
 public class StoreController(IMediator mediator) : ControllerBase
 {
     [HttpGet]

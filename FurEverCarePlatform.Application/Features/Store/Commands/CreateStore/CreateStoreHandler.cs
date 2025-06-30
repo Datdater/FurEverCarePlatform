@@ -30,9 +30,7 @@ public class CreateStoreHandler(IUnitOfWork unitOfWork, UserManager<AppUser> use
                 Email = request.FaxEmail,
                 PhoneNumber = request.Hotline,
                 Name = request.Name,
-                CreationDate = TimeZoneInfo.ConvertTimeFromUtc(
-                    DateTime.UtcNow, 
-                    TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")),
+                CreationDate = DateTime.UtcNow.AddHours(7)
             };
 
             var createResult = await userManager.CreateAsync(user, request.Password);

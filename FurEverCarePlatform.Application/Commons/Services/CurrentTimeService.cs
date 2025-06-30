@@ -7,9 +7,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
 	{
 		public DateTime GetCurrentTime()
 		{
-			return TimeZoneInfo.ConvertTimeFromUtc(
-                    DateTime.UtcNow,
-                    TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+			return DateTime.UtcNow.AddHours(7);
 		}
 	}
 }

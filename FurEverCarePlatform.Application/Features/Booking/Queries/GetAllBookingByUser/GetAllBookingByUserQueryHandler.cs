@@ -50,7 +50,7 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
         }
         else
         {
-            filteredQuery = baseQuery.Where(b => (!request.AppUserId.HasValue || b.AppUserId == request.AppUserId.Value));
+            filteredQuery = baseQuery.Where(b => b.AppUserId == userId);
         }
 
         var bookingsPage = await Pagination<Domain.Entities.Booking>.CreateAsync(

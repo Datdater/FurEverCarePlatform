@@ -14,6 +14,7 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
         var productDetail = await unitOfWork
             .GetRepository<Domain.Entities.Product>()
             .GetQueryable()
+            .Include(x => x.Store)
             .Include(x => x.Variants)
             .Include(x => x.Images)
             .Include(x => x.Category)
@@ -23,6 +24,9 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             Id = productDetail.Id,
             Name = productDetail.Name,
+            StoreId = productDetail.StoreId,
+            StoreName = productDetail.Store.Name,
+            StoreUrl = productDetail.Store.LogoUrl,
             Description = productDetail.Description,
             CategoryName = productDetail.Category.Name,
             Variants = productDetail

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Domain.Enums;
 using MediatR;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create

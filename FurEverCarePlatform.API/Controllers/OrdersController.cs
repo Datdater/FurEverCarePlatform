@@ -1,4 +1,5 @@
 ﻿using FurEverCarePlatform.Application.Features.Orders.Commands.Create;
+using FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,15 @@ namespace FurEverCarePlatform.API.Controllers
         {
             await mediator.Send(createOrder);
             return Ok();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult> Get([FromQuery] GetAllOrdersQuery query)
+        {
+            var result = await mediator.Send(query);
+            return Ok(result);
         }
         //[HttpGet("{id:guid}")]
         //[ProducesResponseType(200)]

@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Orders\Commands\Update\" />
-    <Folder Include="Features\Orders\Queries\" />
     <Folder Include="Features\ProductCategory\Commands\DeleteProductCategory\" />
     <Folder Include="Features\ProductCategory\Commands\UpdateProductCategory\" />
     <Folder Include="Features\ProductCategory\Queries\GetProductCategoryDetails\" />

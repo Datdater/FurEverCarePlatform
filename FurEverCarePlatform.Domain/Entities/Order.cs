@@ -5,7 +5,7 @@ namespace FurEverCarePlatform.Domain.Entities;
 
 public class Order : BaseEntity
 {
-    public required Guid UserId { get; set; }
+    public required Guid AppUserId { get; set; }
 
     [Column(TypeName = "money")]
     public required float TotalPrice { get; set; }
@@ -16,8 +16,8 @@ public class Order : BaseEntity
     public required Guid AddressId { get; set; }
 
     public EnumOrderStatus OrderStatus { get; set; }
-    public DateTime OrderDate { get; private set; }
-    public string Note { get; private set; }
+    public DateTime OrderDate { get; private set; } = DateTime.UtcNow;
+    public string Note { get; set; }
     public decimal DeliveryPrice { get; private set; }
     public virtual AppUser AppUser { get; set; }
 

@@ -18,12 +18,11 @@ public class GetStoreAddressHandler(IUnitOfWork unitOfWork, IClaimService claimS
                 includeProperties: "Store"
             );
 
-        var userAddressDtos = userAddresses
-            .Select(address => new StoreAddressDTO()
-            {
-                Id = address.Id,
-                AddressFullPath = $"{address.Street}, {address.City}, {address.Province}",
-            });
+        var userAddressDtos = userAddresses.Select(address => new StoreAddressDTO()
+        {
+            Id = address.Id,
+            AddressFullPath = $"{address.Street}, {address.Ward}, {address.City}",
+        });
         return userAddressDtos;
     }
 }

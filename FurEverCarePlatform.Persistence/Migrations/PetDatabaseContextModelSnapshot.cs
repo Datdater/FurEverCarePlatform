@@ -33,15 +33,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<double?>("CoordinateX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("CoordinateY")
-                        .HasColumnType("double precision");
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
@@ -55,6 +47,12 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("District")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -64,22 +62,18 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Phone")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("text");
 
-                    b.Property<int?>("PostalCode")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Province")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
 
                     b.Property<string>("Street")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("text");
+
+                    b.Property<string>("Ward")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -579,9 +573,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("money");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -631,9 +622,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("ProductVariationId")
                         .HasColumnType("uuid");
 
@@ -654,8 +642,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .IsUnique();
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
 
                     b.HasIndex("ProductVariationId");
 
@@ -698,8 +684,8 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("PaymentMethodId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("integer");
@@ -715,46 +701,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.HasIndex("PaymentMethodId");
-
                     b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.PaymentMethod", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Pet", b =>
@@ -1748,12 +1695,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FurEverCarePlatform.Domain.Entities.ProductVariant", "ProductVariation")
                         .WithMany()
                         .HasForeignKey("ProductVariationId")
@@ -1763,8 +1704,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Navigation("Feedback");
 
                     b.Navigation("Order");
-
-                    b.Navigation("Product");
 
                     b.Navigation("ProductVariation");
                 });
@@ -1779,17 +1718,9 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .WithOne("Payment")
                         .HasForeignKey("FurEverCarePlatform.Domain.Entities.Payment", "OrderId");
 
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.PaymentMethod", "PaymentMethod")
-                        .WithMany("Payments")
-                        .HasForeignKey("PaymentMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Booking");
 
                     b.Navigation("Order");
-
-                    b.Navigation("PaymentMethod");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Pet", b =>
@@ -2036,11 +1967,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Navigation("Payment")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.PaymentMethod", b =>
-                {
-                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Pet", b =>

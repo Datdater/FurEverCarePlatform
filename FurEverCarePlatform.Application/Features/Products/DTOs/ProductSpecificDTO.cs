@@ -13,7 +13,7 @@ public class ProductSpecificDTO
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public string StoreId { get; set; }
+    public Guid StoreId { get; set; }
     public string StoreName { get; set; }
     public string StoreUrl { get; set; }
     public string CategoryName { get; set; }

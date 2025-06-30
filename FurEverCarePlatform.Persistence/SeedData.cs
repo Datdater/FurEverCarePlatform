@@ -269,45 +269,45 @@ public static class SeedData
 
         var addresses = new List<Address>
         {
-            new Address
-            {
-                Id = Guid.NewGuid(),
-                Phone = "0901234567",
-                Street = "123 Đường Nguyễn Huệ",
-                City = "Thành phố Hồ Chí Minh",
-                Province = "TP. Hồ Chí Minh",
-                PostalCode = 70000,
-                CoordinateX = 10.7769,
-                CoordinateY = 106.7009,
-                AppUserId = users[0].Id,
-                CreationDate = DateTime.UtcNow,
-            },
-            new Address
-            {
-                Id = Guid.NewGuid(),
-                Phone = "0912345678",
-                Street = "456 Đường Lê Lợi",
-                City = "Thành phố Hồ Chí Minh",
-                Province = "TP. Hồ Chí Minh",
-                PostalCode = 70000,
-                CoordinateX = 10.8231,
-                CoordinateY = 106.6297,
-                AppUserId = users[1].Id,
-                CreationDate = DateTime.UtcNow,
-            },
-            new Address
-            {
-                Id = Guid.NewGuid(),
-                Phone = "0923456789",
-                Street = "789 Đường Trần Hưng Đạo",
-                City = "Thành phố Hồ Chí Minh",
-                Province = "TP. Hồ Chí Minh",
-                PostalCode = 70000,
-                CoordinateX = 10.7769,
-                CoordinateY = 106.7009,
-                AppUserId = users[2].Id,
-                CreationDate = DateTime.UtcNow,
-            },
+            //new Address
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Phone = "0901234567",
+            //    Street = "123 Đường Nguyễn Huệ",
+            //    City = "Thành phố Hồ Chí Minh",
+            //    Province = "TP. Hồ Chí Minh",
+            //    PostalCode = 70000,
+            //    CoordinateX = 10.7769,
+            //    CoordinateY = 106.7009,
+            //    AppUserId = users[0].Id,
+            //    CreationDate = DateTime.UtcNow,
+            //},
+            //new Address
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Phone = "0912345678",
+            //    Street = "456 Đường Lê Lợi",
+            //    City = "Thành phố Hồ Chí Minh",
+            //    Province = "TP. Hồ Chí Minh",
+            //    PostalCode = 70000,
+            //    CoordinateX = 10.8231,
+            //    CoordinateY = 106.6297,
+            //    AppUserId = users[1].Id,
+            //    CreationDate = DateTime.UtcNow,
+            //},
+            //new Address
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Phone = "0923456789",
+            //    Street = "789 Đường Trần Hưng Đạo",
+            //    City = "Thành phố Hồ Chí Minh",
+            //    Province = "TP. Hồ Chí Minh",
+            //    PostalCode = 70000,
+            //    CoordinateX = 10.7769,
+            //    CoordinateY = 106.7009,
+            //    AppUserId = users[2].Id,
+            //    CreationDate = DateTime.UtcNow,
+            //},
         };
 
         await context.Addresses.AddRangeAsync(addresses);

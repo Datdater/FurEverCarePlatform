@@ -6,4 +6,6 @@ public class GetAllProductQuery : IRequest<Pagination<ProductDTO>>
 {
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 5;
+    public string? SearchTerm { get; set; } = null;
+    public string SortBy { get; set; } = "Name";
 }

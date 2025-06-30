@@ -17,6 +17,20 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
             .Include(x => x.Store)
             .Include(x => x.Images)
             .Where(x => !x.IsDeleted);
+        if (!string.IsNullOrEmpty(request.SearchTerm))
+        {
+            product = product.Where(x => x.Name.Contains(request.SearchTerm));
+        }
+        if (!string.IsNullOrEmpty(request.SortBy))
+        {
+            product = request.SortBy switch
+            {
+                "name" => product.OrderBy(x => x.Name),
+                "price" => product.OrderBy(x => x.BasePrice),
+                _ => product.OrderBy(x => x.Name),
+            };
+        }
+
         var productRaw = await Pagination<Domain.Entities.Product>.CreateAsync(
             product,
             request.PageNumber,

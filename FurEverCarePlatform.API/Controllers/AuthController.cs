@@ -16,19 +16,16 @@ namespace FurEverCarePlatform.API.Controllers
     public class AuthController : BaseControllerApi
     {
         private readonly AuthService _authService;
-        private readonly ILogger<AuthController> _logger;
         private readonly EmailService _emailService;
         private readonly UserManager<AppUser> _userManager;
 
         public AuthController(
             AuthService authService,
-            ILogger<AuthController> logger,
             EmailService emailService,
             UserManager<AppUser> userManager
         )
         {
             _authService = authService;
-            _logger = logger;
             _emailService = emailService;
             _userManager = userManager;
         }
@@ -41,7 +38,7 @@ namespace FurEverCarePlatform.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _authService.LoginAsync(model.Email, model.Password);
+            var result = await _authService.LoginAsync(model.EmailOrUserNameOrPhone, model.Password);
 
             if (result.Success)
             {
@@ -140,9 +137,8 @@ public class RefreshTokenRequest
 public class LoginRequest
 {
     [Required]
-    [EmailAddress]
-    public string Email { get; set; }
+    public required string EmailOrUserNameOrPhone { get; set; }
 
     [Required]
-    public string Password { get; set; }
+    public required string Password { get; set; }
 }

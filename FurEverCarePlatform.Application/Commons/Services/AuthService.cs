@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FurEverCarePlatform.Application.Commons.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 public class AuthService
@@ -31,11 +32,25 @@ public class AuthService
     }
 
     public async Task<(bool Success, string Message, LoginResponseDto Response)> LoginAsync(
-        string email,
+        string emailOrUserNameOrPhone,
         string password
     )
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        AppUser? user = null;
+        
+        if (emailOrUserNameOrPhone.Contains("@"))
+        {
+            user = await _userManager.FindByEmailAsync(emailOrUserNameOrPhone);
+        }
+        else if (emailOrUserNameOrPhone.All(c => char.IsDigit(c) || c == '+' || c == '-' || c == ' ' || c == '(' || c == ')'))
+        {
+            user = await _userManager.Users.Where(u => u.PhoneNumber == emailOrUserNameOrPhone).FirstOrDefaultAsync();
+        }
+        else
+        {
+            user = await _userManager.FindByNameAsync(emailOrUserNameOrPhone);
+        }
+        
         if (user == null)
         {
             return (false, "User does not exist", null);
@@ -153,8 +168,8 @@ public class LoginResponseDto
 public class UserDto
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Avatar { get; set; }
+    public string? Name { get; set; }
+    public string? Avatar { get; set; }
 }
 
 public class RegisterRequestDto

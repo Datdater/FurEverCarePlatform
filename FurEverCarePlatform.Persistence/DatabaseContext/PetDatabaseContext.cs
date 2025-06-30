@@ -23,7 +23,6 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<BookingDetail> BookingDetails { get; set; }
     public DbSet<ChatMessage> ChatMessages { get; set; }
-    public DbSet<Delivery> Deliveries { get; set; }
     public DbSet<Feedback> Feedbacks { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Domain.Entities.Order> Orders { get; set; }

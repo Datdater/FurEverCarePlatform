@@ -210,9 +210,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AddressId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("AppUserId")
                         .HasColumnType("uuid");
 
@@ -233,9 +230,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("DeliveryId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
@@ -270,13 +264,9 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
-
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("Code");
-
-                    b.HasIndex("DeliveryId");
 
                     b.HasIndex("FeedbackId")
                         .IsUnique();
@@ -431,50 +421,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ChatMessages");
-                });
-
-            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Delivery", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<float>("Max")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Min")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Feedback", b =>
@@ -1664,19 +1610,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Booking", b =>
                 {
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Address", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("AddressId");
-
                     b.HasOne("FurEverCarePlatform.Domain.Entities.AppUser", "AppUser")
                         .WithMany("Bookings")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Delivery", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("DeliveryId");
 
                     b.HasOne("FurEverCarePlatform.Domain.Entities.Feedback", "Feedback")
                         .WithOne("Booking")
@@ -2053,8 +1991,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Address", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Orders");
                 });
 
@@ -2083,11 +2019,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Navigation("Payment")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Delivery", b =>
-                {
-                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Feedback", b =>

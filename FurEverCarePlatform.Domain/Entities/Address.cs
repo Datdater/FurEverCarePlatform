@@ -24,6 +24,5 @@ public class Address : BaseEntity
 
     //navigation
     public virtual ICollection<Order> Orders { get; set; }
-    public virtual ICollection<Booking> Bookings { get; set; }
     public virtual AppUser AppUser { get; set; }
 }

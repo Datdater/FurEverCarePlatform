@@ -21,7 +21,8 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
 
         var roles = await userManager.GetRolesAsync(user);
 
-        var query = unitOfWork.GetRepository<Domain.Entities.Booking>().GetQueryable()
+        // Build the base query with all includes
+        var baseQuery = unitOfWork.GetRepository<Domain.Entities.Booking>().GetQueryable()
             .Include(b => b.BookingDetails)
                 .ThenInclude(bd => bd.Pet)
             .Include(b => b.BookingDetails)
@@ -30,23 +31,30 @@ public class GetAllBookingByUserQueryHandler(IUnitOfWork unitOfWork, IClaimServi
             .Include(b => b.AppUser)
             .Include(b => b.Store);
 
+        // Apply filtering based on role - use IQueryable instead of casting
+        IQueryable<Domain.Entities.Booking> filteredQuery;
+
         if (roles.Contains("Store Owner"))
         {
             var store = await unitOfWork.GetRepository<Domain.Entities.Store>().GetQueryable()
                 .FirstOrDefaultAsync(s => s.AppUserId == userId);
-            
+
             if (store != null)
             {
-                query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Domain.Entities.Booking, Domain.Entities.Store>)query.Where(b => b.StoreId == store.Id);
+                filteredQuery = baseQuery.Where(b => b.StoreId == store.Id);
+            }
+            else
+            {
+                filteredQuery = baseQuery.Where(b => false); // No store found, return empty result
             }
         }
         else
         {
-            query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Domain.Entities.Booking, Domain.Entities.Store>)query.Where(b => (!request.AppUserId.HasValue || b.AppUserId == request.AppUserId.Value));
+            filteredQuery = baseQuery.Where(b => (!request.AppUserId.HasValue || b.AppUserId == request.AppUserId.Value));
         }
 
         var bookingsPage = await Pagination<Domain.Entities.Booking>.CreateAsync(
-            query,
+            filteredQuery,
             request.PageIndex,
             request.PageSize);
 

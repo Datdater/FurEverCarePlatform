@@ -7,7 +7,7 @@ namespace FurEverCarePlatform.Application.Commons.Services
 	{
 		public DateTime GetCurrentTime()
 		{
-			return DateTime.UtcNow;
+			return DateTime.UtcNow.AddHours(7);
 		}
 	}
 }

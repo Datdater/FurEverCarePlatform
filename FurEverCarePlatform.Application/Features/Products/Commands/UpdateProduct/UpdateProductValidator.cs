@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
+using FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 using FurEverCarePlatform.Application.Features.Products.DTOs;
 
 namespace FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
@@ -11,63 +8,114 @@ public class UpdateProductValidator : AbstractValidator<UpdateProductCommand>
 {
     public UpdateProductValidator()
     {
-        RuleFor(p => p.Id).NotEmpty().WithMessage("{PropertyName} is required.").NotNull();
-        RuleFor(p => p.Name)
+        RuleFor(x => x.Id)
             .NotEmpty()
-            .WithMessage("{PropertyName} is required.")
-            .NotNull()
+            .WithMessage("Product ID is required");
+
+        RuleFor(x => x.CategoryId)
+            .NotEmpty()
+            .WithMessage("Category ID is required");
+
+        RuleFor(x => x.StoreId)
+            .NotEmpty()
+            .WithMessage("Store ID is required");
+
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .WithMessage("Product name is required")
             .MaximumLength(100)
-            .WithMessage("{PropertyName} must not exceed 100 characters.");
-        RuleFor(p => p.ProductTypes)
-            .Must(BeUniqueProductTypeNames)
-            .WithMessage("Product type names must be unique.");
+            .WithMessage("Product name cannot exceed 100 characters");
 
-        RuleFor(p => p.ProductPrices)
-            .Must(HaveDifferentProductTypeDetails)
-            .WithMessage(
-                "Product type details (ProductTypeDetails1 and ProductTypeDetails2) must be different when both are provided."
-            );
+        RuleFor(x => x.Description)
+            .MaximumLength(1000)
+            .WithMessage("Description cannot exceed 1000 characters")
+            .When(x => !string.IsNullOrEmpty(x.Description));
+
+        RuleFor(x => x.BasePrice)
+            .GreaterThan(0)
+            .WithMessage("Base price must be greater than 0");
+
+        RuleFor(x => x.Weight)
+            .GreaterThan(0)
+            .WithMessage("Weight must be greater than 0");
+
+        RuleFor(x => x.Length)
+            .GreaterThan(0)
+            .WithMessage("Length must be greater than 0");
+
+        RuleFor(x => x.Height)
+            .GreaterThan(0)
+            .WithMessage("Height must be greater than 0");
+
+        // Validate variants
+        RuleForEach(x => x.Variants)
+            .SetValidator(new UpdateProductVariantValidator())
+            .When(x => x.Variants?.Any() == true);
+
+        // Validate images
+        RuleForEach(x => x.Images)
+            .SetValidator(new UpdateProductImageValidator())
+            .When(x => x.Images?.Any() == true);
+
+        // Ensure only one main image
+        RuleFor(x => x.Images)
+            .Must(images => images == null || !images.Any() || images.Count(img => img.IsMain) <= 1)
+            .WithMessage("Only one image can be marked as main");
+
+        // Validate unique variant attributes combinations
+        RuleFor(x => x.Variants)
+            .Must(HaveUniqueVariantCombinations)
+            .WithMessage("Product variants must have unique attribute combinations")
+            .When(x => x.Variants?.Any() == true);
     }
 
-    private bool BeUniqueProductTypeNames(List<ProductTypeDTO> productTypes)
+    private bool HaveUniqueVariantCombinations(List<UpdateProductVariantDTO> variants)
     {
-        if (productTypes == null || !productTypes.Any())
+        if (variants == null || variants.Count <= 1)
             return true;
 
-        var duplicateNames = productTypes
-            .GroupBy(pt => pt.Name?.Trim(), StringComparer.OrdinalIgnoreCase)
-            .Where(g => g.Count() > 1)
-            .Select(g => g.Key)
-            .ToList();
+        var attributeCombinations = variants.Select(v =>
+            string.Join("|", v.Attributes.OrderBy(a => a.Key).Select(a => $"{a.Key}:{a.Value}"))
+        ).ToList();
 
-        return duplicateNames.Count == 0;
+        return attributeCombinations.Count == attributeCombinations.Distinct().Count();
+    }
+}
+
+public class UpdateProductVariantValidator : AbstractValidator<UpdateProductVariantDTO>
+{
+    public UpdateProductVariantValidator()
+    {
+        RuleFor(x => x.Price)
+            .GreaterThan(0)
+            .WithMessage("Variant price must be greater than 0");
+
+        RuleFor(x => x.Stock)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Stock cannot be negative");
+
+        RuleFor(x => x.Attributes)
+            .NotNull()
+            .WithMessage("Variant attributes are required")
+            .Must(attributes => attributes.Any())
+            .WithMessage("At least one attribute is required for the variant");
+    }
+}
+
+public class UpdateProductImageValidator : AbstractValidator<UpdateProductImageDTO>
+{
+    public UpdateProductImageValidator()
+    {
+        RuleFor(x => x.ImageUrl)
+            .NotEmpty()
+            .WithMessage("Image URL is required")
+            .Must(BeAValidUrl)
+            .WithMessage("Image URL must be a valid URL");
     }
 
-    private bool HaveDifferentProductTypeDetails(List<ProductPricesDTO> productPrices)
+    private bool BeAValidUrl(string url)
     {
-        if (productPrices == null || !productPrices.Any())
-            return true;
-
-        foreach (var price in productPrices)
-        {
-            if (
-                !string.IsNullOrWhiteSpace(price.ProductTypeDetails1)
-                && !string.IsNullOrWhiteSpace(price.ProductTypeDetails2)
-            )
-            {
-                if (
-                    string.Equals(
-                        price.ProductTypeDetails1.Trim(),
-                        price.ProductTypeDetails2.Trim(),
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return Uri.TryCreate(url, UriKind.Absolute, out var result) &&
+               (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
     }
 }

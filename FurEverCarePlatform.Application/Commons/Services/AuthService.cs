@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FurEverCarePlatform.Application.Commons.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 public class AuthService
@@ -14,12 +15,14 @@ public class AuthService
     private readonly JwtTokenGenerator _jwtTokenGenerator;
     private readonly UserService _userService;
     private readonly ILogger<AuthService> _logger;
+    private readonly IUnitOfWork _unitOfWork;
 
     public AuthService(
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
         JwtTokenGenerator jwtTokenGenerator,
         UserService userService,
+        IUnitOfWork unitOfWork,
         ILogger<AuthService> logger
     )
     {
@@ -28,14 +31,29 @@ public class AuthService
         _jwtTokenGenerator = jwtTokenGenerator;
         _userService = userService;
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<(bool Success, string Message, LoginResponseDto Response)> LoginAsync(
-        string email,
+        string emailOrUserNameOrPhone,
         string password
     )
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        AppUser? user = null;
+        
+        if (emailOrUserNameOrPhone.Contains("@"))
+        {
+            user = await _userManager.FindByEmailAsync(emailOrUserNameOrPhone);
+        }
+        else if (emailOrUserNameOrPhone.All(c => char.IsDigit(c) || c == '+' || c == '-' || c == ' ' || c == '(' || c == ')'))
+        {
+            user = await _userManager.Users.Where(u => u.PhoneNumber == emailOrUserNameOrPhone).FirstOrDefaultAsync();
+        }
+        else
+        {
+            user = await _userManager.FindByNameAsync(emailOrUserNameOrPhone);
+        }
+        
         if (user == null)
         {
             return (false, "User does not exist", null);
@@ -55,13 +73,18 @@ public class AuthService
             );
 
             // Get user details
-            var userDetails = await _userService.GetUserDetailsAsync(user.Id.ToString());
+            //var userDetails = await _userService.GetUserDetailsAsync(user.Id.ToString());
 
+			var store = await _unitOfWork.GetRepository<Store>()
+										 .GetQueryable()
+										 .FirstOrDefaultAsync(x => x.AppUserId == user.Id);
+
+			Guid? storeId = store?.Id;
             var response = new LoginResponseDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim() },
+                User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim(),  StoreId = storeId},
             };
 
             return (true, "Login successful", response);
@@ -154,8 +177,10 @@ public class LoginResponseDto
 public class UserDto
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Avatar { get; set; }
+    public string? Name { get; set; }
+    public string? Avatar { get; set; }
+
+    public Guid? StoreId { get; set; }
 }
 
 public class RegisterRequestDto

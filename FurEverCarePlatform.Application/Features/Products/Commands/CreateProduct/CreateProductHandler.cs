@@ -1,141 +1,90 @@
-﻿//using FurEverCarePlatform.Application.Features.Product.Validations;
+﻿using System.Text.Json;
 
-//namespace FurEverCarePlatform.Application.Features.Product.Commands.CreateProduct;
+namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProduct;
 
-//public class CreateProductHandler(IUnitOfWork unitOfWork)
-//    : IRequestHandler<CreateProductCommand, Guid>
-//{
-//    public async Task<Guid> Handle(
-//        CreateProductCommand request,
-//        CancellationToken cancellationToken
-//    )
-//    {
-//        var validator = new CreateProductValidator();
-//        var validationResult = await validator.ValidateAsync(request);
-//        if (!validationResult.IsValid)
-//        {
-//            throw new BadRequestException(validationResult.ToString(), validationResult);
-//        }
-//        try
-//        {
-//            await unitOfWork.BeginTransactionAsync();
+public class CreateProductHandler(IUnitOfWork unitOfWork)
+    : IRequestHandler<CreateProductCommand, Guid>
+{
+    public async Task<Guid> Handle(
+        CreateProductCommand request,
+        CancellationToken cancellationToken
+    )
+    {
+        var validator = new CreateProductValidator();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-//            // Tạo sản phẩm
-//            var product = new Domain.Entities.Product()
-//            {
-//                Name = request.Name,
-//                ProductCategoryId = request.ProductCategoryId,
-//                IsActive = request.IsActive,
-//                ProductDescription = request.ProductDescription,
-//                Height = request.Height,
-//                Length = request.Length,
-//                Weight = request.Weight,
-//                Width = request.Width,
-//                BrandId = request.BrandId,
-//                StoreId = request.StoreId,
-//            };
+        if (!validationResult.IsValid)
+        {
+            throw new BadRequestException(validationResult.ToString(), validationResult);
+        }
 
-//            var productTypes = new List<Domain.Entities.ProductType>();
-//            var productTypeDetailsDict =
-//                new Dictionary<string, Domain.Entities.ProductTypeDetail>();
+        try
+        {
+            await unitOfWork.BeginTransactionAsync();
 
-//            // Duyệt từng loại sản phẩm (productType)
-//            foreach (var productType in request.ProductTypes)
-//            {
-//                var newProductType = new Domain.Entities.ProductType { Name = productType.Name };
-//                productTypes.Add(newProductType);
+            var product = new Domain.Entities.Product
+            {
+                CategoryId = request.CategoryId,
+                StoreId = request.StoreId,
+                Name = request.Name,
+                Description = request.Description,
+                BasePrice = request.BasePrice,
+                Weight = request.Weight,
+                Length = request.Length,
+                Height = request.Height,
+                Sold = 0,
+                StarAverage = 5.0,
+                ReviewCount = 0,
+                TotalRating = 0
+            };
 
-//                var productTypeDetails = new List<Domain.Entities.ProductTypeDetail>();
+            if (request.Variants?.Any() == true)
+            {
+                foreach (var variantDto in request.Variants)
+                {
+                    var variant = new Domain.Entities.ProductVariant
+                    {
+                        ProductId = product.Id,
+                        Attributes = JsonDocument.Parse(JsonSerializer.Serialize(variantDto.Attributes)),
+                        Price = variantDto.Price,
+                        Stock = variantDto.Stock
+                    };
 
-//                foreach (var productTypeDetail in productType.ProductTypeDetails)
-//                {
-//                    var newProductTypeDetail = new Domain.Entities.ProductTypeDetail
-//                    {
-//                        Name = productTypeDetail.Name,
-//                    };
+                    product.Variants.Add(variant);
+                }
+            }
 
-//                    productTypeDetails.Add(newProductTypeDetail);
-//                    productTypeDetailsDict[newProductTypeDetail.Name] = newProductTypeDetail; // Lưu vào dictionary để tra cứu
-//                }
+            if (request.Images?.Any() == true)
+            {
+                var hasMainImage = request.Images.Any(img => img.IsMain);
+                if (!hasMainImage && request.Images.Count > 0)
+                {
+                    request.Images[0].IsMain = true;
+                }
 
-//                newProductType.ProductTypeDetails = productTypeDetails;
-//            }
+                foreach (var imageDto in request.Images)
+                {
+                    var image = new Domain.Entities.ProductImage
+                    {
+                        ProductId = product.Id,
+                        ImageUrl = imageDto.ImageUrl,
+                        IsMain = imageDto.IsMain
+                    };
 
-//            product.ProductTypes = productTypes;
+                    product.Images.Add(image);
+                }
+            }
 
-//            await unitOfWork.GetRepository<Domain.Entities.Product>().InsertAsync(product);
-//            await unitOfWork.SaveAsync(); // Lưu `Product` và `ProductType` trước
-            
-//            product.ProductImages = request.ProductImages.Select(
-//                x => new Domain.Entities.ProductImages
-//                {
-//                    URL = x.URL,
-//                    ProductId = product.Id,
-//                }
-//            ).ToList(); ;
+            await unitOfWork.GetRepository<Domain.Entities.Product>().InsertAsync(product);
+            await unitOfWork.SaveAsync();
 
-//            var productPrices = new List<Domain.Entities.ProductPrice>();
-
-//            foreach (var productPrice in request.ProductPrices)
-//            {
-//                if (
-//                    productTypeDetailsDict.TryGetValue(
-//                        productPrice.ProductTypeDetails1,
-//                        out var productTypeDetail1
-//                    )
-//                )
-//                {
-//                    var newProductPrice = new Domain.Entities.ProductPrice();
-//                    if (
-//                        productPrice.ProductTypeDetails2 != null
-//                        && productTypeDetailsDict.TryGetValue(
-//                            productPrice.ProductTypeDetails2,
-//                            out var productTypeDetail2
-//                        )
-//                    )
-//                    {
-//                        newProductPrice = new Domain.Entities.ProductPrice
-//                        {
-//                            Price = productPrice.Price,
-//                            Inventory = productPrice.Inventory,
-//                            ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
-//                            ProductTypeDetails2 = productTypeDetail2.Id,
-//                        };
-//                    }
-//                    else
-//                    {
-//                        newProductPrice = new Domain.Entities.ProductPrice
-//                        {
-//                            Price = productPrice.Price,
-//                            Inventory = productPrice.Inventory,
-//                            ProductTypeDetails1 = productTypeDetail1.Id, // Liên kết bằng ID
-//                            ProductTypeDetails2 = null,
-//                        };
-//                    }
-
-//                    productPrices.Add(newProductPrice);
-//                }
-//                else
-//                {
-//                    throw new NotFoundException(
-//                        nameof(ProductTypeDetail),
-//                        $"{productPrice.ProductTypeDetails1} or {productPrice.ProductTypeDetails2}"
-//                    );
-//                }
-//            }
-
-//            await unitOfWork
-//                .GetRepository<Domain.Entities.ProductPrice>()
-//                .AddRangeAsync(productPrices);
-//            await unitOfWork.SaveAsync(); // Lưu `ProductPrice`
-
-//            await unitOfWork.CommitTransactionAsync();
-//            return product.Id;
-//        }
-//        catch (System.Exception)
-//        {
-//            await unitOfWork.RollbackTransactionAsync();
-//            throw new BadRequestException("Create product failed");
-//        }
-//    }
-//}
+            await unitOfWork.CommitTransactionAsync();
+            return product.Id;
+        }
+        catch (SystemException ex)
+        {
+            await unitOfWork.RollbackTransactionAsync();
+            throw new BadRequestException($"Create product failed: {ex.Message}");
+        }
+    }
+}

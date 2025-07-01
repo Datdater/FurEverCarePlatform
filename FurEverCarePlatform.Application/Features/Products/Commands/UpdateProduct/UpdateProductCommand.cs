@@ -1,27 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FurEverCarePlatform.Application.Features.Products.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 
 public class UpdateProductCommand : IRequest<Guid>
 {
+    [Required]
     public Guid Id { get; set; }
-    public Guid ProductCategoryId { get; set; }
-    public string Name { get; set; }
-    public bool? IsActive { get; set; }
+
+    [Required]
+    public Guid CategoryId { get; set; }
+
+    [Required]
+    [MaxLength(100)]
+    public string Name { get; set; } = string.Empty;
+
+    [MaxLength(1000)]
+    public string? Description { get; set; }
+
+    public float BasePrice { get; set; }
+
     public decimal Weight { get; set; }
-    public int Lenght { get; set; }
-    public int Height { get; set; }
-    public int Width { get; set; }
-    public string ProductDescription { get; set; }
-    public int? Views { get; set; }
-    public Guid BrandId { get; set; }
+
+    public decimal Length { get; set; }
+
+    public decimal Height { get; set; }
+
+    [Required]
     public Guid StoreId { get; set; }
-    public List<ProductTypeDTO> ProductTypes { get; set; }
-    public List<ProductImagesDTO> ProductImages { get; set; }
-    public List<ProductPricesDTO> ProductPrices { get; set; }
+
+    // Collections for related entities
+    public List<UpdateProductVariantDTO> Variants { get; set; } = new();
+    public List<UpdateProductImageDTO> Images { get; set; } = new();
+}
+
+public class UpdateProductVariantDTO
+{
+    public Guid? Id { get; set; } // For existing variants
+    public Dictionary<string, object> Attributes { get; set; } = new();
+    public float Price { get; set; }
+    public int Stock { get; set; }
+}
+
+public class UpdateProductImageDTO
+{
+    public Guid? Id { get; set; } // For existing images
+    public string ImageUrl { get; set; } = string.Empty;
+    public bool IsMain { get; set; }
 }

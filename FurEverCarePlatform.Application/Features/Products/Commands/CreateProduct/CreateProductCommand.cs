@@ -1,39 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FurEverCarePlatform.Application.Features.Products.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProduct;
 
 public class CreateProductCommand : IRequest<Guid>
 {
     [Required]
-    public Guid ProductCategoryId { get; set; }
+    public Guid CategoryId { get; set; }
 
     [Required]
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    public bool? IsActive { get; set; }
-
     [MaxLength(1000)]
-    public string? ProductDescription { get; set; }
-    public decimal Weight { get; set; }
-    public int Length { get; set; }
-    public int Height { get; set; }
-    public int Width { get; set; }
+    public string? Description { get; set; }
 
-    [Required]
-    public Guid BrandId { get; set; }
+    public float BasePrice { get; set; }
+
+    public decimal Weight { get; set; }
+
+    public decimal Length { get; set; }
+
+    public decimal Height { get; set; }
 
     [Required]
     public Guid StoreId { get; set; }
 
-    // Navigation properties
-    public List<ProductTypeDTO> ProductTypes { get; set; }
-    public List<ProductImagesDTO> ProductImages { get; set; }
-    public List<ProductPricesDTO> ProductPrices { get; set; }
+    public List<CreateProductVariantDTO> Variants { get; set; } = new();
+    public List<CreateProductImageDTO> Images { get; set; } = new();
+}
+
+public class CreateProductVariantDTO
+{
+    public Dictionary<string, object> Attributes { get; set; } = new();
+    public float Price { get; set; }
+    public int Stock { get; set; }
+}
+
+public class CreateProductImageDTO
+{
+    public string ImageUrl { get; set; } = string.Empty;
+    public bool IsMain { get; set; }
 }

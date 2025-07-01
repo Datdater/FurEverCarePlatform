@@ -4,10 +4,12 @@ using FurEverCarePlatform.Application.Features.Products.Commands.DeleteProduct;
 using FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 using FurEverCarePlatform.Application.Features.Products.DTOs;
 using FurEverCarePlatform.Application.Features.Products.Queries.GetAllProduct;
+using FurEverCarePlatform.Application.Features.Products.Queries.GetAllProductByStore;
 using FurEverCarePlatform.Application.Features.Products.Queries.GetProductDetail;
 using FurEverCarePlatform.Application.Features.Products.Queries.GetProductReviews;
 using FurEverCarePlatform.Application.Features.Products.Queries.GetVariantProduct;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
@@ -27,6 +29,12 @@ namespace FurEverCarePlatform.API.Controllers
 
         [HttpGet]
         public async Task<Pagination<ProductDTO>> GetProducts([FromQuery] GetAllProductQuery query)
+        {
+            return await mediator.Send(query);
+        }
+        [HttpGet("my-store")]
+        [Authorize]
+        public async Task<Pagination<ProductDTO>> GetProductsByStore([FromQuery] GetAllProductByStoreQuery query)
         {
             return await mediator.Send(query);
         }

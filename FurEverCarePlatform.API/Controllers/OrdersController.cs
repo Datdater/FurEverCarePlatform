@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using FurEverCarePlatform.Application.Features.Orders.Commands.Create;
 using FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders;
 using MediatR;
@@ -14,8 +15,8 @@ namespace FurEverCarePlatform.API.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateOrder(CreateOrderCommand createOrder)
         {
-            await mediator.Send(createOrder);
-            return Ok();
+            var response = await mediator.Send(createOrder);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -24,7 +25,7 @@ namespace FurEverCarePlatform.API.Controllers
         [Authorize]
         public async Task<ActionResult> Get([FromQuery] GetAllOrdersQuery query)
         {
-            query.UserId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value; // Assuming 'sub' is the claim for user ID
+            query.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Assuming 'sub' is the claim for user ID
             var result = await mediator.Send(query);
             return Ok(result);
         }

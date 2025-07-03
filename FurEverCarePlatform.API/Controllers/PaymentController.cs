@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
 {
-    public class PaymentController(IMediator mediator) : Controller
+    public class PaymentController(IMediator mediator) : BaseControllerApi
     {
         [HttpPut]
         public async Task<IActionResult> ExcutePayment(SetPaymentCompletedCommand query)

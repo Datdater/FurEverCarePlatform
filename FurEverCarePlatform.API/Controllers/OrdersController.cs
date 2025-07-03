@@ -1,6 +1,8 @@
-﻿using FurEverCarePlatform.Application.Features.Orders.Commands.Create;
+﻿using System.IdentityModel.Tokens.Jwt;
+using FurEverCarePlatform.Application.Features.Orders.Commands.Create;
 using FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
@@ -19,8 +21,10 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
+        [Authorize]
         public async Task<ActionResult> Get([FromQuery] GetAllOrdersQuery query)
         {
+            query.UserId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value; // Assuming 'sub' is the claim for user ID
             var result = await mediator.Send(query);
             return Ok(result);
         }

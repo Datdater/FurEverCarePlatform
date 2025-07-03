@@ -27,7 +27,7 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Domain.Entities.Order> Orders { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
-    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Domain.Entities.Payment> Payments { get; set; }
 
     //public DbSet<PaymentMethod> PaymentMethods { get; set; }
     public DbSet<Pet> Pets { get; set; }

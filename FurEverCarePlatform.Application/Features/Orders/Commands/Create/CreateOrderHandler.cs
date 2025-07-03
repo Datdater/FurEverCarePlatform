@@ -6,14 +6,25 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Net.payOS;
+using Net.payOS.Types;
+using Payment.API.DTO;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
 {
-    public class CreateOrderHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
-        : IRequestHandler<CreateOrderCommand>
+    public class CreateOrderHandler(
+        IUnitOfWork unitOfWork,
+        PayOS payOS,
+        IConfiguration configuration,
+        UserManager<AppUser> userManager
+    ) : IRequestHandler<CreateOrderCommand, PaymentCreatedResponse>
     {
-        public async Task Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<PaymentCreatedResponse> Handle(
+            CreateOrderCommand request,
+            CancellationToken cancellationToken
+        )
         {
             float totalPrice = 0;
             foreach (var item in request.OrderDetails)
@@ -70,11 +81,48 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                 TotalPrice = totalPrice,
                 Code = GenerateOrderCode(),
                 OrderDetails = orderDetails,
-                OrderStatus = Domain.Enums.EnumOrderStatus.Pending,
-                Payment = new Payment { PaymentMethod = request.PaymentMethod },
+                OrderStatus = Domain.Enums.EnumOrderStatus.Confirmed,
+                Payment = new Domain.Entities.Payment { PaymentMethod = request.PaymentMethod },
             };
             await unitOfWork.GetRepository<Order>().InsertAsync(order);
             await unitOfWork.SaveAsync();
+            if (request.PaymentMethod == Domain.Enums.PaymentMethod.BankTransfer)
+            {
+                long orderCode = long.Parse(DateTimeOffset.Now.ToString("mmssffffff"));
+                List<ItemData> items = new List<ItemData>();
+                long expried = DateTimeOffset.Now.ToUnixTimeSeconds() + 15 * 60;
+                PaymentData paymentData = new PaymentData(
+                    orderCode,
+                    (int)totalPrice,
+                    $"Senandpet",
+                    items,
+                    configuration["PayOS:CancelUrl"],
+                    configuration["PayOS:ReturnUrl"],
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    expried
+                );
+                CreatePaymentResult createPayment = await payOS.createPaymentLink(paymentData);
+                var paymentUrl = createPayment.checkoutUrl;
+                var paymentCode = createPayment.orderCode.ToString();
+                order.Payment.TransactionId = paymentCode;
+                order.OrderStatus = Domain.Enums.EnumOrderStatus.PendingPayment;
+                unitOfWork.GetRepository<Order>().Update(order);
+                unitOfWork.GetRepository<Domain.Entities.Payment>().Update(order.Payment);
+                await unitOfWork.SaveAsync();
+                return new PaymentCreatedResponse
+                {
+                    Id = order.Payment.Id,
+                    PaymentUrl = paymentUrl,
+                };
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private string GenerateOrderCode()

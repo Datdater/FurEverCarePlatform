@@ -6,10 +6,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FurEverCarePlatform.Domain.Enums;
 using MediatR;
+using Payment.API.DTO;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
 {
-    public class CreateOrderCommand : IRequest
+    public class CreateOrderCommand : IRequest<PaymentCreatedResponse>
     {
         public Guid StoreId { get; set; }
         public Guid CustomerId { get; set; }

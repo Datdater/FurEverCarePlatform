@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Net.payOS;
 
 namespace FurEverCarePlatform.API
 {
@@ -18,7 +19,16 @@ namespace FurEverCarePlatform.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            var configuration = builder.Configuration;
+            PayOS payOS = new PayOS(
+                configuration["PayOS:PAYOS_CLIENT_ID"]
+                    ?? throw new Exception("Cannot find environment"),
+                configuration["PayOS:PAYOS_API_KEY"]
+                    ?? throw new Exception("Cannot find environment"),
+                configuration["PayOS:PAYOS_CHECKSUM_KEY"]
+                    ?? throw new Exception("Cannot find environment")
+            );
+            builder.Services.AddSingleton(payOS);
             // Add services to the container.
             builder.Services.Configure<CloudinarySettings>(
                 builder.Configuration.GetSection("CloudinarySettings")

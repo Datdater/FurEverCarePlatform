@@ -12,7 +12,7 @@ public class Payment : BaseEntity
     public Guid? BookingId { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public string? TransactionId { get; private set; }
+    public string? TransactionId { get; set; }
 
     [Required]
     [Column(TypeName = "money")]

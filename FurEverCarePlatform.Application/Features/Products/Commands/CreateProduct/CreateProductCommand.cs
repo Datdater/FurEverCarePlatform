@@ -19,11 +19,9 @@ public class CreateProductCommand : IRequest<Guid>
     public decimal Weight { get; set; }
 
     public decimal Length { get; set; }
+    public decimal Width { get; set; }
 
     public decimal Height { get; set; }
-
-    [Required]
-    public Guid StoreId { get; set; }
 
     public List<CreateProductVariantDTO> Variants { get; set; } = new();
     public List<CreateProductImageDTO> Images { get; set; } = new();

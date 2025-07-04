@@ -21,6 +21,7 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [Authorize]
         public async Task<ActionResult> Post(CreateProductCommand createProduct)
         {
             var response = await mediator.Send(createProduct);

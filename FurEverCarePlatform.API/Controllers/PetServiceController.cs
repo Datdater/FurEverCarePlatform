@@ -6,6 +6,7 @@ using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetServ
 using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServicesByStore;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +64,15 @@ public class PetServiceController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     public async Task<IActionResult> GetAllPetServices([FromQuery] GetPetServicesQuery query)
+    {
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+    [HttpGet("my-store")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> GetAllPetServicesByStore([FromQuery] GetPetServicesByStoreQuery query)
     {
         var result = await _mediator.Send(query);
         return Ok(result);

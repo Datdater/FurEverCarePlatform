@@ -20,6 +20,7 @@ public class UpdateProductCommand : IRequest<Guid>
     public float BasePrice { get; set; }
 
     public decimal Weight { get; set; }
+    public decimal Width { get; set; }
 
     public decimal Length { get; set; }
 

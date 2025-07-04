@@ -3,7 +3,7 @@ name: Deploy ASP.NET Core to VPS
 on:
   push:
     branches:
-      - deploy
+      - main
 
 jobs:
   deploy:

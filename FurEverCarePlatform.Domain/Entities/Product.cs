@@ -12,6 +12,8 @@ public class Product : BaseEntity
     public float BasePrice { get; set; }
     public decimal Weight { get; set; }
     public decimal Length { get; set; }
+
+    public decimal Width { get; set; }
     public decimal Height { get; set; }
     public int Sold { get; set; }
     public double StarAverage { get; set; } = 5.0;

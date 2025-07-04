@@ -44,6 +44,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork)
             product.Weight = request.Weight;
             product.Length = request.Length;
             product.Height = request.Height;
+            product.Width = request.Width;
 
             // Update variants
             await UpdateProductVariants(product, request.Variants);

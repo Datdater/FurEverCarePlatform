@@ -13,10 +13,6 @@ public class CreateProductValidator : AbstractValidator<CreateProductCommand>
             .NotEmpty()
             .WithMessage("Category ID is required");
 
-        RuleFor(x => x.StoreId)
-            .NotEmpty()
-            .WithMessage("Store ID is required");
-
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("Product name is required")

@@ -1,8 +1,11 @@
-﻿using System.Text.Json;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProduct;
 
-public class CreateProductHandler(IUnitOfWork unitOfWork)
+public class CreateProductHandler(IUnitOfWork unitOfWork, IClaimService claimService)
     : IRequestHandler<CreateProductCommand, Guid>
 {
     public async Task<Guid> Handle(
@@ -21,17 +24,22 @@ public class CreateProductHandler(IUnitOfWork unitOfWork)
         try
         {
             await unitOfWork.BeginTransactionAsync();
+            var userId = claimService.GetCurrentUser;
+
+            var store = await unitOfWork.GetRepository<Domain.Entities.Store>().GetQueryable().FirstOrDefaultAsync(x => x.AppUserId == userId);
+            if (store == null) throw new System.Exception("Not found store with this user");
 
             var product = new Domain.Entities.Product
             {
                 CategoryId = request.CategoryId,
-                StoreId = request.StoreId,
+                StoreId = store.Id,
                 Name = request.Name,
                 Description = request.Description,
                 BasePrice = request.BasePrice,
                 Weight = request.Weight,
                 Length = request.Length,
                 Height = request.Height,
+                Width = request.Width,
                 Sold = 0,
                 StarAverage = 5.0,
                 ReviewCount = 0,

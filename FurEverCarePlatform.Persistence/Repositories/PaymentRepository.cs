@@ -1,10 +1,8 @@
-﻿
-namespace FurEverCarePlatform.Persistence.Repositories
+﻿namespace FurEverCarePlatform.Persistence.Repositories
 {
-    public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
-	{
-		public PaymentRepository(PetDatabaseContext context) : base(context)
-		{
-		}
+    public class PaymentRepository : GenericRepository<Domain.Entities.Payment>, IPaymentRepository
+    {
+        public PaymentRepository(PetDatabaseContext context)
+            : base(context) { }
     }
 }

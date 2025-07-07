@@ -28,7 +28,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
                 .ThenInclude(o => o.ProductVariation)
                 .ThenInclude(o => o.Product)
                 .ThenInclude(o => o.Images)
-                .Where(o => !o.IsDeleted)
+                .Where(o => !o.IsDeleted && o.AppUserId == Guid.Parse(request.UserId))
                 .OrderByDescending(o => o.OrderDate);
 
             var orderPagination = await Pagination<Domain.Entities.Order>.CreateAsync(

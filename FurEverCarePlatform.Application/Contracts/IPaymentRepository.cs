@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace FurEverCarePlatform.Application.Contracts
 {
-    public interface IPaymentRepository : IGenericRepository<Payment>
-	{
-    }
+    public interface IPaymentRepository : IGenericRepository<Domain.Entities.Payment> { }
 }

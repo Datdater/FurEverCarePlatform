@@ -19,7 +19,7 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
             .Where(x => !x.IsDeleted);
         if (!string.IsNullOrEmpty(request.SearchTerm))
         {
-            product = product.Where(x => x.Name.Contains(request.SearchTerm));
+            product = product.Where(x => x.Name.ToLower().Contains(request.SearchTerm.ToLower()));
         }
         if (!string.IsNullOrEmpty(request.SortBy))
         {

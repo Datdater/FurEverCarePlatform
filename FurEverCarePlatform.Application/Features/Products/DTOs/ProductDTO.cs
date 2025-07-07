@@ -19,6 +19,8 @@ public class ProductDTO
     public string StoreWard { get; set; }
     public string StoreStreet { get; set; }
     public string CategoryId { get; set; }
+
+    public string CategoryName { get; set; }
     public string ProductImage { get; set; }
     public double StarAverage { get; set; }
     public int ReviewCount { get; set; }

@@ -16,6 +16,7 @@ public class GetAllProductHandler(IUnitOfWork unitOfWork, IMapper mapper)
             .GetQueryable()
             .Include(x => x.Store)
             .Include(x => x.Images)
+            .Include(x => x.Category)
             .Where(x => !x.IsDeleted);
         if (!string.IsNullOrEmpty(request.SearchTerm))
         {

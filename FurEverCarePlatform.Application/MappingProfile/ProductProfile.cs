@@ -38,6 +38,10 @@ public class ProductProfile : Profile
                 dest => dest.StoreStreet,
                 opt => opt.MapFrom(src => src.Store.BusinessAddressStreet)
             )
+            .ForMember(
+                dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.Category.Name)
+            )
             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.BasePrice));
         //CreateMap<Domain.Entities.ProductType, ProductTypeDetailsDTO>()
         //    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));

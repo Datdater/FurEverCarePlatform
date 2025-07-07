@@ -29,6 +29,13 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
             StoreUrl = productDetail.Store.LogoUrl,
             Description = productDetail.Description,
             CategoryName = productDetail.Category.Name,
+            Height = productDetail.Height,
+            Length = productDetail.Length,
+            ReviewCount = productDetail.ReviewCount,
+            Sold = productDetail.Sold,
+            StarAverage = productDetail.StarAverage,
+            Weight = productDetail.Weight,
+            Width = productDetail.Width,
             Variants = productDetail
                 .Variants.Select(v => new ProductVariantDTO
                 {

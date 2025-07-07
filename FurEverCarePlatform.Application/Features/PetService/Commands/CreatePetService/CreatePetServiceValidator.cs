@@ -12,9 +12,6 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
 			RuleFor(p => p.Description)
 				.MaximumLength(500).WithMessage("{PropertyName} must not exceed 500 characters.");
 
-			RuleFor(p => p.StoreId)
-				.NotEmpty().WithMessage("{PropertyName} is required.");
-
 			RuleFor(p => p.EstimatedTime)
 				.NotEmpty().WithMessage("EstimatedTime is required.")
 				.Matches(@"^\d+\s*-\s*\d+\s*(minutes|hours|days)$")

@@ -1,4 +1,7 @@
-﻿using FurEverCarePlatform.Application.Contracts;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
+using FurEverCarePlatform.Application.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService
 {
@@ -6,11 +9,13 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IClaimService _claimService;
 
-        public CreatePetServiceCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreatePetServiceCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claimService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _claimService = claimService;
         }
 
         public async Task<Guid> Handle(
@@ -27,7 +32,12 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
             await _unitOfWork.BeginTransactionAsync();
             try
             {
+                var userId = _claimService.GetCurrentUser;
+
+                var store = await _unitOfWork.GetRepository<Domain.Entities.Store>().GetQueryable().FirstOrDefaultAsync(x => x.AppUserId == userId);
+                if (store == null) throw new System.Exception("Not found store with this user");
                 var petService = _mapper.Map<Domain.Entities.PetService>(request);
+                petService.StoreId = store.Id;
                 await _unitOfWork
                     .GetRepository<Domain.Entities.PetService>()
                     .InsertAsync(petService);

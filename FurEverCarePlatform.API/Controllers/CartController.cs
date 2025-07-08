@@ -44,7 +44,9 @@ namespace FurEverCarePlatform.API.Controllers
             [FromBody] AddCartItemRequest request
         )
         {
-            var cart = await _repository.GetCartAsync(request.UserId);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var cart = await _repository.GetCartAsync(currentUserId);
             cart.AddItem(
                 request.ProductVariantId,
                 request.ProductName,

@@ -4,7 +4,7 @@ namespace FurEverCarePlatform.Application.Models
 {
     public class AddCartItemRequest
     {
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public string ProductVariantId { get; set; }
         public string ProductName { get; set; }
         public string Attributes { get; set; }

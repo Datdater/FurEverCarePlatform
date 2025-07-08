@@ -12,6 +12,7 @@
     <Folder Include="Features\ProductCategory\Commands\DeleteProductCategory\" />
     <Folder Include="Features\ProductCategory\Commands\UpdateProductCategory\" />
     <Folder Include="Features\ProductCategory\Queries\GetProductCategoryDetails\" />
+    <Folder Include="Features\ProductVariants\Commands\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />

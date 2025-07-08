@@ -1,6 +1,8 @@
 ﻿using System.Net;
+using System.Security.Claims;
 using FurEverCarePlatform.Application.Contracts;
 using FurEverCarePlatform.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers
@@ -22,16 +24,16 @@ namespace FurEverCarePlatform.API.Controllers
             return Ok(cart);
         }
 
-        [HttpPost("{userId}/items/{id}")]
+        [HttpPost()]
+        [Authorize]
         [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ShoppingCart>> UpdateCart(
-            string userId,
-            string id,
             [FromBody] UpdateCartItemRequest request
         )
         {
-            var cart = await _repository.GetCartAsync(userId);
-            cart.UpdateItemQuantity(id, request.Quantity);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var cart = await _repository.GetCartAsync(currentUserId);
+            cart.UpdateItemQuantity(request.Id, request.Quantity);
             await _repository.UpdateCartAsync(cart);
             return Ok(await _repository.GetCartAsync(cart.UserId));
         }

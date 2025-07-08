@@ -39,6 +39,7 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
             Variants = productDetail
                 .Variants.Select(v => new ProductVariantDTO
                 {
+                    Id = v.Id,
                     Attributes = v.Attributes,
                     Price = v.Price,
                     Stock = v.Stock,

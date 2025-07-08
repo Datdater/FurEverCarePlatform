@@ -42,6 +42,8 @@ public class ProductReviewDTO
 
 public class ProductVariantDTO
 {
+    public Guid Id { get; set; }
+
     [Required]
     public JsonDocument Attributes { get; set; }
 

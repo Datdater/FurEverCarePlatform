@@ -44,7 +44,7 @@ namespace FurEverCarePlatform.API.Controllers
 
             var addressResponses = addresses.Select(MapToAddressResponse).ToList();
 
-            return Ok(addressResponses);
+            return Ok(new { Addresses = addressResponses, TotalCount = addressResponses.Count });
         }
 
         [HttpGet("{id}")]

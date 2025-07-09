@@ -25,7 +25,6 @@ namespace FurEverCarePlatform.API.Controllers
         [Authorize]
         public async Task<ActionResult> Get([FromQuery] GetAllOrdersQuery query)
         {
-            query.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Assuming 'sub' is the claim for user ID
             var result = await mediator.Send(query);
             return Ok(result);
         }

@@ -1,14 +1,19 @@
-﻿using System;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
+using FurEverCarePlatform.Application.Models.Orders;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FurEverCarePlatform.Application.Models.Orders;
-using Microsoft.EntityFrameworkCore;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
 {
-    public class GetAllOrdersHandler(IUnitOfWork unitOfWork)
+    public class GetAllOrdersHandler(IUnitOfWork unitOfWork,
+    IClaimService claimService,
+    UserManager<AppUser> userManager)
         : IRequestHandler<GetAllOrdersQuery, Pagination<GetAllOrdersResponse>>
     {
         public async Task<Pagination<GetAllOrdersResponse>> Handle(
@@ -16,6 +21,10 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
             CancellationToken cancellationToken
         )
         {
+            var userId = claimService.GetCurrentUser;
+            var user = await userManager.FindByIdAsync(userId.ToString());
+
+            var roles = await userManager.GetRolesAsync(user);
             var orders = unitOfWork
                 .GetRepository<Domain.Entities.Order>()
                 .GetQueryable()
@@ -28,11 +37,34 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
                 .ThenInclude(o => o.ProductVariation)
                 .ThenInclude(o => o.Product)
                 .ThenInclude(o => o.Images)
-                .Where(o => !o.IsDeleted && o.AppUserId == Guid.Parse(request.UserId))
+                .Where(o => !o.IsDeleted && (request.Status == null || o.OrderStatus == request.Status))
                 .OrderByDescending(o => o.OrderDate);
 
+            IQueryable<Domain.Entities.Order> filteredQuery;
+
+            if (roles.Contains("Store Owner"))
+            {
+                var store = await unitOfWork
+                    .GetRepository<Domain.Entities.Store>()
+                    .GetQueryable()
+                    .FirstOrDefaultAsync(s => s.AppUserId == userId);
+
+                if (store != null)
+                {
+                    filteredQuery = orders.Where(b => b.OrderDetails.Any(od => od.ProductVariation.Product.StoreId == store.Id));
+                }
+                else
+                {
+                    filteredQuery = orders.Where(b => false); 
+                }
+            }
+            else
+            {
+                filteredQuery = orders.Where(b => b.AppUserId == userId);
+            }
+
             var orderPagination = await Pagination<Domain.Entities.Order>.CreateAsync(
-                orders,
+                filteredQuery,
                 request.PageNumber,
                 request.PageSize
             );
@@ -41,6 +73,8 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
                 {
                     Id = o.Id,
                     CreatedTime = o.OrderDate,
+                    CustomerName = o.AppUser.Name,
+                    CustomerPhone = o.AppUser.PhoneNumber,
                     StoreName =
                         o.OrderDetails.FirstOrDefault()?.ProductVariation?.Product?.Store?.Name
                         ?? "Unknown Store",

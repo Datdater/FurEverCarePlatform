@@ -1,4 +1,5 @@
 ﻿using FurEverCarePlatform.Application.Features.Booking.DTOs;
+using FurEverCarePlatform.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace FurEverCarePlatform.Application.Features.Booking.Queries.GetAllBooking
 	{
 		public int PageIndex { get; set; } = 1;
 		public int PageSize { get; set; } = 10;
-	}
+
+        public BookingStatus? Status { get; set; }
+    }
 }

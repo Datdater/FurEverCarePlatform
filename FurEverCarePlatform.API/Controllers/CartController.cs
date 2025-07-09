@@ -16,11 +16,12 @@ namespace FurEverCarePlatform.API.Controllers
             _repository = repository;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet()]
         [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<ShoppingCart>> GetCart(string userId)
+        public async Task<ActionResult<ShoppingCart>> GetCart()
         {
-            var cart = await _repository.GetCartAsync(userId);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var cart = await _repository.GetCartAsync(currentUserId);
             return Ok(cart);
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FurEverCarePlatform.Application.Models.Orders;
+using FurEverCarePlatform.Domain.Enums;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
 {
@@ -11,7 +12,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
-        public string? UserId { get; set; }
-        public string? StoreId { get; set; }
+
+        public EnumOrderStatus? Status { get; set; }
     }
 }

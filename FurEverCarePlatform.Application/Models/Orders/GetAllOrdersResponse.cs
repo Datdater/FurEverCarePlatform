@@ -11,6 +11,10 @@ namespace FurEverCarePlatform.Application.Models.Orders
         public Guid Id { get; set; }
         public Guid StoreId { get; set; }
         public string StoreName { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public string CustomerPhone { get; set; }
         public decimal Price { get; set; }
         public DateTime CreatedTime { get; set; }
         public decimal DeliveryPrice { get; set; }

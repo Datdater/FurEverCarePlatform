@@ -78,6 +78,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                 Note = request.Note,
                 AppUserId = request.CustomerId,
                 AppUser = user,
+                DeliveryPrice = request.DeliveryPrice,
                 TotalPrice = totalPrice,
                 Code = GenerateOrderCode(),
                 OrderDetails = orderDetails,

@@ -18,7 +18,7 @@ public class Order : BaseEntity
     public EnumOrderStatus OrderStatus { get; set; }
     public DateTime OrderDate { get; private set; } = DateTime.UtcNow;
     public string Note { get; set; }
-    public decimal DeliveryPrice { get; private set; }
+    public decimal DeliveryPrice { get; set; }
     public virtual AppUser AppUser { get; set; }
 
     public virtual Promotion Promotion { get; set; }

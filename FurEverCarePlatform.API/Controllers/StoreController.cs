@@ -1,8 +1,11 @@
 ﻿using FurEverCarePlatform.Application.Commons;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
+using FurEverCarePlatform.Application.Features.Products.DTOs;
 using FurEverCarePlatform.Application.Features.Store.Commands.CreateStore;
 using FurEverCarePlatform.Application.Features.Store.Commands.DeleteStore;
 using FurEverCarePlatform.Application.Features.Store.Commands.UpdateStore;
 using FurEverCarePlatform.Application.Features.Store.DTOs;
+using FurEverCarePlatform.Application.Features.Store.Queries.GetAllProductAndService;
 using FurEverCarePlatform.Application.Features.Store.Queries.GetAllStores;
 using FurEverCarePlatform.Application.Features.Store.Queries.GetStoreAddress;
 using FurEverCarePlatform.Application.Features.Store.Queries.GetStoreDetail;
@@ -19,6 +22,18 @@ public class StoreController(IMediator mediator) : ControllerBase
     [HttpGet]
     public async Task<Pagination<StoreDTO>> GetStores([FromQuery] GetAllStoresQuery query)
     {
+        return await mediator.Send(query);
+    }
+    [HttpGet("{storeId}/products")]
+    public async Task<Pagination<ProductDTO>> GetProductByStore([FromRoute] Guid storeId, [FromQuery] GetAllProductByStoreQuery query)
+    {
+        query.StoreId = storeId;
+        return await mediator.Send(query);
+    }
+    [HttpGet("{storeId}/services")]
+    public async Task<Pagination<PetServicesDto>> GetServiceByStore([FromRoute] Guid storeId, [FromQuery] GetAllServiceByStoreQuery query)
+    {
+        query.StoreId = storeId;
         return await mediator.Send(query);
     }
 

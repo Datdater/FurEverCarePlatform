@@ -17,6 +17,7 @@ namespace FurEverCarePlatform.API.Controllers
         }
 
         [HttpGet()]
+        [Authorize]
         [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ShoppingCart>> GetCart()
         {

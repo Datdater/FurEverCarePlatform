@@ -86,7 +86,7 @@ namespace FurEverCarePlatform.API.Controllers
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             await _repository.DeleteCartAsync(currentUserId);
-            return Ok();
+            return Ok("Delete successfull");
         }
     }
 }

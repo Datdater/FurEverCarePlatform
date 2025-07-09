@@ -65,22 +65,27 @@ namespace FurEverCarePlatform.API.Controllers
             return Ok(cart);
         }
 
-        [HttpDelete("{userId}/items/{id}")]
+        [HttpDelete("items/{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<ShoppingCart>> RemoveItemFromCart(string userId, string id)
+        public async Task<ActionResult<ShoppingCart>> RemoveItemFromCart(string id)
         {
-            var cart = await _repository.GetCartAsync(userId);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var cart = await _repository.GetCartAsync(currentUserId);
             cart.RemoveItem(id);
             await _repository.UpdateCartAsync(cart);
 
             return Ok(cart);
         }
 
-        [HttpDelete("{userId}")]
+        [HttpDelete()]
+        [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ClearCart(string userId)
+        public async Task<IActionResult> ClearCart()
         {
-            await _repository.DeleteCartAsync(userId);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            await _repository.DeleteCartAsync(currentUserId);
             return Ok();
         }
     }

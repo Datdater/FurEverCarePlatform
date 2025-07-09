@@ -2,7 +2,7 @@
 {
     public class UpdateCartItemRequest
     {
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public string Id { get; set; } // The ID of the cart item to update
         public int Quantity { get; set; } // The new quantity for the cart item
 

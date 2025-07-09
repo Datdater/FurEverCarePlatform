@@ -1,25 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FurEverCarePlatform.Application.Contracts;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
+using FurEverCarePlatform.Application.Features.Products.DTOs;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices
+namespace FurEverCarePlatform.Application.Features.Store.Queries.GetAllProductAndService
 {
-    public class GetPetServicesHandler
-        : IRequestHandler<GetPetServicesQuery, Pagination<PetServicesDto>>
+    public class GetAllServiceByStoreHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetAllServiceByStoreQuery, Pagination<PetServicesDto>>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-
-        public GetPetServicesHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public async Task<Pagination<PetServicesDto>> Handle(GetAllServiceByStoreQuery request, CancellationToken cancellationToken)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
-
-        public async Task<Pagination<PetServicesDto>> Handle(
-            GetPetServicesQuery request,
-            CancellationToken cancellationToken
-        )
-        {
-            var petService = _unitOfWork
+            var petService = unitOfWork
                 .GetRepository<Domain.Entities.PetService>()
                 .GetQueryable()
                 .Include(ps => ps.Store)
@@ -44,10 +39,10 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
 
             var petServicePagination = await Pagination<Domain.Entities.PetService>.CreateAsync(
                 petService,
-                request.PageIndex,
+                request.PageNumber,
                 request.PageSize
             );
-            var data = _mapper.Map<Pagination<PetServicesDto>>(petServicePagination);
+            var data = mapper.Map<Pagination<PetServicesDto>>(petServicePagination);
             return data;
         }
     }

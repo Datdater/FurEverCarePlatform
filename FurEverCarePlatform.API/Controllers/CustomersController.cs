@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FurEverCarePlatform.API.Controllers
 {
-    [Route("api/v1/customers/{userId}/address")]
+    [Route("api/v1/customers/address")]
     [Authorize]
     public class CustomersController : BaseControllerApi
     {
@@ -27,25 +27,25 @@ namespace FurEverCarePlatform.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAddresses(string userId)
+        public async Task<IActionResult> GetAddresses()
         {
             // Verify current user can access these addresses
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             bool isAdmin = User.IsInRole("Admin");
 
-            if (currentUserId != userId && !isAdmin)
+            if (!isAdmin)
             {
                 return Forbid();
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(currentUserId);
             if (user == null)
             {
                 return NotFound(new { Message = "User not found" });
             }
 
             var addresses = await _identityContext
-                .Addresses.Where(a => a.AppUserId == Guid.Parse(userId))
+                .Addresses.Where(a => a.AppUserId == Guid.Parse(currentUserId))
                 .ToListAsync();
 
             var addressResponses = addresses.Select(MapToAddressResponse).ToList();
@@ -54,19 +54,19 @@ namespace FurEverCarePlatform.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAddress(string userId, string id)
+        public async Task<IActionResult> GetAddress(string id)
         {
             // Verify current user can access this address
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             bool isAdmin = User.IsInRole("Admin");
 
-            if (currentUserId != userId && !isAdmin)
+            if (currentUserId != currentUserId && !isAdmin)
             {
                 return Forbid();
             }
 
             var address = await _identityContext.Addresses.FirstOrDefaultAsync(a =>
-                a.AppUserId == Guid.Parse(id) && a.AppUserId == Guid.Parse(userId)
+                a.AppUserId == Guid.Parse(id) && a.AppUserId == Guid.Parse(currentUserId)
             );
 
             if (address == null)
@@ -78,21 +78,18 @@ namespace FurEverCarePlatform.API.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> CreateAddress(
-            string userId,
-            [FromBody] AddressRequest request
-        )
+        public async Task<IActionResult> CreateAddress([FromBody] AddressRequest request)
         {
             // Verify current user can create address for this user
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             bool isAdmin = User.IsInRole("Admin");
 
-            if (currentUserId != userId && !isAdmin)
+            if (!isAdmin)
             {
                 return Forbid();
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(currentUserId);
             if (user == null)
             {
                 return NotFound(new { Message = "User not found" });
@@ -100,7 +97,7 @@ namespace FurEverCarePlatform.API.Controllers
 
             var address = new Address
             {
-                AppUserId = Guid.Parse(userId),
+                AppUserId = Guid.Parse(currentUserId),
                 Street = request.Street,
                 City = request.City,
                 Ward = request.Ward,
@@ -112,7 +109,7 @@ namespace FurEverCarePlatform.API.Controllers
 
             // If this is the first address or marked as default, ensure it's set as default
             var hasExistingAddresses = await _identityContext.Addresses.AnyAsync(a =>
-                a.AppUserId == Guid.Parse(userId)
+                a.AppUserId == Guid.Parse(currentUserId)
             );
 
             if (!hasExistingAddresses || request.IsDefault)
@@ -123,7 +120,9 @@ namespace FurEverCarePlatform.API.Controllers
                 if (hasExistingAddresses && request.IsDefault)
                 {
                     var existingDefaultAddresses = await _identityContext
-                        .Addresses.Where(a => a.AppUserId == Guid.Parse(userId) && a.IsDefault)
+                        .Addresses.Where(a =>
+                            a.AppUserId == Guid.Parse(currentUserId) && a.IsDefault
+                        )
                         .ToListAsync();
 
                     foreach (var existingDefault in existingDefaultAddresses)
@@ -138,29 +137,25 @@ namespace FurEverCarePlatform.API.Controllers
 
             return CreatedAtAction(
                 nameof(GetAddress),
-                new { userId = userId, id = address.Id },
+                new { currentUserId = currentUserId, id = address.Id },
                 MapToAddressResponse(address)
             );
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAddress(
-            string userId,
-            string id,
-            [FromBody] AddressRequest request
-        )
+        public async Task<IActionResult> UpdateAddress(string id, [FromBody] AddressRequest request)
         {
             // Verify current user can update this address
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             bool isAdmin = User.IsInRole("Admin");
 
-            if (currentUserId != userId && !isAdmin)
+            if (currentUserId != currentUserId && !isAdmin)
             {
                 return Forbid();
             }
 
             var address = await _identityContext.Addresses.FirstOrDefaultAsync(a =>
-                a.AppUserId == Guid.Parse(id) && a.AppUserId == Guid.Parse(userId)
+                a.AppUserId == Guid.Parse(id) && a.AppUserId == Guid.Parse(currentUserId)
             );
 
             if (address == null)
@@ -179,7 +174,7 @@ namespace FurEverCarePlatform.API.Controllers
             if (request.IsDefault && !address.IsDefault)
             {
                 var existingDefaultAddresses = await _identityContext
-                    .Addresses.Where(a => a.AppUserId == Guid.Parse(userId) && a.IsDefault)
+                    .Addresses.Where(a => a.AppUserId == Guid.Parse(currentUserId) && a.IsDefault)
                     .ToListAsync();
 
                 foreach (var existingDefault in existingDefaultAddresses)
@@ -196,19 +191,19 @@ namespace FurEverCarePlatform.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAddress(string userId, string id)
+        public async Task<IActionResult> DeleteAddress(string id)
         {
             // Verify current user can delete this address
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             bool isAdmin = User.IsInRole("Admin");
 
-            if (currentUserId != userId && !isAdmin)
+            if (currentUserId != currentUserId && !isAdmin)
             {
                 return Forbid();
             }
 
             var address = await _identityContext.Addresses.FirstOrDefaultAsync(a =>
-                a.Id == Guid.Parse(id) && a.AppUserId == Guid.Parse(userId)
+                a.Id == Guid.Parse(id) && a.AppUserId == Guid.Parse(currentUserId)
             );
 
             if (address == null)
@@ -223,7 +218,7 @@ namespace FurEverCarePlatform.API.Controllers
             {
                 var newDefaultAddress = await _identityContext
                     .Addresses.Where(a =>
-                        a.AppUserId == Guid.Parse(userId) && a.Id != Guid.Parse(id)
+                        a.AppUserId == Guid.Parse(currentUserId) && a.Id != Guid.Parse(id)
                     )
                     .FirstOrDefaultAsync();
 

@@ -16,10 +16,13 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
         public string StoreDistrict { get; set; }
         public int TotalUsed { get; set; } = 10;
         public int RatingAverage { get; set; } = 5;
+        public int TotalReviews { get; set; } = 5;
         public string Image { get; set; } = string.Empty;
         public Guid StoreId { get; set; }
         public string? EstimatedTime { get; set; }
         public Guid ServiceCategoryId { get; set; }
+
+        public string ServiceCategoryName { get; set; }
 
         public bool Status { get; set; }
         public List<PetServiceDetailDto> PetServiceDetails { get; set; }

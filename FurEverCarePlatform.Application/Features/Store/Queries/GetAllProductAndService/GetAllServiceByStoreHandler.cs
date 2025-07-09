@@ -21,7 +21,7 @@ namespace FurEverCarePlatform.Application.Features.Store.Queries.GetAllProductAn
                 .Include(ps => ps.ServiceCategory)
                 .Include(ps => ps.PetServiceDetails)
                 .Include(ps => ps.PetServiceSteps)
-                .Where(s => !s.IsDeleted);
+                .Where(s => !s.IsDeleted && s.StoreId == request.StoreId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 petService = petService.Where(x => x.Name.ToLower().Contains(request.SearchTerm.ToLower()));

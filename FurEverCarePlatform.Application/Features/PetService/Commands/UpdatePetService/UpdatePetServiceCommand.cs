@@ -14,6 +14,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePet
         public Guid StoreId { get; set; }
         public string? EstimatedTime { get; set; }
         public Guid ServiceCategoryId { get; set; }
+        public string? Image {  get; set; }
 
         public bool Status { get; set; }
         public List<UpdatePetServiceDetailCommand> PetServiceDetails { get; set; }

@@ -26,7 +26,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
                 .GetRepository<Domain.Entities.PetService>()
                 .GetFirstOrDefaultAsync(
                     p => p.Id == request.Id,
-                    includeProperties: "PetServiceDetails,PetServiceSteps,Store"
+                    includeProperties: "PetServiceDetails,PetServiceSteps,Store,ServiceCategory"
                 );
 
             if (petService != null)

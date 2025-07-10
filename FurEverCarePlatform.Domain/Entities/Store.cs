@@ -49,9 +49,15 @@ public class Store : BaseEntity
     [MaxLength(500)]
     public string? BackIdentityCardUrl { get; set; }
 
+    public Guid? WalletId { get; set; }
+
     //navigation
     public ICollection<Promotion> Promotions { get; set; }
     public ICollection<Product> Products { get; set; }
     public ICollection<PetService> PetServices { get; set; }
     public virtual AppUser? AppUser { get; set; }
+
+    [ForeignKey("WalletId")]
+    public virtual Wallet? Wallet { get; set; }
+
 }

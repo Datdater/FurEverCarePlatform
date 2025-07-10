@@ -750,7 +750,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("integer");
 
-                    b.Property<string>("TransactionId")
+                    b.Property<string>("PaymentCode")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

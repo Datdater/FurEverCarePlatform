@@ -654,11 +654,14 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("money");
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
 
                     b.Property<Guid?>("BookingId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
@@ -689,9 +692,6 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("integer");
-
-                    b.Property<string>("TransactionId")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -1437,11 +1437,52 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<Guid?>("WalletId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("WalletId")
+                        .IsUnique();
+
                     b.ToTable("Stores");
+                });
+
+            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Wallet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -1869,7 +1910,13 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.Wallet", "Wallet")
+                        .WithOne("Store")
+                        .HasForeignKey("FurEverCarePlatform.Domain.Entities.Store", "WalletId");
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -2019,6 +2066,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("Promotions");
+                });
+
+            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Wallet", b =>
+                {
+                    b.Navigation("Store");
                 });
 #pragma warning restore 612, 618
         }

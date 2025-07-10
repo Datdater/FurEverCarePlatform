@@ -22,4 +22,5 @@ public class AppUser : IdentityUser<Guid>
     public virtual ICollection<Notification> Notifications { get; set; }
     public virtual ICollection<Feedback> Feedback { get; set; }
     public virtual ICollection<Report> Reports { get; set; }
+
 }

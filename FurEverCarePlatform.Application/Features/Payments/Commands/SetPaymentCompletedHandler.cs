@@ -32,6 +32,8 @@ namespace FurEverCarePlatform.Application.Features.Payments.Commands
                     .GetRepository<Domain.Entities.Order>()
                     .GetQueryable()
                     .Include(x => x.Payment)
+                    .Include(x => x.OrderDetails)
+                    .ThenInclude(x => x.ProductVariation.Product.Store)
                     .FirstOrDefaultAsync(x => x.Payment.Id == payment.Id);
                 order.OrderStatus = Domain.Enums.EnumOrderStatus.Confirmed;
                 unitOfWork.GetRepository<Domain.Entities.Order>().Update(order);

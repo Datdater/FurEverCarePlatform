@@ -44,4 +44,5 @@ public class PetDatabaseContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<ProductImage> ProductImages { get; set; }
 
     public DbSet<ProductVariant> ProductVariations { get; set; }
+    public DbSet<Wallet> Wallets { get; set; }
 }

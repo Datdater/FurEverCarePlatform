@@ -12,11 +12,10 @@ public class Payment : BaseEntity
     public Guid? BookingId { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public string? TransactionId { get; set; }
+    public string? Code { get; set; }
 
     [Required]
-    [Column(TypeName = "money")]
-    public decimal Amount { get; set; }
+    public float Amount { get; set; }
 
     public virtual Order? Order { get; set; }
 

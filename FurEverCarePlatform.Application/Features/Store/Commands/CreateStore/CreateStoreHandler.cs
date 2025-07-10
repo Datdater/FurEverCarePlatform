@@ -63,6 +63,10 @@ public class CreateStoreHandler(IUnitOfWork unitOfWork, UserManager<AppUser> use
                 FaxCode = request.FaxCode,
                 FrontIdentityCardUrl = request.FrontIdentityCardUrl,
                 BackIdentityCardUrl = request.BackIdentityCardUrl,
+                Wallet = new Wallet
+                {
+                    Price = 0,
+                }
             };
 
             var newStore = await unitOfWork

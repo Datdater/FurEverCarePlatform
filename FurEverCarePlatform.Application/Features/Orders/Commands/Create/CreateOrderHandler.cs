@@ -127,6 +127,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                 }
                 else
                 {
+                    await unitOfWork.CommitTransactionAsync();
                     return null;
                 }
             }

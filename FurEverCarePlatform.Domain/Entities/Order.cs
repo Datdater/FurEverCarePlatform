@@ -16,7 +16,7 @@ public class Order : BaseEntity
     public required Guid AddressId { get; set; }
 
     public EnumOrderStatus OrderStatus { get; set; }
-    public DateTime OrderDate { get; private set; } = DateTime.UtcNow;
+    public DateTime OrderDate { get; private set; } = DateTime.UtcNow.AddHours(7);
     public string Note { get; set; }
     public decimal DeliveryPrice { get; set; }
     public virtual AppUser AppUser { get; set; }

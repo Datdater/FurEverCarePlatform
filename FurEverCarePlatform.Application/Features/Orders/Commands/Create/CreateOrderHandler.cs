@@ -30,6 +30,8 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
             try
             {
                 float totalPrice = 0;
+                long orderCode = long.Parse(DateTimeOffset.Now.ToString("mmssffffff"));
+
                 foreach (var item in request.OrderDetails)
                 {
                     var productVariation = await unitOfWork
@@ -86,13 +88,13 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                     Code = GenerateOrderCode(),
                     OrderDetails = orderDetails,
                     OrderStatus = Domain.Enums.EnumOrderStatus.Confirmed,
-                    Payment = new Domain.Entities.Payment { PaymentMethod = request.PaymentMethod },
+                    Payment = new Domain.Entities.Payment { PaymentMethod = request.PaymentMethod, Code = orderCode.ToString(), Amount = totalPrice, PaymentStatus = Domain.Enums.PaymentStatus.Completed },
                 };
+
                 await unitOfWork.GetRepository<Order>().InsertAsync(order);
                 await unitOfWork.SaveAsync();
                 if (request.PaymentMethod == Domain.Enums.PaymentMethod.BankTransfer)
                 {
-                    long orderCode = long.Parse(DateTimeOffset.Now.ToString("mmssffffff"));
                     List<ItemData> items = new List<ItemData>();
                     long expried = DateTimeOffset.Now.ToUnixTimeSeconds() + 15 * 60;
                     PaymentData paymentData = new PaymentData(

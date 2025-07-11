@@ -33,9 +33,17 @@ namespace FurEverCarePlatform.Application.Features.Payments.Commands
                     .GetQueryable()
                     .Include(x => x.Payment)
                     .Include(x => x.OrderDetails)
-                    .ThenInclude(x => x.ProductVariation.Product.Store)
+                    .ThenInclude(x => x.ProductVariation.Product.Store.Wallet)
                     .FirstOrDefaultAsync(x => x.Payment.Id == payment.Id);
                 order.OrderStatus = Domain.Enums.EnumOrderStatus.Confirmed;
+                var storeWallet = order.OrderDetails.FirstOrDefault()?.ProductVariation.Product.Store.Wallet;
+
+                if (storeWallet != null)
+                {
+                    storeWallet.Price += order.TotalPrice;
+
+                    unitOfWork.GetRepository<Domain.Entities.Wallet>().Update(storeWallet);
+                }
                 unitOfWork.GetRepository<Domain.Entities.Order>().Update(order);
                 unitOfWork.GetRepository<Domain.Entities.Payment>().Update(payment);
                 await unitOfWork.SaveAsync();

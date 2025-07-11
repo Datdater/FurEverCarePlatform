@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using FurEverCarePlatform.Application.Features.Orders.Commands.Create;
+using FurEverCarePlatform.Application.Features.Orders.Commands.Update;
 using FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -46,14 +47,15 @@ namespace FurEverCarePlatform.API.Controllers
         //    var orders = await mediator.Send(query);
         //    return Ok(orders);
         //}
-        //[HttpPut("{id:guid}")]
-        //[ProducesResponseType(204)]
-        //[ProducesResponseType(400)]
-        //public async Task<IActionResult> UpdateOrder(UpdateOrderCommand updateOrder)
-        //{
-        //    await mediator.Send(updateOrder);
-        //    return NoContent();
-        //}
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> UpdateOrder([FromRoute] Guid id,[FromBody] UpdateOrderCommand updateOrder)
+        {
+            updateOrder.OrderId = id;
+            await mediator.Send(updateOrder);
+            return NoContent();
+        }
         //[HttpDelete("{id:guid}")]
         //[ProducesResponseType(204)]
         //[ProducesResponseType(400)]

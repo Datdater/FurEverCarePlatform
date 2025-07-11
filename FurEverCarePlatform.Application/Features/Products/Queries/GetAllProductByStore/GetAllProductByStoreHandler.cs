@@ -21,6 +21,7 @@ public class GetAllProductByStoreHandler(IUnitOfWork unitOfWork, IMapper mapper,
             .GetQueryable()
             .Include(x => x.Store)
             .Include(x => x.Images)
+            .Include(x => x.Category)
             .Where(x => !x.IsDeleted && x.StoreId == store.Id);
         var productRaw = await Pagination<Product>.CreateAsync(
             product,

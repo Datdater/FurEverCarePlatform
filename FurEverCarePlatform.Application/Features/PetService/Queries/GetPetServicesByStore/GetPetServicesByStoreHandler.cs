@@ -19,6 +19,9 @@ namespace FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServ
                 .GetRepository<Domain.Entities.PetService>()
                 .GetQueryable()
                 .Include(x => x.Store)
+                .Include(x => x.PetServiceDetails)
+                .Include(x => x.PetServiceSteps)
+                .Include(x => x.ServiceCategory)
                 .Where(x => !x.IsDeleted && x.StoreId == store.Id);
 
             var petServicePagination = await Pagination<Domain.Entities.PetService>.CreateAsync(

@@ -65,8 +65,28 @@ namespace FurEverCarePlatform.Application.MappingProfile
                     opt => opt.MapFrom(src => src.ServiceCategory.Name)
                 )
                 .ForMember(
-                    dest => dest.Price,
+                    dest => dest.BasePrice,
                     opt => opt.MapFrom(src => src.PetServiceDetails.Min(x => x.Amount))
+                )
+                .ForMember(
+                    dest => dest.TotalUsed,
+                    opt => opt.MapFrom(src => src.TotalUsed)
+                )
+                .ForMember(
+                    dest => dest.TotalReviews,
+                    opt => opt.MapFrom(src => src.TotalReviews)
+                )
+                .ForMember(
+                    dest => dest.RatingAverage,
+                    opt => opt.MapFrom(src => src.RatingAverage)
+                )
+                .ForMember(
+                    dest => dest.BasePrice,
+                    opt => opt.MapFrom(src => src.PetServiceDetails.Min(x => x.Amount))
+                )
+                .ForMember(
+                    dest => dest.CategoryName,
+                    opt => opt.MapFrom(src => src.ServiceCategory.Name)
                 )
                 .ForMember(
                     dest => dest.StoreCity,

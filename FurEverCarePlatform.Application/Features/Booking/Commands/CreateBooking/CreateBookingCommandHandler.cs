@@ -1,14 +1,18 @@
-﻿using FurEverCarePlatform.Application.Contracts;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace FurEverCarePlatform.Application.Features.Booking.Commands.CreateBooking;
 
 public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand, Guid>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IClaimService _claimService;
 
-    public CreateBookingCommandHandler(IUnitOfWork unitOfWork)
+    public CreateBookingCommandHandler(IUnitOfWork unitOfWork, IClaimService claimService)
     {
         _unitOfWork = unitOfWork;
+        _claimService = claimService;
     }
 
     public async Task<Guid> Handle(
@@ -22,16 +26,19 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
 
             var bookingCode = Utils.UtilityHelper.GenerateRandomCode(6);
 
+            var userId = _claimService.GetCurrentUser;
+            
+
+
             var booking = new Domain.Entities.Booking
             {
                 BookingTime = command.BookingTime,
                 Description = command.Description,
-                AppUserId = command.UserId,
+                AppUserId = userId,
                 Code = bookingCode,
                 RawAmount = 0, // Will be calculated
                 TotalAmount = 0, // Will be calculated
                 PromotionId = command.PromotionId,
-                StoreId = command.StoreId,
                 BookingDetails = new List<BookingDetail>(),
             };
 
@@ -49,7 +56,9 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
                 {
                     var service = await _unitOfWork
                         .GetRepository<PetServiceDetail>()
-                        .GetByIdAsync(serviceCommand.Id);
+                        .GetQueryable()
+                        .Include(x => x.PetService)
+                        .FirstOrDefaultAsync(x => x.Id == serviceCommand.Id)    ;
                     if (service == null)
                     {
                         throw new NotFoundException("Service", serviceCommand.Id);
@@ -68,6 +77,11 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
                         AssignedUserId = null, // Will be assigned later
                         Booking = booking,
                     };
+
+					if (booking.StoreId == Guid.Empty)
+                    {
+                        booking.StoreId = service.PetService.StoreId;   
+                    }
 
                     bookingDetails.Add(bookingDetail);
                 }

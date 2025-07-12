@@ -21,6 +21,7 @@ namespace FurEverCarePlatform.API.Controllers
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
+        [Authorize]
         public async Task<IActionResult> CreateBooking(CreateBookingCommand command)
         {
             var result = await _mediator.Send(command);

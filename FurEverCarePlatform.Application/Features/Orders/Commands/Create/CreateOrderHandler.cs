@@ -44,7 +44,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                         );
                     totalPrice += productVariation.Price * item.Quantity;
                 }
-                var user = await userManager.FindByIdAsync(request.CustomerId.ToString());
+                var user = await userManager.FindByIdAsync(request.GetCustomerId().ToString());
                 if (user == null)
                 {
                     throw new System.Exception("User not found");
@@ -87,7 +87,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                 {
                     AddressId = request.AddressId,
                     Note = request.Note,
-                    AppUserId = (Guid)request.CustomerId,
+                    AppUserId = (Guid)request.GetCustomerId(),
                     AppUser = user,
                     DeliveryPrice = request.DeliveryPrice,
                     TotalPrice = totalPrice,

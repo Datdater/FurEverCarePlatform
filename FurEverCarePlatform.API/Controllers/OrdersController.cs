@@ -18,8 +18,10 @@ namespace FurEverCarePlatform.API.Controllers
         public async Task<IActionResult> CreateOrder(CreateOrderCommand createOrder)
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            createOrder.CustomerId = Guid.Parse(
-                currentUserId ?? throw new InvalidOperationException("User ID not found.")
+            createOrder.SetCustomerId(
+                Guid.Parse(
+                    currentUserId ?? throw new InvalidOperationException("User ID not found.")
+                )
             );
             var response = await mediator.Send(createOrder);
             return Ok(response);

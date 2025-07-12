@@ -38,10 +38,13 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                         .GetRepository<ProductVariant>()
                         .GetQueryable()
                         .Include(x => x.Product)
-                        .FirstOrDefaultAsync(x => x.Id == item.ProductVariationId, cancellationToken);
+                        .FirstOrDefaultAsync(
+                            x => x.Id == item.ProductVariationId,
+                            cancellationToken
+                        );
                     totalPrice += productVariation.Price * item.Quantity;
                 }
-                var user = await userManager.FindByIdAsync(request.CustomerId.ToString());
+                var user = await userManager.FindByIdAsync(request.GetCustomerId().ToString());
                 if (user == null)
                 {
                     throw new System.Exception("User not found");
@@ -53,7 +56,10 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                         .GetRepository<ProductVariant>()
                         .GetQueryable()
                         .Include(x => x.Product)
-                        .FirstOrDefaultAsync(x => x.Id == item.ProductVariationId, cancellationToken);
+                        .FirstOrDefaultAsync(
+                            x => x.Id == item.ProductVariationId,
+                            cancellationToken
+                        );
                     if (productVariation == null)
                     {
                         throw new System.Exception(
@@ -81,14 +87,20 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                 {
                     AddressId = request.AddressId,
                     Note = request.Note,
-                    AppUserId = request.CustomerId,
+                    AppUserId = (Guid)request.GetCustomerId(),
                     AppUser = user,
                     DeliveryPrice = request.DeliveryPrice,
                     TotalPrice = totalPrice,
                     Code = GenerateOrderCode(),
                     OrderDetails = orderDetails,
                     OrderStatus = Domain.Enums.EnumOrderStatus.Confirmed,
-                    Payment = new Domain.Entities.Payment { PaymentMethod = request.PaymentMethod, Code = orderCode.ToString(), Amount = totalPrice, PaymentStatus = Domain.Enums.PaymentStatus.Completed },
+                    Payment = new Domain.Entities.Payment
+                    {
+                        PaymentMethod = request.PaymentMethod,
+                        Code = orderCode.ToString(),
+                        Amount = totalPrice,
+                        PaymentStatus = Domain.Enums.PaymentStatus.Completed,
+                    },
                 };
 
                 await unitOfWork.GetRepository<Order>().InsertAsync(order);
@@ -133,7 +145,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                     return null;
                 }
             }
-            catch 
+            catch
             {
                 await unitOfWork.RollbackTransactionAsync();
                 throw;

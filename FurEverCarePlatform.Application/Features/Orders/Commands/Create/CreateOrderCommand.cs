@@ -12,8 +12,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
 {
     public class CreateOrderCommand : IRequest<PaymentCreatedResponse>
     {
-        public Guid StoreId { get; set; }
-        public Guid CustomerId { get; set; }
+        public Guid? CustomerId { get; set; }
         public Guid AddressId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public string PromotionId { get; set; }

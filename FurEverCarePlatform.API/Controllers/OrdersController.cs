@@ -14,8 +14,13 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [Authorize]
         public async Task<IActionResult> CreateOrder(CreateOrderCommand createOrder)
         {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            createOrder.CustomerId = Guid.Parse(
+                currentUserId ?? throw new InvalidOperationException("User ID not found.")
+            );
             var response = await mediator.Send(createOrder);
             return Ok(response);
         }
@@ -29,6 +34,7 @@ namespace FurEverCarePlatform.API.Controllers
             var result = await mediator.Send(query);
             return Ok(result);
         }
+
         //[HttpGet("{id:guid}")]
         //[ProducesResponseType(200)]
         //[ProducesResponseType(404)]
@@ -50,7 +56,10 @@ namespace FurEverCarePlatform.API.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> UpdateOrder([FromRoute] Guid id,[FromBody] UpdateOrderCommand updateOrder)
+        public async Task<IActionResult> UpdateOrder(
+            [FromRoute] Guid id,
+            [FromBody] UpdateOrderCommand updateOrder
+        )
         {
             updateOrder.OrderId = id;
             await mediator.Send(updateOrder);

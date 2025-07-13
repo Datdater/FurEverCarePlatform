@@ -17,12 +17,27 @@ namespace FurEverCarePlatform.Application.Features.Pets.Commands.UpdatePet
             {
                 throw new InvalidOperationException("Pet not found");
             }
-            pet.Name = request.Name;
-            pet.Dob = request.Dob;
-            pet.Image = request.Image;
-            pet.PetType = request.PetType;
-            pet.Color = request.Color;
-            pet.SpecialRequirement = request.SpecialRequirement;
+
+            if (!string.IsNullOrEmpty(request.Name))
+                pet.Name = request.Name;
+
+            if (request.Dob != null)
+                pet.Dob = request.Dob;
+            
+            if (request.Image != null)
+                pet.Image = request.Image;
+            
+            if (request.PetType != null)
+                pet.PetType = request.PetType.Value;
+            if (request.Weight != null)
+                pet.Weight = request.Weight.Value;
+            
+            if (request.Color != null)
+                pet.Color = request.Color;
+            
+            if (request.SpecialRequirement != null)
+                pet.SpecialRequirement = request.SpecialRequirement;
+
             unitOfWork.GetRepository<Pet>().Update(pet);
             await unitOfWork.SaveAsync();
         }

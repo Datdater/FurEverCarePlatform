@@ -11,10 +11,9 @@ namespace FurEverCarePlatform.Application.Features.Pets.Commands.CreatePet
     {
         public string Name { get; set; }
         public DateTime Dob { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
         public float Weight { get; set; }
         public bool PetType { get; set; }
-        public Guid AppUserId { get; set; }
         public string? Color { get; set; }
         public string? SpecialRequirement { get; set; }
     }

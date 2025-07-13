@@ -28,6 +28,8 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
             StoreName = productDetail.Store.Name,
             StoreUrl = productDetail.Store.LogoUrl,
             Description = productDetail.Description,
+            BasePrice = productDetail.BasePrice,
+            CategoryId = productDetail.CategoryId,
             CategoryName = productDetail.Category.Name,
             Height = productDetail.Height,
             Length = productDetail.Length,

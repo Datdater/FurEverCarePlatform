@@ -28,6 +28,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
             var orders = unitOfWork
                 .GetRepository<Domain.Entities.Order>()
                 .GetQueryable()
+                .Include(o => o.Address)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(o => o.ProductVariation)
                 .ThenInclude(o => o.Product)
@@ -75,6 +76,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
                     CreatedTime = o.OrderDate,
                     CustomerName = o.AppUser.Name,
                     CustomerPhone = o.AppUser.PhoneNumber,
+                    CustomerAddress = o.Address.GetFullAddress(),
                     StoreName =
                         o.OrderDetails.FirstOrDefault()?.ProductVariation?.Product?.Store?.Name
                         ?? "Unknown Store",

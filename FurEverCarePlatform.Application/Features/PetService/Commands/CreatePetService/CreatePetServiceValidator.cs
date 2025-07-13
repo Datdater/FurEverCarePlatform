@@ -14,8 +14,8 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreatePet
 
 			RuleFor(p => p.EstimatedTime)
 				.NotEmpty().WithMessage("EstimatedTime is required.")
-				.Matches(@"^\d+\s*-\s*\d+\s*(minutes|hours|days)$")
-				.WithMessage("EstimatedTime must be in the format 'X - Y minutes/hours/days'.");
+				.Matches(@"^\d+\s*-\s*\d+\s*(phút|giờ|ngày)$")
+				.WithMessage("EstimatedTime must be in the format 'X - Y phút/giờ/ngày'.");
 
 
 			RuleFor(p => p.ServiceCategoryId)

@@ -16,8 +16,10 @@ public class ProductSpecificDTO
     public Guid StoreId { get; set; }
     public string StoreName { get; set; }
     public string StoreUrl { get; set; }
+
+    public Guid CategoryId { get; set; }
     public string CategoryName { get; set; }
-    public decimal BasePrice { get; set; }
+    public float BasePrice { get; set; }
     public decimal Weight { get; set; }
     public decimal Length { get; set; }
     public decimal Height { get; set; }

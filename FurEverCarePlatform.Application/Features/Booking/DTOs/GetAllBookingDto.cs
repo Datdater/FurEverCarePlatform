@@ -44,6 +44,7 @@ namespace FurEverCarePlatform.Application.Features.Booking.DTOs
     {
         public Guid Id { get; set; }
         public string ServiceDetailName { get; set; } = string.Empty;
+        public string ServiceName { get; set; } = string.Empty;
         public float Price { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
     }

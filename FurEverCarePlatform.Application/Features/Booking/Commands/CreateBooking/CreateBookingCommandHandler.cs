@@ -27,8 +27,6 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
             var bookingCode = Utils.UtilityHelper.GenerateRandomCode(6);
 
             var userId = _claimService.GetCurrentUser;
-            
-
 
             var booking = new Domain.Entities.Booking
             {

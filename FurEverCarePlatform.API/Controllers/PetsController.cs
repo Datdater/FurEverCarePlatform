@@ -29,7 +29,7 @@ namespace FurEverCarePlatform.API.Controllers
         public async Task<IActionResult> CreatePet(CreatePetCommand command)
         {
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return Created();
         }
 
         [HttpGet("{id}")]
@@ -57,7 +57,7 @@ namespace FurEverCarePlatform.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> UpdatePetService(Guid id, UpdatePetCommand command)
@@ -67,18 +67,18 @@ namespace FurEverCarePlatform.API.Controllers
                 return BadRequest();
             }
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> DeletePet(Guid id)
         {
             DeletePetCommand query = new DeletePetCommand { Id = id };
             await _mediator.Send(query);
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -22,7 +22,10 @@ namespace FurEverCarePlatform.Application.Features.Pets.Commands.UpdatePet
                 pet.Name = request.Name;
 
             if (request.Dob != null)
+            {
+                request.Dob = DateTime.SpecifyKind(request.Dob.Value, DateTimeKind.Utc);
                 pet.Dob = request.Dob;
+            }
             
             if (request.Image != null)
                 pet.Image = request.Image;

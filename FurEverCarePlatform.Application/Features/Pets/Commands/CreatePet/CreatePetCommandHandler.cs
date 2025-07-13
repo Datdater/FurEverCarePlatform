@@ -18,6 +18,7 @@ namespace FurEverCarePlatform.Application.Features.Pets.Commands.CreatePet
         )
         {
             var userId = claimService.GetCurrentUser;
+            request.Dob = DateTime.SpecifyKind(request.Dob, DateTimeKind.Utc);
             var pet = mapper.Map<Pet>(request);
             pet.AppUserId = userId;
             await unitOfWork.GetRepository<Pet>().InsertAsync(pet);

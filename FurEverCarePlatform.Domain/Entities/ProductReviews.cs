@@ -10,7 +10,6 @@ namespace FurEverCarePlatform.Domain.Entities
     {
         public Guid ProductId { get; set; }
         public Guid AppUserId { get; set; }
-        public string UserName { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; }
         public DateTime CreatedAt { get; set; }

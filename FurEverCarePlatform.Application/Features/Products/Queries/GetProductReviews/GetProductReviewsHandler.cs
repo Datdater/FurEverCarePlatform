@@ -23,7 +23,7 @@ namespace FurEverCarePlatform.Application.Features.Products.Queries.GetProductRe
                 .Select(x => new ProductReviewDto
                 {
                     Id = x.Id,
-                    UserId = x.UserId,
+                    UserId = x.AppUserId,
                     UserName = x.UserName,
                     Rating = x.Rating,
                     Comment = x.Comment,

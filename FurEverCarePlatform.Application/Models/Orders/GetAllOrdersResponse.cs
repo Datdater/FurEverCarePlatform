@@ -15,6 +15,7 @@ namespace FurEverCarePlatform.Application.Models.Orders
         public string CustomerName { get; set; }
 
         public string CustomerPhone { get; set; }
+        public string CustomerAddress { get; set; }
         public decimal Price { get; set; }
         public DateTime CreatedTime { get; set; }
         public decimal DeliveryPrice { get; set; }

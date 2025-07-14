@@ -18,4 +18,9 @@ public class Address : BaseEntity
     //navigation
     public virtual ICollection<Order> Orders { get; set; }
     public virtual AppUser AppUser { get; set; }
+
+    public string GetFullAddress()
+    {
+        return $"{Street}, {Ward}, {District}, {City}";
+    }
 }

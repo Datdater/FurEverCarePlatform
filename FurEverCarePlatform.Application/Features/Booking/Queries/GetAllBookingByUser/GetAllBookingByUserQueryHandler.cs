@@ -104,6 +104,7 @@ public class GetAllBookingByUserQueryHandler(
                             {
                                 Id = bookingDetail.PetServiceDetailId,
                                 ServiceDetailName = bookingDetail.PetServiceDetail.Name,
+                                ServiceName = bookingDetail.PetServiceDetail.PetService.Name,
                                 Price = bookingDetail.RawAmount,
                                 ImageUrl = bookingDetail.PetServiceDetail.Image ?? string.Empty,
                             }

@@ -15,6 +15,6 @@ public class OrderDetail : BaseEntity
 
     public virtual ProductVariant ProductVariation { get; set; }
     public virtual Order Order { get; set; }
-
+    public ProductReviews? ProductReview { get; set; }
     public virtual Feedback Feedback { get; set; }
 }

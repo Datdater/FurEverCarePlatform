@@ -1144,6 +1144,9 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("OrderDetailId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
@@ -1153,6 +1156,9 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("OrderDetailId")
+                        .IsUnique();
 
                     b.HasIndex("ProductId");
 
@@ -1866,6 +1872,10 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.OrderDetail", "OrderDetail")
+                        .WithOne("ProductReview")
+                        .HasForeignKey("FurEverCarePlatform.Domain.Entities.ProductReviews", "OrderDetailId");
+
                     b.HasOne("FurEverCarePlatform.Domain.Entities.Product", "Product")
                         .WithMany("ProductReviews")
                         .HasForeignKey("ProductId")
@@ -1873,6 +1883,8 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("AppUser");
+
+                    b.Navigation("OrderDetail");
 
                     b.Navigation("Product");
                 });
@@ -2025,6 +2037,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Navigation("Payment")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.OrderDetail", b =>
+                {
+                    b.Navigation("ProductReview");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Pet", b =>

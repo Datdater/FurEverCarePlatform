@@ -1,20 +1,21 @@
-﻿using FurEverCarePlatform.Application.Commons.Interfaces;
-using FurEverCarePlatform.Application.Commons.Services;
-using FurEverCarePlatform.Application.Models.Orders;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
+using FurEverCarePlatform.Application.Models.Orders;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
 {
-    public class GetAllOrdersHandler(IUnitOfWork unitOfWork,
-    IClaimService claimService,
-    UserManager<AppUser> userManager)
-        : IRequestHandler<GetAllOrdersQuery, Pagination<GetAllOrdersResponse>>
+    public class GetAllOrdersHandler(
+        IUnitOfWork unitOfWork,
+        IClaimService claimService,
+        UserManager<AppUser> userManager
+    ) : IRequestHandler<GetAllOrdersQuery, Pagination<GetAllOrdersResponse>>
     {
         public async Task<Pagination<GetAllOrdersResponse>> Handle(
             GetAllOrdersQuery request,
@@ -38,7 +39,11 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
                 .ThenInclude(o => o.ProductVariation)
                 .ThenInclude(o => o.Product)
                 .ThenInclude(o => o.Images)
-                .Where(o => !o.IsDeleted && (request.Status == null || o.OrderStatus == request.Status))
+                .Include(o => o.OrderDetails)
+                .ThenInclude(o => o.ProductReview)
+                .Where(o =>
+                    !o.IsDeleted && (request.Status == null || o.OrderStatus == request.Status)
+                )
                 .OrderByDescending(o => o.OrderDate);
 
             IQueryable<Domain.Entities.Order> filteredQuery;
@@ -52,11 +57,13 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
 
                 if (store != null)
                 {
-                    filteredQuery = orders.Where(b => b.OrderDetails.Any(od => od.ProductVariation.Product.StoreId == store.Id));
+                    filteredQuery = orders.Where(b =>
+                        b.OrderDetails.Any(od => od.ProductVariation.Product.StoreId == store.Id)
+                    );
                 }
                 else
                 {
-                    filteredQuery = orders.Where(b => false); 
+                    filteredQuery = orders.Where(b => false);
                 }
             }
             else
@@ -87,6 +94,15 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
                     OrderDetailDTOs = o
                         .OrderDetails.Select(od => new GetOrderDetail()
                         {
+                            Id = od.Id,
+                            ProductReviews =
+                                od.ProductReview != null
+                                    ? new ProductReviewsDto
+                                    {
+                                        Rating = od.ProductReview.Rating,
+                                        Comment = od.ProductReview.Comment,
+                                    }
+                                    : null,
                             ProductVariationId = od.ProductVariationId,
                             Quantity = od.Quantity,
                             Price = (decimal)od.Price,

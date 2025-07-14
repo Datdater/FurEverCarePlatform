@@ -21,5 +21,12 @@ namespace FurEverCarePlatform.Application.Models.Orders
         public decimal DeliveryPrice { get; set; }
         public List<GetOrderDetail> OrderDetailDTOs { get; set; }
         public string OrderStatus { get; set; }
+        public ProductReviewsDto? ProductReviews { get; set; }
+    }
+
+    public class ProductReviewsDto
+    {
+        public int Rating { get; set; }
+        public string Comment { get; set; }
     }
 }

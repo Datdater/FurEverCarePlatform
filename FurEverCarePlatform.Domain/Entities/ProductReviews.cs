@@ -13,6 +13,8 @@ namespace FurEverCarePlatform.Domain.Entities
         public int Rating { get; set; }
         public string Comment { get; set; }
         public DateTime CreatedAt { get; set; }
+        public Guid? OrderDetailId { get; set; } // Thêm OrderId nếu cần liên kết với đơn hàng
+        public OrderDetail? OrderDetail { get; set; } // Navigation property nếu dùng EF Core
 
         // Navigation property nếu dùng EF Core
         public virtual Product Product { get; set; }

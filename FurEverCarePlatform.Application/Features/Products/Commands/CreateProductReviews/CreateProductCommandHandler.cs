@@ -26,6 +26,7 @@ namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProdu
                 Comment = request.Comment,
                 CreatedAt = DateTime.UtcNow,
                 AppUserId = request.GetAppUserId(),
+                OrderDetailId = request.OrderDetailId, // Optional, if you want to link to an order detail
             };
             await unitOfWork.GetRepository<ProductReviews>().InsertAsync(productReview);
             await unitOfWork.SaveAsync();

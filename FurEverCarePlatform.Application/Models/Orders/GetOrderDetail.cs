@@ -9,6 +9,7 @@ namespace FurEverCarePlatform.Application.Models.Orders
 {
     public class GetOrderDetail
     {
+        public Guid Id { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public Guid ProductVariationId { get; set; }
@@ -16,5 +17,6 @@ namespace FurEverCarePlatform.Application.Models.Orders
         public string PictureUrl { get; set; }
         public Guid ProductId { get; set; }
         public JsonDocument Attribute { get; set; }
+        public ProductReviewsDto? ProductReviews { get; set; }
     }
 }

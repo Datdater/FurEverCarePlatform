@@ -11,6 +11,7 @@ namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProdu
         public Guid ProductId { get; set; }
         private Guid AppUserId;
         public int Rating { get; set; }
+        public Guid OrderDetailId { get; set; }
         public string? Comment { get; set; }
 
         public Guid GetAppUserId()

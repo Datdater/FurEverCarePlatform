@@ -1,5 +1,7 @@
-﻿using FurEverCarePlatform.Application.Commons;
+﻿using System.Security.Claims;
+using FurEverCarePlatform.Application.Commons;
 using FurEverCarePlatform.Application.Features.Products.Commands.CreateProduct;
+using FurEverCarePlatform.Application.Features.Products.Commands.CreateProductReviews;
 using FurEverCarePlatform.Application.Features.Products.Commands.DeleteProduct;
 using FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 using FurEverCarePlatform.Application.Features.Products.DTOs;
@@ -33,9 +35,12 @@ namespace FurEverCarePlatform.API.Controllers
         {
             return await mediator.Send(query);
         }
+
         [HttpGet("my-store")]
         [Authorize]
-        public async Task<Pagination<ProductDTO>> GetProductsByStore([FromQuery] GetAllProductByStoreQuery query)
+        public async Task<Pagination<ProductDTO>> GetProductsByStore(
+            [FromQuery] GetAllProductByStoreQuery query
+        )
         {
             return await mediator.Send(query);
         }
@@ -90,6 +95,29 @@ namespace FurEverCarePlatform.API.Controllers
                 return NotFound();
             }
             return Ok(variants);
+        }
+
+        [HttpPost("{id}/reviews")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [Authorize]
+        public async Task<IActionResult> PostProductReview(
+            [FromBody] CreateProductReviewCommand createProductReview
+        )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            // Set the AppUserId from the current user context
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserId == null)
+            {
+                return Unauthorized("User ID not found.");
+            }
+            createProductReview.SetAppUserId(Guid.Parse(currentUserId));
+            await mediator.Send(createProductReview);
+            return Ok();
         }
     }
 }

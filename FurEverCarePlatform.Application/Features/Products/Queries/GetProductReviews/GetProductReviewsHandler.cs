@@ -19,12 +19,13 @@ namespace FurEverCarePlatform.Application.Features.Products.Queries.GetProductRe
             var productReviews = await unitOfWork
                 .GetRepository<ProductReviews>()
                 .GetQueryable()
+                .Include(x => x.AppUser)
                 .Where(x => x.ProductId == request.ProductId)
                 .Select(x => new ProductReviewDto
                 {
                     Id = x.Id,
-                    UserId = x.UserId,
-                    UserName = x.UserName,
+                    UserId = x.AppUserId,
+                    UserName = x.AppUser.UserName,
                     Rating = x.Rating,
                     Comment = x.Comment,
                     CreatedAt = x.CreatedAt,

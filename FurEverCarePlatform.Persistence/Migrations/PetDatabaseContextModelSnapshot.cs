@@ -1113,6 +1113,9 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AppUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1141,21 +1144,21 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("OrderDetailId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("OrderDetailId")
+                        .IsUnique();
 
                     b.HasIndex("ProductId");
 
@@ -1863,11 +1866,25 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ProductReviews", b =>
                 {
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.OrderDetail", "OrderDetail")
+                        .WithOne("ProductReview")
+                        .HasForeignKey("FurEverCarePlatform.Domain.Entities.ProductReviews", "OrderDetailId");
+
                     b.HasOne("FurEverCarePlatform.Domain.Entities.Product", "Product")
                         .WithMany("ProductReviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("OrderDetail");
 
                     b.Navigation("Product");
                 });
@@ -2020,6 +2037,11 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Navigation("Payment")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.OrderDetail", b =>
+                {
+                    b.Navigation("ProductReview");
                 });
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Pet", b =>

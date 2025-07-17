@@ -11,10 +11,8 @@ public class UpdateProductCommand : IRequest<Guid>
     public Guid CategoryId { get; set; }
 
     [Required]
-    [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(1000)]
     public string? Description { get; set; }
 
     public float BasePrice { get; set; }
@@ -25,9 +23,6 @@ public class UpdateProductCommand : IRequest<Guid>
     public decimal Length { get; set; }
 
     public decimal Height { get; set; }
-
-    [Required]
-    public Guid StoreId { get; set; }
 
     // Collections for related entities
     public List<UpdateProductVariantDTO> Variants { get; set; } = new();

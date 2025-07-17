@@ -1,11 +1,14 @@
-﻿using FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
+﻿using FurEverCarePlatform.Application.Commons.Interfaces;
+using FurEverCarePlatform.Application.Commons.Services;
+using FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 using FurEverCarePlatform.Application.Features.Products.DTOs;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text.Json;
 
 namespace FurEverCarePlatform.Application.Features.Products.Commands.UpdateProduct;
 
-public class UpdateProductHandler(IUnitOfWork unitOfWork)
+public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimService)
     : IRequestHandler<UpdateProductCommand, Guid>
 {
     public async Task<Guid> Handle(
@@ -24,7 +27,10 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork)
         try
         {
             await unitOfWork.BeginTransactionAsync();
+            var userId = claimService.GetCurrentUser;
 
+            var store = await unitOfWork.GetRepository<Domain.Entities.Store>().GetQueryable().FirstOrDefaultAsync(x => x.AppUserId == userId);
+            if (store == null) throw new System.Exception("Not found store with this user");
             var productRepository = unitOfWork.GetRepository<Domain.Entities.Product>();
             var product = await productRepository.GetFirstOrDefaultAsync(
                 x => x.Id == request.Id,
@@ -37,7 +43,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork)
             }
 
             product.CategoryId = request.CategoryId;
-            product.StoreId = request.StoreId;
+            product.StoreId = store.Id;
             product.Name = request.Name;
             product.Description = request.Description;
             product.BasePrice = request.BasePrice;

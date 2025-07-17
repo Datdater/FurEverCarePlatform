@@ -29,8 +29,23 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimSer
             await unitOfWork.BeginTransactionAsync();
             var userId = claimService.GetCurrentUser;
 
-            var store = await unitOfWork.GetRepository<Domain.Entities.Store>().GetQueryable().FirstOrDefaultAsync(x => x.AppUserId == userId);
-            if (store == null) throw new System.Exception("Not found store with this user");
+            var store = await unitOfWork.GetRepository<Domain.Entities.Store>()
+                .GetQueryable()
+                .FirstOrDefaultAsync(x => x.AppUserId == userId);
+
+            if (store == null)
+                throw new System.Exception("Not found store with this user");
+
+            // Validate CategoryId exists
+            var categoryExists = await unitOfWork.GetRepository<Domain.Entities.ProductCategory>()
+                .GetQueryable()
+                .AnyAsync(c => c.Id == request.CategoryId);
+
+            if (!categoryExists)
+            {
+                throw new BadRequestException($"Category with ID {request.CategoryId} does not exist");
+            }
+
             var productRepository = unitOfWork.GetRepository<Domain.Entities.Product>();
             var product = await productRepository.GetFirstOrDefaultAsync(
                 x => x.Id == request.Id,
@@ -42,6 +57,27 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimSer
                 throw new NotFoundException(nameof(Domain.Entities.Product), request.Id);
             }
 
+            // Check for duplicate product name in the same store
+            var duplicateProduct = await productRepository.GetQueryable()
+                .AnyAsync(p => p.Name == request.Name && p.StoreId == store.Id && p.Id != request.Id);
+
+            if (duplicateProduct)
+            {
+                throw new BadRequestException("A product with this name already exists in your store");
+            }
+
+            // Validate string lengths (adjust limits based on your schema)
+            if (request.Name?.Length > 255)
+            {
+                throw new BadRequestException("Product name is too long (max 255 characters)");
+            }
+
+            if (request.Description?.Length > 2000)
+            {
+                throw new BadRequestException("Product description is too long (max 2000 characters)");
+            }
+
+            // Update product properties
             product.CategoryId = request.CategoryId;
             product.StoreId = store.Id;
             product.Name = request.Name;
@@ -64,6 +100,33 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimSer
             await unitOfWork.CommitTransactionAsync();
             return product.Id;
         }
+        catch (DbUpdateException dbEx)
+        {
+            await unitOfWork.RollbackTransactionAsync();
+
+            // Extract the actual database error
+            var innerException = dbEx.InnerException?.Message ?? dbEx.Message;
+
+            // Common PostgreSQL constraint error patterns
+            if (innerException.Contains("duplicate key"))
+            {
+                throw new BadRequestException("A record with this information already exists");
+            }
+            else if (innerException.Contains("foreign key"))
+            {
+                throw new BadRequestException("Referenced data does not exist");
+            }
+            else if (innerException.Contains("check constraint"))
+            {
+                throw new BadRequestException("Data violates business rules");
+            }
+            else if (innerException.Contains("not null"))
+            {
+                throw new BadRequestException("Required field is missing");
+            }
+
+            throw new BadRequestException($"Database update failed: {innerException}");
+        }
         catch (SystemException ex)
         {
             await unitOfWork.RollbackTransactionAsync();
@@ -75,30 +138,23 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimSer
     {
         var variantRepository = unitOfWork.GetRepository<Domain.Entities.ProductVariant>();
 
-        var existingVariants = product.Variants.ToList();
-        var requestVariantIds = variantDtos.Where(v => v.Id.HasValue).Select(v => v.Id.Value).ToList();
-
-        var variantsToDelete = existingVariants.Where(v => !requestVariantIds.Contains(v.Id)).ToList();
-        foreach (var variant in variantsToDelete)
-        {
-            variantRepository.Delete(variant);
-            product.Variants.Remove(variant);
-        }
-
         foreach (var variantDto in variantDtos)
         {
             if (variantDto.Id.HasValue)
             {
-                var existingVariant = existingVariants.FirstOrDefault(v => v.Id == variantDto.Id.Value);
+                // Update existing variant
+                var existingVariant = product.Variants.FirstOrDefault(v => v.Id == variantDto.Id.Value);
                 if (existingVariant != null)
                 {
                     existingVariant.Attributes = JsonDocument.Parse(JsonSerializer.Serialize(variantDto.Attributes));
                     existingVariant.Price = variantDto.Price;
                     existingVariant.Stock = variantDto.Stock;
+                    variantRepository.Update(existingVariant);
                 }
             }
             else
             {
+                // Add new variant
                 var newVariant = new Domain.Entities.ProductVariant
                 {
                     ProductId = product.Id,
@@ -107,7 +163,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimSer
                     Stock = variantDto.Stock
                 };
 
-                product.Variants.Add(newVariant);
+                await variantRepository.InsertAsync(newVariant);
             }
         }
     }
@@ -116,38 +172,30 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimSer
     {
         var imageRepository = unitOfWork.GetRepository<Domain.Entities.ProductImage>();
 
-        var existingImages = product.Images.ToList();
-        var requestImageIds = imageDtos.Where(i => i.Id.HasValue).Select(i => i.Id.Value).ToList();
-
-        var imagesToDelete = existingImages.Where(i => !requestImageIds.Contains(i.Id)).ToList();
-        foreach (var image in imagesToDelete)
+        // Reset all images to not main first
+        foreach (var existingImage in product.Images)
         {
-            imageRepository.Delete(image);
-            product.Images.Remove(image);
+            existingImage.IsMain = false;
         }
 
+        // Ensure at least one image is main
         var hasMainImage = imageDtos.Any(img => img.IsMain);
         if (!hasMainImage && imageDtos.Count > 0)
         {
             imageDtos[0].IsMain = true;
         }
 
-        foreach (var existingImage in existingImages)
-        {
-            existingImage.IsMain = false;
-        }
-
-        // Update or add images
         foreach (var imageDto in imageDtos)
         {
             if (imageDto.Id.HasValue)
             {
                 // Update existing image
-                var existingImage = existingImages.FirstOrDefault(i => i.Id == imageDto.Id.Value);
+                var existingImage = product.Images.FirstOrDefault(i => i.Id == imageDto.Id.Value);
                 if (existingImage != null)
                 {
                     existingImage.ImageUrl = imageDto.ImageUrl;
                     existingImage.IsMain = imageDto.IsMain;
+                    imageRepository.Update(existingImage);
                 }
             }
             else
@@ -160,7 +208,7 @@ public class UpdateProductHandler(IUnitOfWork unitOfWork, IClaimService claimSer
                     IsMain = imageDto.IsMain
                 };
 
-                product.Images.Add(newImage);
+                await imageRepository.InsertAsync(newImage);
             }
         }
     }

@@ -60,6 +60,7 @@ public class ProductVariantDTO
 
 public class ProductImageDTO
 {
+    public Guid Id { get; set; }
     [Required]
     public string ImageUrl { get; set; }
 

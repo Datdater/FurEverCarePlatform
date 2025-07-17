@@ -50,6 +50,7 @@ public class GetProducSpecificHandler(IUnitOfWork unitOfWork, IMapper mapper)
             Images = productDetail
                 .Images.Select(i => new ProductImageDTO
                 {
+                    Id = i.Id,
                     IsMain = i.IsMain,
                     ImageUrl = i.ImageUrl,
                 })

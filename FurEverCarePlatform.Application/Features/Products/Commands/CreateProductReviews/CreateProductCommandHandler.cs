@@ -19,6 +19,7 @@ namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProdu
             {
                 throw new ArgumentException("Rating must be between 1 and 5.");
             }
+
             var productReview = new ProductReviews
             {
                 ProductId = request.ProductId,
@@ -26,9 +27,23 @@ namespace FurEverCarePlatform.Application.Features.Products.Commands.CreateProdu
                 Comment = request.Comment,
                 CreatedAt = DateTime.UtcNow,
                 AppUserId = request.GetAppUserId(),
-                OrderDetailId = request.OrderDetailId, // Optional, if you want to link to an order detail
+                OrderDetailId = request.OrderDetailId,
             };
+
+            // Get the product to update its rating statistics
+            var product = await unitOfWork.GetRepository<Product>().GetByIdAsync(request.ProductId);
+            if (product == null)
+            {
+                throw new ArgumentException("Product not found.");
+            }
+
+            // Insert the review
             await unitOfWork.GetRepository<ProductReviews>().InsertAsync(productReview);
+
+            // Update product rating statistics
+            product.AddReview(productReview);
+            unitOfWork.GetRepository<Product>().Update(product);
+
             await unitOfWork.SaveAsync();
         }
     }

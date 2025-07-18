@@ -16,7 +16,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
         public Guid AddressId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public string PromotionId { get; set; }
-        public float DeliveryPrice { get; set; }
+        public decimal DeliveryPrice { get; set; }
         public string Note { get; set; }
         public List<OrderDetailDTO> OrderDetails { get; set; } = new List<OrderDetailDTO>();
 

@@ -145,7 +145,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                 {
                     var vnpay = await vNPayService.RequestVNPay(
                         orderCode.ToString(),
-                        totalPrice + request.DeliveryPrice,
+                        totalPrice + (float)request.DeliveryPrice,
                         null
                     );
                     order.Payment.Code = orderCode.ToString();

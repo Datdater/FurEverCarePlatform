@@ -113,7 +113,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                     long expried = DateTimeOffset.Now.ToUnixTimeSeconds() + 15 * 60;
                     PaymentData paymentData = new PaymentData(
                         orderCode,
-                        (int)totalPrice,
+                        (int)((int)totalPrice + request.DeliveryPrice),
                         $"Senandpet",
                         items,
                         configuration["PayOS:CancelUrl"],
@@ -145,7 +145,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                 {
                     var vnpay = await vNPayService.RequestVNPay(
                         orderCode.ToString(),
-                        totalPrice,
+                        totalPrice + request.DeliveryPrice,
                         null
                     );
                     order.Payment.Code = orderCode.ToString();

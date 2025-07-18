@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Models.Payments;
+using FurEverCarePlatform.Application.Services;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Net.payOS;
 using Net.payOS.Types;
-using Payment.API.DTO;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
 {
@@ -18,6 +19,7 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
         IUnitOfWork unitOfWork,
         PayOS payOS,
         IConfiguration configuration,
+        VNPayService vNPayService,
         UserManager<AppUser> userManager
     ) : IRequestHandler<CreateOrderCommand, PaymentCreatedResponse>
     {
@@ -138,6 +140,22 @@ namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
                         Id = order.Payment.Id,
                         PaymentUrl = paymentUrl,
                     };
+                }
+                else if (request.PaymentMethod == Domain.Enums.PaymentMethod.EWallet)
+                {
+                    var vnpay = await vNPayService.RequestVNPay(
+                        orderCode.ToString(),
+                        totalPrice,
+                        null
+                    );
+                    order.Payment.Code = orderCode.ToString();
+                    order.Payment.Amount = order.TotalPrice;
+                    order.OrderStatus = Domain.Enums.EnumOrderStatus.PendingPayment;
+                    unitOfWork.GetRepository<Order>().Update(order);
+                    unitOfWork.GetRepository<Domain.Entities.Payment>().Update(order.Payment);
+                    await unitOfWork.SaveAsync();
+                    await unitOfWork.CommitTransactionAsync();
+                    return new PaymentCreatedResponse { Id = order.Payment.Id, PaymentUrl = vnpay };
                 }
                 else
                 {

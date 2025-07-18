@@ -1,7 +1,9 @@
 using System.Text;
 using FurEverCarePlatform.API.Middleware;
 using FurEverCarePlatform.Application;
+using FurEverCarePlatform.Application.Features.Booking.DTOs;
 using FurEverCarePlatform.Application.Features.Image;
+using FurEverCarePlatform.Application.Services;
 using FurEverCarePlatform.Domain.Entities;
 using FurEverCarePlatform.Persistence;
 using FurEverCarePlatform.Persistence.DatabaseContext;
@@ -33,7 +35,8 @@ namespace FurEverCarePlatform.API
             builder.Services.Configure<CloudinarySettings>(
                 builder.Configuration.GetSection("CloudinarySettings")
             );
-
+            builder.Services.AddScoped<VNPayService>();
+            builder.Services.Configure<VNPaySettings>(configuration.GetSection("Vnpay"));
             builder.Services.AddIdentityService(builder.Configuration);
             builder.Services.AddPersistenceService();
             builder.Services.ApplicationService();

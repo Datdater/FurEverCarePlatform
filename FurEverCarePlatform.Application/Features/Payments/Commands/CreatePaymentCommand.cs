@@ -1,6 +1,6 @@
-﻿using FurEverCarePlatform.Domain.Enums;
+﻿using FurEverCarePlatform.Application.Models.Payments;
+using FurEverCarePlatform.Domain.Enums;
 using MediatR;
-using Payment.API.DTO;
 
 namespace FurEverCarePlatform.Application.Features.Payments.Commands
 {

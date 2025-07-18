@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FurEverCarePlatform.Application.Exceptions;
+using Microsoft.AspNetCore.Identity;
 
 namespace FurEverCarePlatform.Application.Features.Store.Commands.CreateStore;
 
@@ -30,7 +31,7 @@ public class CreateStoreHandler(IUnitOfWork unitOfWork, UserManager<AppUser> use
                 Email = request.FaxEmail,
                 PhoneNumber = request.Hotline,
                 Name = request.Name,
-                CreationDate = DateTime.UtcNow.AddHours(7)
+                CreationDate = DateTime.UtcNow.AddHours(7),
             };
 
             var createResult = await userManager.CreateAsync(user, request.Password);
@@ -63,10 +64,7 @@ public class CreateStoreHandler(IUnitOfWork unitOfWork, UserManager<AppUser> use
                 FaxCode = request.FaxCode,
                 FrontIdentityCardUrl = request.FrontIdentityCardUrl,
                 BackIdentityCardUrl = request.BackIdentityCardUrl,
-                Wallet = new Wallet
-                {
-                    Price = 0,
-                }
+                Wallet = new Wallet { Price = 0 },
             };
 
             var newStore = await unitOfWork

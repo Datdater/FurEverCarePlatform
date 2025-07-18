@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FurEverCarePlatform.Application.Models.Payments;
 using FurEverCarePlatform.Domain.Enums;
 using MediatR;
-using Payment.API.DTO;
 
 namespace FurEverCarePlatform.Application.Features.Orders.Commands.Create
 {

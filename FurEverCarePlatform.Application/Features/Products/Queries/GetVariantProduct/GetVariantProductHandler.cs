@@ -19,7 +19,11 @@ namespace FurEverCarePlatform.Application.Features.Products.Queries.GetVariantPr
             var variantProduct = await unitOfWork
                 .GetRepository<ProductVariant>()
                 .GetQueryable()
-                .FirstOrDefaultAsync(x => x.Attributes == request.Attribute);
+                .Include(x => x.Product)
+                .FirstOrDefaultAsync(x =>
+                    x.Product.Id == Guid.Parse(request.ProductId)
+                    && x.Attributes == request.Attribute
+                );
             var response = new ProductVariantResponseDTO
             {
                 Id = variantProduct.Id,

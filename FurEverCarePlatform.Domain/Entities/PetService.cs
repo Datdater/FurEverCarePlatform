@@ -23,4 +23,6 @@ public class PetService : BaseEntity
     public virtual ServiceCategory ServiceCategory  { get; set; }
     public virtual ICollection<PetServiceStep> PetServiceSteps { get; set; }
     public virtual ICollection<PetServiceDetail> PetServiceDetails { get; set; }
+
+
 }

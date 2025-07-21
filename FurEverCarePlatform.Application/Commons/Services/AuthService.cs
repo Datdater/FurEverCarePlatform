@@ -79,12 +79,15 @@ public class AuthService
 										 .GetQueryable()
 										 .FirstOrDefaultAsync(x => x.AppUserId == user.Id);
 
-			Guid? storeId = store?.Id;
+            // Get user role
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault() ?? "Customer";
+
             var response = new LoginResponseDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim(),  StoreId = storeId},
+                User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim(), StoreLogo = store?.LogoUrl, Role = userRole },
             };
 
             return (true, "Login successful", response);
@@ -180,7 +183,10 @@ public class UserDto
     public string? Name { get; set; }
     public string? Avatar { get; set; }
 
-    public Guid? StoreId { get; set; }
+    public string? StoreLogo { get; set; }
+
+    public string? Role { get; set; }
+
 }
 
 public class RegisterRequestDto

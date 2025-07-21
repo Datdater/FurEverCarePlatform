@@ -476,7 +476,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.ToTable("Deliveries");
                 });
 
-            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Feedback", b =>
+            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ServiceReview", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1684,7 +1684,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .WithMany("Bookings")
                         .HasForeignKey("DeliveryId");
 
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Feedback", "Feedback")
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.ServiceReview", "ServiceReview")
                         .WithOne("Booking")
                         .HasForeignKey("FurEverCarePlatform.Domain.Entities.Booking", "FeedbackId");
 
@@ -1694,7 +1694,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Navigation("AppUser");
 
-                    b.Navigation("Feedback");
+                    b.Navigation("ServiceReview");
 
                     b.Navigation("Promotion");
                 });
@@ -1749,10 +1749,10 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Navigation("ToAppUser");
                 });
 
-            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Feedback", b =>
+            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ServiceReview", b =>
                 {
                     b.HasOne("FurEverCarePlatform.Domain.Entities.AppUser", "AppUser")
-                        .WithMany("Feedback")
+                        .WithMany("ServiceReview")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1798,7 +1798,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
             modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.OrderDetail", b =>
                 {
-                    b.HasOne("FurEverCarePlatform.Domain.Entities.Feedback", "Feedback")
+                    b.HasOne("FurEverCarePlatform.Domain.Entities.ServiceReview", "ServiceReview")
                         .WithOne("OrderDetail")
                         .HasForeignKey("FurEverCarePlatform.Domain.Entities.OrderDetail", "FeedbackId");
 
@@ -1812,7 +1812,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Feedback");
+                    b.Navigation("ServiceReview");
 
                     b.Navigation("Product");
                 });
@@ -2058,7 +2058,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
 
                     b.Navigation("Bookings");
 
-                    b.Navigation("Feedback");
+                    b.Navigation("ServiceReview");
 
                     b.Navigation("Notifications");
 
@@ -2084,7 +2084,7 @@ namespace FurEverCarePlatform.Persistence.Migrations
                     b.Navigation("Bookings");
                 });
 
-            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.Feedback", b =>
+            modelBuilder.Entity("FurEverCarePlatform.Domain.Entities.ServiceReview", b =>
                 {
                     b.Navigation("Booking")
                         .IsRequired();

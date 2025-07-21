@@ -21,7 +21,7 @@ public class Booking : BaseEntity
     public virtual AppUser AppUser { get; set; }
     public virtual ICollection<BookingDetail> BookingDetails { get; set; }
     public virtual Promotion Promotion { get; set; }
-    public virtual Feedback? Feedback { get; set; }
+    public virtual ServiceReview? Feedback { get; set; }
     public virtual Payment Payment { get; set; }
     public virtual Store Store { get; set; }
 }

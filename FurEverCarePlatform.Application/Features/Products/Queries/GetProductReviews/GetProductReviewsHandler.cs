@@ -20,6 +20,7 @@ namespace FurEverCarePlatform.Application.Features.Products.Queries.GetProductRe
                 .GetRepository<ProductReviews>()
                 .GetQueryable()
                 .Include(x => x.AppUser)
+                .OrderByDescending(x => x.CreatedAt)
                 .Where(x => x.ProductId == request.ProductId)
                 .Select(x => new ProductReviewDto
                 {

@@ -8,10 +8,16 @@ using FurEverCarePlatform.Application.Features.PetService.Commands.UpdatePetServ
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetService;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices;
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServicesByStore;
+using FurEverCarePlatform.Application.Features.PetService.Queries.GetServiceReviews;
+using FurEverCarePlatform.Application.Features.Products.Commands.CreateProductReviews;
+using FurEverCarePlatform.Application.Features.Products.Queries.GetProductReviews;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FurEverCarePlatform.API.Controllers;
 
@@ -35,14 +41,29 @@ public class PetServiceController : ControllerBase
         var result = await _mediator.Send(command);
         return Ok(result);
     }
-    [HttpPost]
+    [HttpPost("{id}/reviews")]
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public async Task<IActionResult> CreatePetServiceReview(CreateServiceReviewCommand command)
+    [Authorize]
+    public async Task<IActionResult> CreatePetServiceReview([FromRoute] Guid id,CreateServiceReviewCommand command)
     {
+        command.PetServiceId = id;
         await _mediator.Send(command);
         return Ok();
+    }
+    [HttpGet("{id}/reviews")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> GetServiceReviews(Guid id)
+    {
+        // Assuming you have a query to get product reviews
+        var reviews = await _mediator.Send(new GetServiceReviewQuery { Id = id });
+        if (reviews == null)
+        {
+            return NotFound();
+        }
+        return Ok(reviews);
     }
 
     [HttpGet("{id}")]

@@ -22,7 +22,7 @@ namespace FurEverCarePlatform.Application.Features.PetService.Commands.CreateRev
                 Comment = request.Comment,
                 Rating = request.Rating,
                 BookingId = request.BookingId,
-                UserId = userId 
+                AppUserId = userId 
             };
             var service = await unitOfWork.GetRepository<Domain.Entities.PetService>().GetByIdAsync(request.PetServiceId);
             if (service == null)

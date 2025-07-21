@@ -4,7 +4,7 @@ public class ServiceReview : BaseEntity
 {
     public int Rating { get; set; }
     public string Comment { get; set; }
-    public required Guid UserId { get; set; }
+    public required Guid AppUserId { get; set; }
     public Guid? PetServiceId { get; set; }
     public Guid? BookingId { get; set; }
 

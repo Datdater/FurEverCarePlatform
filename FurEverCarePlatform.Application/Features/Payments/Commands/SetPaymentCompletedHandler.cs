@@ -16,10 +16,21 @@ namespace FurEverCarePlatform.Application.Features.Payments.Commands
             CancellationToken cancellationToken
         )
         {
-            var payment = await unitOfWork
-                .GetRepository<Domain.Entities.Payment>()
-                .GetQueryable()
-                .FirstOrDefaultAsync(x => x.Id == request.paymentId);
+            var payment = new Payment();
+            if (request.paymentId is not null)
+            {
+                payment = await unitOfWork
+                    .GetRepository<Domain.Entities.Payment>()
+                    .GetQueryable()
+                    .FirstOrDefaultAsync(x => x.Id == request.paymentId);
+            }
+            else
+            {
+                payment = await unitOfWork
+                    .GetRepository<Domain.Entities.Payment>()
+                    .GetQueryable()
+                    .FirstOrDefaultAsync(x => x.Code == request.orderCode);
+            }
 
             if (!string.IsNullOrEmpty(request.orderCode))
             {

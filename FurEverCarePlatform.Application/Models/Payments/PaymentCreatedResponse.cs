@@ -1,4 +1,4 @@
-﻿namespace Payment.API.DTO
+﻿namespace FurEverCarePlatform.Application.Models.Payments
 {
     public class PaymentCreatedResponse
     {

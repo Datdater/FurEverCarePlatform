@@ -1,6 +1,6 @@
-﻿using FurEverCarePlatform.Application.Exception;
+﻿using System.Net;
+using FurEverCarePlatform.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace FurEverCarePlatform.API.Middleware
 {
@@ -40,7 +40,7 @@ namespace FurEverCarePlatform.API.Middleware
                         Status = (int)statusCode,
                         Detail = badRequestException.InnerException?.Message,
                         Type = nameof(BadRequestException),
-                        Errors = badRequestException.ValidationErrors
+                        Errors = badRequestException.ValidationErrors,
                     };
                     break;
                 case NotFoundException notFound:
@@ -50,7 +50,7 @@ namespace FurEverCarePlatform.API.Middleware
                         Title = notFound.Message,
                         Status = (int)statusCode,
                         Detail = notFound.InnerException?.Message,
-                        Type = nameof(NotFoundException)
+                        Type = nameof(NotFoundException),
                     };
                     break;
                 default:
@@ -59,7 +59,7 @@ namespace FurEverCarePlatform.API.Middleware
                         Title = ex.Message,
                         Status = (int)statusCode,
                         Detail = ex.StackTrace,
-                        Type = "Internal Server Error"
+                        Type = "Internal Server Error",
                     };
                     break;
             }
@@ -69,6 +69,7 @@ namespace FurEverCarePlatform.API.Middleware
         }
     }
 }
+
 public class CustomProblemDetails : ProblemDetails
 {
     public IDictionary<string, string[]> Errors { get; set; } = new Dictionary<string, string[]>();

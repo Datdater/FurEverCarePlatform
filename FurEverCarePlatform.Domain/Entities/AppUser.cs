@@ -20,7 +20,7 @@ public class AppUser : IdentityUser<Guid>
     public virtual ICollection<Pet> Pets { get; set; }
     public virtual ICollection<Address> Address { get; set; }
     public virtual ICollection<Notification> Notifications { get; set; }
-    public virtual ICollection<ServiceReview> Feedback { get; set; }
+    public virtual ICollection<ServiceReview> ServiceReviews { get; set; }
     public virtual ICollection<Report> Reports { get; set; }
 
 }

@@ -23,6 +23,30 @@ public class PetService : BaseEntity
     public virtual ServiceCategory ServiceCategory  { get; set; }
     public virtual ICollection<PetServiceStep> PetServiceSteps { get; set; }
     public virtual ICollection<PetServiceDetail> PetServiceDetails { get; set; }
+    public virtual ICollection<ServiceReview> ServiceReviews { get; set; }
+    
+    public void AddReview(ServiceReview review)
+    {
+        ServiceReviews.Add(review);
+        TotalReviews++;
+        var totalRating = ServiceReviews.Sum(r => r.Rating);
+        RatingAverage = (float)Math.Round((double)totalRating / TotalReviews, 1);
+    }
 
-
+    public void RemoveReview(ServiceReview review)
+    {
+        if (ServiceReviews.Remove(review))
+        {
+            TotalReviews = ServiceReviews.Count;
+            if (TotalReviews > 0)
+            {
+                var totalRating = ServiceReviews.Sum(r => r.Rating);
+                RatingAverage = (float)Math.Round((double)totalRating / TotalReviews, 1);
+            }
+            else
+            {
+                RatingAverage = 0;
+            }
+        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using FurEverCarePlatform.Application.Commons;
 using FurEverCarePlatform.Application.Features.PetService.Commands.CreatePetService;
+using FurEverCarePlatform.Application.Features.PetService.Commands.CreateReview;
 using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetService;
 using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetServiceDetail;
 using FurEverCarePlatform.Application.Features.PetService.Commands.DeletePetServiceStep;
@@ -9,6 +10,7 @@ using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServices
 using FurEverCarePlatform.Application.Features.PetService.Queries.GetPetServicesByStore;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurEverCarePlatform.API.Controllers;
@@ -32,6 +34,15 @@ public class PetServiceController : ControllerBase
     {
         var result = await _mediator.Send(command);
         return Ok(result);
+    }
+    [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> CreatePetServiceReview(CreateServiceReviewCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok();
     }
 
     [HttpGet("{id}")]

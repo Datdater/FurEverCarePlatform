@@ -1,4 +1,5 @@
 ﻿using FurEverCarePlatform.Domain.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FurEverCarePlatform.Domain.Entities;
 
@@ -14,14 +15,13 @@ public class Booking : BaseEntity
     public required string Code { get; set; }
     public Guid? PromotionId { get; set; }
 
-    public Guid? FeedbackId { get; set; }
     public Guid StoreId { get; set; }
 
     //navigation
     public virtual AppUser AppUser { get; set; }
     public virtual ICollection<BookingDetail> BookingDetails { get; set; }
     public virtual Promotion Promotion { get; set; }
-    public virtual ServiceReview? Feedback { get; set; }
+    public virtual ServiceReview? ServiceReview { get; set; }
     public virtual Payment Payment { get; set; }
     public virtual Store Store { get; set; }
 }

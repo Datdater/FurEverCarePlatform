@@ -87,7 +87,7 @@ public class AuthService
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim(), StoreLogo = store?.LogoUrl, Role = userRole },
+                User = new UserDto { Id = user.Id, Name = $"{user.Name}".Trim(), StoreLogo = store?.LogoUrl, Role = userRole, StoreId = store?.Id },
             };
 
             return (true, "Login successful", response);
@@ -180,6 +180,8 @@ public class LoginResponseDto
 public class UserDto
 {
     public Guid Id { get; set; }
+
+    public Guid? StoreId { get; set; }
     public string? Name { get; set; }
     public string? Avatar { get; set; }
 

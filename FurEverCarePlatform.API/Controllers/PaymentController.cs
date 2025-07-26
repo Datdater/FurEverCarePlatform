@@ -1,4 +1,5 @@
 ﻿using FurEverCarePlatform.Application.Features.Payments.Commands;
+using FurEverCarePlatform.Application.Features.Payments.Queries.GetAllTransaction;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,12 @@ namespace FurEverCarePlatform.API.Controllers
         {
             await mediator.Send(query);
             return Ok();
+        }
+        [HttpGet("transactions")]
+        public async Task<IActionResult> GetTransactions([FromQuery] GetAllTransactionQuery query)
+        {
+           var transactions =  await mediator.Send(query);
+           return Ok(transactions);
         }
     }
 }

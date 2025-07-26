@@ -37,12 +37,15 @@ public class GetAllBookingByUserQueryHandler(
             .ThenInclude(bd => bd.PetServiceDetail)
             .ThenInclude(psd => psd.PetService)
             .Include(b => b.AppUser)
-            .Include(b => b.Store).Where(b => request.Status == null || b.Status == request.Status);
+            .Include(b => b.Store).Where(b => request.Status == null || b.Status == request.Status).OrderByDescending(b => b.BookingTime);
 
         // Apply filtering based on role - use IQueryable instead of casting
         IQueryable<Domain.Entities.Booking> filteredQuery;
-
-        if (roles.Contains("Store Owner"))
+        if (roles.Contains("Admin"))
+        {
+            filteredQuery = baseQuery;
+        }
+        else if (roles.Contains("Store Owner"))
         {
             var store = await unitOfWork
                 .GetRepository<Domain.Entities.Store>()

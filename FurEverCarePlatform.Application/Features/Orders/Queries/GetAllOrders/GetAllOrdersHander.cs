@@ -48,7 +48,11 @@ namespace FurEverCarePlatform.Application.Features.Orders.Queries.GetAllOrders
 
             IQueryable<Domain.Entities.Order> filteredQuery;
 
-            if (roles.Contains("Store Owner"))
+            if (roles.Contains("Admin"))
+            {
+                filteredQuery = orders;
+            }
+            else if (roles.Contains("Store Owner"))
             {
                 var store = await unitOfWork
                     .GetRepository<Domain.Entities.Store>()
